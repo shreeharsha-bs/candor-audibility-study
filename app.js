@@ -243,8 +243,7 @@
       Object.keys(row).forEach((key) => set.add(key));
       return set;
     }, new Set()));
-    const csv = [headers.join(",")].concat(rows.map((row) => headers.map((key) => csvCell(row[key])).join(","))).join("
-");
+    const csv = [headers.join(",")].concat(rows.map((row) => headers.map((key) => csvCell(row[key])).join(","))).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -256,8 +255,7 @@
 
   function csvCell(value) {
     const text = value == null ? "" : String(value);
-    return /[",
-]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
   }
 
   function cleanId(value) {
