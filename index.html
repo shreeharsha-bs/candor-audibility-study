@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CANDOR Audio Judgment Study</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar" aria-label="Study status">
+      <div>
+        <h1>CANDOR Audio Judgment Study</h1>
+        <p id="saveStatus" class="status">Not started</p>
+      </div>
+      <div class="meter" aria-live="polite">
+        <span id="progressText">0 / 0</span>
+        <div class="track"><div id="progressFill" class="fill"></div></div>
+      </div>
+    </section>
+
+    <section id="setupPanel" class="panel" aria-labelledby="setupTitle">
+      <h2 id="setupTitle">Session Setup</h2>
+      <form id="setupForm" class="setup-grid">
+        <label>
+          Participant ID
+          <input id="participantId" name="participantId" autocomplete="off" placeholder="Leave blank to auto-generate">
+        </label>
+        <label>
+          Trial list
+          <select id="listSelect" name="listSelect"></select>
+        </label>
+        <button type="submit" class="primary">Start Study</button>
+      </form>
+    </section>
+
+    <section id="studyPanel" class="panel study" hidden aria-labelledby="trialTitle">
+      <div class="trial-head">
+        <div>
+          <p id="trialMeta" class="eyebrow"></p>
+          <h2 id="trialTitle">Listen and Respond</h2>
+        </div>
+      </div>
+
+      <audio id="audioPlayer" controls preload="metadata" controlslist="nodownload"></audio>
+
+      <fieldset class="question-block">
+        <legend id="questionText"></legend>
+        <div id="optionButtons" class="options"></div>
+      </fieldset>
+
+      <label class="notes-label">
+        Notes
+        <textarea id="listenerNotes" rows="3" placeholder="Optional"></textarea>
+      </label>
+
+      <div class="actions">
+        <button id="submitTrial" class="primary" type="button">Save Response</button>
+      </div>
+    </section>
+
+    <section id="donePanel" class="panel" hidden aria-labelledby="doneTitle">
+      <h2 id="doneTitle">Session Complete</h2>
+      <p id="doneSummary"></p>
+      <div class="actions">
+        <button id="retrySaves" type="button">Retry Uploads</button>
+        <button id="exportCsv" type="button">Export CSV</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="data/trial_lists.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
