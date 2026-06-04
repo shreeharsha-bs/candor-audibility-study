@@ -1,7 +1,7 @@
 (() => {
   const config = window.STUDY_CONFIG || {};
   const lists = window.CANDOR_TRIAL_LISTS || {};
-  const schemaVersion = "2026-06-02.1";
+  const schemaVersion = "2026-06-04.1";
 
   const els = {};
   let state = null;
@@ -142,8 +142,17 @@
       base_item_id: trial.base_item_id,
       task: trial.task,
       prompt_length_condition: trial.prompt_length_condition,
+      prompt_progress_condition: trial.prompt_progress_condition,
+      prompt_fraction: trial.prompt_fraction,
       prompt_length_s: trial.prompt_length_s,
+      prompt_duration_s: trial.prompt_duration_s,
       evidence_level: trial.evidence_level,
+      turn_gate_condition: trial.turn_gate_condition,
+      turn_gate_word_cutoff: trial.turn_gate_word_cutoff,
+      silence_expected: trial.silence_expected,
+      question_pair_id: trial.question_pair_id,
+      question_match_scope: trial.question_match_scope,
+      source_speech_rate_wps: trial.source_speech_rate_wps,
       audio_url: trial.audio_url,
       audibility_question: trial.audibility_question,
       response: selectedResponse,

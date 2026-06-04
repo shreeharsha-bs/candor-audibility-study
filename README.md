@@ -2,15 +2,28 @@
 
 Static GitHub Pages study for the CANDOR proxy-task audibility lists.
 
+Current intended pilot: matched question-act items plus turn-completion word-gating items.
+
 ## What is included
 
 - `index.html`, `styles.css`, and `app.js`: browser study interface.
-- `data/trial_lists.js`: three blind counterbalanced lists, 40 trials each.
+- `data/trial_lists.js`: blind counterbalanced lists generated from `human_eval/audibility_list_XX.csv`.
 - `audio/`: copied prompt WAV files used by the lists.
 - `config.js`: set the response-saving endpoint.
 - `apps-script.gs`: optional Google Apps Script backend for saving responses to Google Sheets.
 
 The browser-facing trial data does not include gold labels, transcripts, or reference audio.
+
+
+## Regenerate From A New SLURM Extraction
+
+After the extraction job finishes, rebuild the Pages pilot from the nested project root:
+
+```bash
+python scripts/export_candor_pages_pilot.py   --source-dir output/candor_proxy_tasks_matched_q_turn_completion   --pages-dir docs/candor-audibility-study   --clean-audio
+```
+
+This copies the prompt WAVs referenced by the blind audibility lists and rewrites `data/trial_lists.js`.
 
 ## URLs
 
