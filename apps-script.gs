@@ -3,6 +3,8 @@ const MIRROR_BY_STUDY_AND_LIST = true;
 const HEADERS = [
   'received_at', 'event_type', 'study_id', 'schema_version', 'session_id', 'participant_id',
   'list_id', 'trial_index', 'trial_count', 'sample_id', 'base_item_id', 'task',
+  'is_attention_check', 'attention_check_kind', 'attention_check_expected_response',
+  'attention_check_source_sample_id', 'attention_check_passed',
   'prompt_length_condition', 'prompt_progress_condition', 'prompt_fraction',
   'prompt_length_s', 'prompt_duration_s', 'evidence_level',
   'turn_gate_condition', 'turn_gate_word_cutoff', 'silence_expected',

@@ -1,7 +1,7 @@
 (() => {
   const config = window.STUDY_CONFIG || {};
   const lists = window.CANDOR_TRIAL_LISTS || {};
-  const schemaVersion = "2026-06-04.1";
+  const schemaVersion = "2026-06-15.1";
 
   const els = {};
   let state = null;
@@ -22,9 +22,10 @@
       els[id] = document.getElementById(id);
     }
 
-    buildListSelect();
     const params = new URLSearchParams(window.location.search);
-    const listParam = normalizeListId(params.get("list"));
+    const taskParam = normalizeTask(params.get("task"));
+    buildListSelect(taskParam);
+    const listParam = resolveListId(taskParam, params.get("list"));
     if (listParam && lists[listParam]) els.listSelect.value = listParam;
     const participantParam = params.get("participant") || params.get("pid");
     if (participantParam) els.participantId.value = participantParam;
@@ -46,12 +47,17 @@
     setStatus(config.SUBMIT_URL ? "Auto-save ready" : "Local save only");
   }
 
-  function buildListSelect() {
+  function buildListSelect(taskFilter = "") {
     els.listSelect.innerHTML = "";
-    for (const listId of Object.keys(lists).sort()) {
+    const listIds = Object.keys(lists).sort().filter((listId) => {
+      if (!taskFilter) return true;
+      if (listId.startsWith(`${taskFilter}_`)) return true;
+      return (lists[listId] || []).some((trial) => trial.task === taskFilter);
+    });
+    for (const listId of listIds) {
       const option = document.createElement("option");
       option.value = listId;
-      option.textContent = `List ${listId} (${lists[listId].length} trials)`;
+      option.textContent = listLabel(listId, lists[listId]);
       els.listSelect.appendChild(option);
     }
     if (config.ALLOW_LIST_PICKER === false) {
@@ -141,6 +147,11 @@
       sample_id: trial.sample_id,
       base_item_id: trial.base_item_id,
       task: trial.task,
+      is_attention_check: Boolean(trial.is_attention_check),
+      attention_check_kind: trial.attention_check_kind || "",
+      attention_check_expected_response: trial.attention_check_expected_response || "",
+      attention_check_source_sample_id: trial.attention_check_source_sample_id || "",
+      attention_check_passed: trial.is_attention_check ? selectedResponse === trial.attention_check_expected_response : "",
       prompt_length_condition: trial.prompt_length_condition,
       prompt_progress_condition: trial.prompt_progress_condition,
       prompt_fraction: trial.prompt_fraction,
@@ -274,6 +285,31 @@
   function makeId(prefix) {
     if (window.crypto && crypto.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
     return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  function listLabel(listId, trials) {
+    const task = listId.startsWith("question_act_") ? "Question-act"
+      : listId.startsWith("turn_completion_") ? "Turn-completion"
+      : "Mixed";
+    const suffix = listId.split("_").slice(-1)[0];
+    return `${task} list ${suffix} (${trials.length} trials)`;
+  }
+
+  function resolveListId(task, listValue) {
+    const normalized = normalizeListId(listValue);
+    if (task && normalized && lists[`${task}_${normalized}`]) return `${task}_${normalized}`;
+    if (normalized && lists[normalized]) return normalized;
+    if (task) {
+      return Object.keys(lists).sort().find((listId) => listId.startsWith(`${task}_`)) || "";
+    }
+    return normalized;
+  }
+
+  function normalizeTask(value) {
+    const text = String(value || "").trim().toLowerCase().replace(/[ -]/g, "_");
+    if (["question", "question_act", "questions"].includes(text)) return "question_act";
+    if (["turn", "turn_taking", "turn_completion", "completion"].includes(text)) return "turn_completion";
+    return "";
   }
 
   function normalizeListId(value) {
