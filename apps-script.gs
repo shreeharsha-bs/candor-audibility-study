@@ -1,9 +1,13 @@
 const SHEET_NAME = 'responses';
+const MIRROR_BY_STUDY_AND_LIST = true;
 const HEADERS = [
   'received_at', 'event_type', 'study_id', 'schema_version', 'session_id', 'participant_id',
   'list_id', 'trial_index', 'trial_count', 'sample_id', 'base_item_id', 'task',
-  'prompt_length_condition', 'prompt_length_s', 'evidence_level', 'audio_url',
-  'audibility_question', 'response', 'response_label', 'listener_notes', 'trial_started_at',
+  'prompt_length_condition', 'prompt_progress_condition', 'prompt_fraction',
+  'prompt_length_s', 'prompt_duration_s', 'evidence_level',
+  'turn_gate_condition', 'turn_gate_word_cutoff', 'silence_expected',
+  'question_pair_id', 'question_match_scope', 'source_speech_rate_wps',
+  'audio_url', 'audibility_question', 'response', 'response_label', 'listener_notes', 'trial_started_at',
   'response_submitted_at', 'response_time_ms', 'first_play_at', 'play_count', 'audio_ended',
   'page_url', 'user_agent'
 ];
@@ -18,10 +22,18 @@ function doPost(e) {
   lock.waitLock(30000);
   try {
     const payload = JSON.parse((e.postData && e.postData.contents) || '{}');
-    const sheet = getSheet_();
-    ensureHeader_(sheet);
     const row = HEADERS.map((header) => header === 'received_at' ? new Date().toISOString() : value_(payload[header]));
+
+    const sheet = getSheet_(SHEET_NAME);
+    ensureHeader_(sheet);
     sheet.appendRow(row);
+
+    if (MIRROR_BY_STUDY_AND_LIST) {
+      const mirrorSheet = getSheet_(mirrorSheetName_(payload));
+      ensureHeader_(mirrorSheet);
+      mirrorSheet.appendRow(row);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({ ok: true }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
@@ -32,9 +44,24 @@ function doPost(e) {
   }
 }
 
-function getSheet_() {
+function getSheet_(sheetName) {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  return spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
+  return spreadsheet.getSheetByName(sheetName) || spreadsheet.insertSheet(sheetName);
+}
+
+function mirrorSheetName_(payload) {
+  const studyId = cleanSheetPart_(payload.study_id || 'study');
+  const listId = cleanSheetPart_(payload.list_id || 'list');
+  const name = `${studyId}__list_${listId}`;
+  return name.slice(0, 100);
+}
+
+function cleanSheetPart_(value) {
+  return String(value)
+    .trim()
+    .replace(/[\\/?*\[\]:]/g, '_')
+    .replace(/[^A-Za-z0-9_.-]+/g, '_')
+    .replace(/^_+|_+$/g, '') || 'unknown';
 }
 
 function ensureHeader_(sheet) {
