@@ -17,15 +17,16 @@
     for (const id of [
       "setupPanel", "studyPanel", "donePanel", "setupForm", "participantId", "listSelect",
       "saveStatus", "progressText", "progressFill", "trialMeta", "audioPlayer", "questionText",
-      "optionButtons", "listenerNotes", "submitTrial", "doneSummary", "retrySaves", "exportCsv"
+      "textStimulus", "optionButtons", "listenerNotes", "submitTrial", "doneSummary", "retrySaves", "exportCsv"
     ]) {
       els[id] = document.getElementById(id);
     }
 
     const params = new URLSearchParams(window.location.search);
     const taskParam = normalizeTask(params.get("task"));
-    buildListSelect(taskParam);
-    const listParam = resolveListId(taskParam, params.get("list"));
+    const blockParam = normalizeBlock(params.get("block") || params.get("study_block") || params.get("modality"));
+    buildListSelect(taskParam, blockParam);
+    const listParam = resolveListId(taskParam, blockParam, params.get("list"));
     if (listParam && lists[listParam]) els.listSelect.value = listParam;
     const participantParam = params.get("participant") || params.get("pid");
     if (participantParam) els.participantId.value = participantParam;
@@ -47,12 +48,14 @@
     setStatus(config.SUBMIT_URL ? "Auto-save ready" : "Local save only");
   }
 
-  function buildListSelect(taskFilter = "") {
+  function buildListSelect(taskFilter = "", blockFilter = "") {
     els.listSelect.innerHTML = "";
     const listIds = Object.keys(lists).sort().filter((listId) => {
+      if (blockFilter && blockMatchesList(listId, lists[listId], blockFilter)) return true;
+      if (blockFilter) return false;
       if (!taskFilter) return true;
       if (listId.startsWith(`${taskFilter}_`)) return true;
-      return (lists[listId] || []).some((trial) => trial.task === taskFilter);
+      return (lists[listId] || []).some((trial) => taskMatches(trial.task, taskFilter));
     });
     for (const listId of listIds) {
       const option = document.createElement("option");
@@ -100,8 +103,19 @@
     els.listenerNotes.value = "";
 
     const trial = currentTrial();
+    const textMode = isTextTrial(trial);
     els.trialMeta.textContent = `Trial ${state.trial_index + 1} of ${state.trials.length}`;
-    els.audioPlayer.src = trial.audio_url;
+    if (textMode) {
+      els.audioPlayer.hidden = true;
+      els.audioPlayer.removeAttribute("src");
+      els.textStimulus.hidden = false;
+      els.textStimulus.textContent = displayText(trial);
+    } else {
+      els.audioPlayer.hidden = false;
+      els.audioPlayer.src = trial.audio_url;
+      els.textStimulus.hidden = true;
+      els.textStimulus.textContent = "";
+    }
     els.questionText.textContent = trial.audibility_question;
     els.optionButtons.innerHTML = "";
     for (const option of trial.options) {
@@ -129,7 +143,7 @@
 
   async function saveCurrentTrial() {
     if (!selectedResponse) return;
-    if (config.REQUIRE_AUDIO_PLAYED !== false && playCount < 1) {
+    if (trialRequiresAudio(currentTrial()) && playCount < 1) {
       setStatus("Play the audio before saving", true);
       return;
     }
@@ -147,6 +161,9 @@
       sample_id: trial.sample_id,
       base_item_id: trial.base_item_id,
       task: trial.task,
+      study_block: trial.study_block || "",
+      trial_mode: trial.trial_mode || (isTextTrial(trial) ? "text" : "audio"),
+      display_text: isTextTrial(trial) ? displayText(trial) : "",
       is_attention_check: Boolean(trial.is_attention_check),
       attention_check_kind: trial.attention_check_kind || "",
       attention_check_expected_response: trial.attention_check_expected_response || "",
@@ -236,7 +253,8 @@
   function currentTrial() { return state.trials[state.trial_index]; }
 
   function updateSubmitState() {
-    els.submitTrial.disabled = !selectedResponse || (config.REQUIRE_AUDIO_PLAYED !== false && playCount < 1);
+    const needsAudio = state ? trialRequiresAudio(currentTrial()) : true;
+    els.submitTrial.disabled = !selectedResponse || (needsAudio && playCount < 1);
   }
 
   function updateProgress() {
@@ -288,19 +306,31 @@
   }
 
   function listLabel(listId, trials) {
-    const task = listId.startsWith("question_act_") ? "Question-act"
+    const task = listId.startsWith("question_audio_") ? "Question audio"
+      : listId.startsWith("question_text_") ? "Question text"
+      : listId.startsWith("turn_audio_") ? "Turn audio"
+      : listId.startsWith("turn_text_") ? "Turn text"
+      : listId.startsWith("question_act_") ? "Question-act"
+      : listId.startsWith("turn_floor_transfer_") ? "Turn floor-transfer"
       : listId.startsWith("turn_completion_") ? "Turn-completion"
       : "Mixed";
     const suffix = listId.split("_").slice(-1)[0];
     return `${task} list ${suffix} (${trials.length} trials)`;
   }
 
-  function resolveListId(task, listValue) {
+  function resolveListId(task, block, listValue) {
     const normalized = normalizeListId(listValue);
+    if (block && normalized && lists[`${block}_${normalized}`]) return `${block}_${normalized}`;
+    if (block) {
+      return Object.keys(lists).sort().find((listId) => blockMatchesList(listId, lists[listId], block)) || "";
+    }
     if (task && normalized && lists[`${task}_${normalized}`]) return `${task}_${normalized}`;
     if (normalized && lists[normalized]) return normalized;
     if (task) {
-      return Object.keys(lists).sort().find((listId) => listId.startsWith(`${task}_`)) || "";
+      return Object.keys(lists).sort().find((listId) => {
+        if (listId.startsWith(`${task}_`)) return true;
+        return (lists[listId] || []).some((trial) => taskMatches(trial.task, task));
+      }) || "";
     }
     return normalized;
   }
@@ -308,8 +338,50 @@
   function normalizeTask(value) {
     const text = String(value || "").trim().toLowerCase().replace(/[ -]/g, "_");
     if (["question", "question_act", "questions"].includes(text)) return "question_act";
-    if (["turn", "turn_taking", "turn_completion", "completion"].includes(text)) return "turn_completion";
+    if (["turn", "turn_taking", "floor_transfer", "turn_floor_transfer"].includes(text)) return "turn_floor_transfer";
+    if (["turn_completion", "completion"].includes(text)) return "turn_completion";
     return "";
+  }
+
+  function normalizeBlock(value) {
+    const text = String(value || "").trim().toLowerCase().replace(/[ -]/g, "_");
+    if (["question_audio", "questions_audio", "question_act_audio"].includes(text)) return "question_audio";
+    if (["question_text", "questions_text", "question_act_text"].includes(text)) return "question_text";
+    if (["turn_audio", "turn_taking_audio", "turn_floor_transfer_audio"].includes(text)) return "turn_audio";
+    if (["turn_text", "turn_taking_text", "turn_floor_transfer_text"].includes(text)) return "turn_text";
+    return "";
+  }
+
+  function taskMatches(task, taskFilter) {
+    if (task === taskFilter) return true;
+    if (taskFilter === "turn_floor_transfer" && task === "turn_completion") return true;
+    return false;
+  }
+
+  function blockMatchesList(listId, trials, block) {
+    if (listId.startsWith(`${block}_`)) return true;
+    return (trials || []).some((trial) => {
+      const mode = isTextTrial(trial) ? "text" : "audio";
+      if (block === "question_audio") return taskMatches(trial.task, "question_act") && mode === "audio";
+      if (block === "question_text") return taskMatches(trial.task, "question_act") && mode === "text";
+      if (block === "turn_audio") return taskMatches(trial.task, "turn_floor_transfer") && mode === "audio";
+      if (block === "turn_text") return taskMatches(trial.task, "turn_floor_transfer") && mode === "text";
+      return false;
+    });
+  }
+
+  function isTextTrial(trial) {
+    const mode = String(trial.trial_mode || trial.modality || "").toLowerCase();
+    const block = String(trial.study_block || "").toLowerCase();
+    return mode === "text" || block.endsWith("_text") || !trial.audio_url;
+  }
+
+  function trialRequiresAudio(trial) {
+    return config.REQUIRE_AUDIO_PLAYED !== false && !isTextTrial(trial);
+  }
+
+  function displayText(trial) {
+    return trial.display_text || trial.text || trial.keep_text || trial.heard_text || trial.source_text || trial.transcript || "";
   }
 
   function normalizeListId(value) {
