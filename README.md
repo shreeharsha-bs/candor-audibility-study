@@ -3,11 +3,13 @@
 Static GitHub Pages study for the CANDOR proxy-task audibility lists.
 
 Current intended pilot: matched question-act items plus turn-completion word-gating items.
+The journal version should use separate audio-only and text-only blocks from the
+manual CANDOR curation sheet.
 
 ## What is included
 
 - `index.html`, `styles.css`, and `app.js`: browser study interface.
-- `data/trial_lists.js`: blind counterbalanced lists generated from `human_eval/audibility_list_XX.csv`.
+- `data/trial_lists.js`: blind counterbalanced lists generated from curated audio/text manifests.
 - `audio/`: copied prompt WAV files used by the lists.
 - `config.js`: set the response-saving endpoint.
 - `apps-script.gs`: optional Google Apps Script backend for saving responses to Google Sheets.
@@ -34,6 +36,20 @@ Use one of these forms after GitHub Pages is enabled:
 /candor-audibility-study/?list=02
 /candor-audibility-study/?list=03
 ```
+
+For the final journal study, use block-specific links so lexical and acoustic
+evidence stay separated:
+
+```text
+/candor-audibility-study/?block=question_audio&list=01
+/candor-audibility-study/?block=question_text&list=01
+/candor-audibility-study/?block=turn_audio&list=01
+/candor-audibility-study/?block=turn_text&list=01
+```
+
+Text-only trial rows should set `trial_mode: "text"` or omit `audio_url`, and
+should provide `display_text`, `text`, or `keep_text`. Audio-only trial rows
+should set `trial_mode: "audio"` and provide `audio_url`.
 
 You can also prefill a participant id:
 
