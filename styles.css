@@ -100,6 +100,16 @@ audio {
   margin: 8px 0 24px;
 }
 
+.text-stimulus {
+  margin: 8px 0 24px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fafbf9;
+  font-size: 22px;
+  line-height: 1.45;
+}
+
 .question-block {
   margin: 0 0 20px;
   padding: 0;
