@@ -1,8 +1,9 @@
-const SHEET_NAME = 'responses';
+const SHEET_NAME = 'responses_v2';
 const MIRROR_BY_STUDY_AND_LIST = true;
 const HEADERS = [
   'received_at', 'event_type', 'study_id', 'schema_version', 'session_id', 'participant_id',
   'list_id', 'trial_index', 'trial_count', 'sample_id', 'base_item_id', 'task',
+  'study_block', 'trial_mode', 'display_text',
   'is_attention_check', 'attention_check_kind', 'attention_check_expected_response',
   'attention_check_source_sample_id', 'attention_check_passed',
   'prompt_length_condition', 'prompt_progress_condition', 'prompt_fraction',

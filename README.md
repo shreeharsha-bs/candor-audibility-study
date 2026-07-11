@@ -2,9 +2,9 @@
 
 Static GitHub Pages study for the CANDOR proxy-task audibility lists.
 
-Current intended pilot: matched question-act items plus turn-completion word-gating items.
-The journal version should use separate audio-only and text-only blocks from the
-manual CANDOR curation sheet.
+Current intended pilot: short, blinded CANDOR question-act and floor-transfer
+items in separate audio-only and text-only blocks. Text stimuli omit final
+punctuation so a question mark cannot reveal the answer.
 
 ## What is included
 
@@ -37,8 +37,7 @@ Use one of these forms after GitHub Pages is enabled:
 /candor-audibility-study/?list=03
 ```
 
-For the final journal study, use block-specific links so lexical and acoustic
-evidence stay separated:
+Use block-specific links so lexical and acoustic evidence stay separated:
 
 ```text
 /candor-audibility-study/?block=question_audio&list=01
@@ -50,6 +49,10 @@ evidence stay separated:
 Text-only trial rows should set `trial_mode: "text"` or omit `audio_url`, and
 should provide `display_text`, `text`, or `keep_text`. Audio-only trial rows
 should set `trial_mode: "audio"` and provide `audio_url`.
+
+The generated browser manifest uses opaque sample IDs and audio filenames. The
+private answer key is written outside this Pages repository by
+`scripts/build_curated_pilot.py`.
 
 You can also prefill a participant id:
 
@@ -69,6 +72,10 @@ The included default path is Google Sheets via Apps Script:
 5. Set access to Anyone with the link.
 6. Copy the Web App URL.
 7. Paste it into `config.js` as `SUBMIT_URL`.
+
+When moving from an older deployment to the four-block study, paste the current
+`apps-script.gs` and deploy a new Web App version. The new schema records
+`study_block`, `trial_mode`, and `display_text`.
 
 The page also stores responses in browser localStorage and provides an Export CSV button at the end.
 
