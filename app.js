@@ -16,7 +16,7 @@
   function init() {
     for (const id of [
       "setupPanel", "studyPanel", "donePanel", "setupForm", "participantId", "listSelect",
-      "saveStatus", "progressText", "progressFill", "trialMeta", "audioPlayer", "questionText",
+      "saveStatus", "progressText", "progressFill", "trialMeta", "audioPlayer", "questionText", "studyTitle",
       "textStimulus", "optionButtons", "listenerNotes", "submitTrial", "doneSummary", "retrySaves", "exportCsv"
     ]) {
       els[id] = document.getElementById(id);
@@ -25,6 +25,7 @@
     const params = new URLSearchParams(window.location.search);
     const taskParam = normalizeTask(params.get("task"));
     const blockParam = normalizeBlock(params.get("block") || params.get("study_block") || params.get("modality"));
+    applyBlockTitle(blockParam);
     buildListSelect(taskParam, blockParam);
     const listParam = resolveListId(taskParam, blockParam, params.get("list"));
     if (listParam && lists[listParam]) els.listSelect.value = listParam;
@@ -104,6 +105,7 @@
 
     const trial = currentTrial();
     const textMode = isTextTrial(trial);
+    document.getElementById("trialTitle").textContent = textMode ? "Read and Respond" : "Listen and Respond";
     els.trialMeta.textContent = `Trial ${state.trial_index + 1} of ${state.trials.length}`;
     if (textMode) {
       els.audioPlayer.hidden = true;
@@ -350,6 +352,18 @@
     if (["turn_audio", "turn_taking_audio", "turn_floor_transfer_audio"].includes(text)) return "turn_audio";
     if (["turn_text", "turn_taking_text", "turn_floor_transfer_text"].includes(text)) return "turn_text";
     return "";
+  }
+
+  function applyBlockTitle(block) {
+    const titles = {
+      question_audio: "Question Act: Audio",
+      question_text: "Question Act: Text",
+      turn_audio: "Turn Taking: Audio",
+      turn_text: "Turn Taking: Text"
+    };
+    const title = titles[block] || "CANDOR Conversational Cue Study";
+    els.studyTitle.textContent = title;
+    document.title = title;
   }
 
   function taskMatches(task, taskFilter) {
