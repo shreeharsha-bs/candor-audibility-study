@@ -21,7 +21,16 @@
       <section class="card focus-card"><label for="track">Set to review</label><select id="track"></select><button id="start-track" class="primary">Review these cuts</button></section>
       <details id="material-details"><summary>Stimulus details and endpoint checks</summary><p>Two corrected endpoints still need listening confirmation, and one F5 endpoint remains unresolved. These records describe the preview materials, not final study eligibility.</p><div id="stimulus-details"></div></details>
       <details><summary>Analyse downloaded reviews</summary><p>Review files are processed in this browser only. Seeing results or inspecting the words here may influence later judgments.</p><button id="analyse-files">Open results</button></details>
+      <details><summary>Earlier six-item previews</summary><label for="legacy-list">Preview list</label><select id="legacy-list"></select><button id="resume-list">Open this preview</button></details>
       <button id="materials-home" class="link-button">Back to preview</button>
+    </section>
+    <section id="phrase-trial" hidden aria-labelledby="phrase-question">
+      <div class="progress-row"><span id="phrase-progress"></span><span id="phrase-rated"></span></div>
+      <progress id="phrase-progress-bar" max="104" value="0"></progress>
+      <h2 id="phrase-question"></h2>
+      <div id="phrase-content"></div>
+      <div class="actions"><button id="phrase-next" class="primary" disabled>Continue</button><span id="phrase-save-state" role="status"></span></div>
+      <button id="phrase-pause" class="link-button">Pause and return home</button>
     </section>
     <section id="trial" class="card focus-card" hidden aria-labelledby="task-question">
       <div class="progress-row"><span id="progress"></span></div>
@@ -43,12 +52,11 @@
     <section id="complete" class="card focus-card" hidden aria-labelledby="complete-title">
       <p id="complete-status" class="eyebrow">Saved on this device</p><h1 id="complete-title">Thank you for checking.</h1><p>Download your review and share the file with Harsha. This page has not sent your responses anywhere.</p>
       <div class="actions"><button id="download-current" class="primary">Download this review</button><button id="show-results">See results</button><button id="home-button">Back to start</button></div>
-      <p class="muted">Viewing results may influence your judgments in another review. Later reviews will record that you have seen them.</p>
+      <p class="muted">Seeing other answers can affect your next judgment, so view results after finishing your review.</p>
     </section>
     <section id="results" hidden aria-labelledby="results-title">
-      <p class="eyebrow">Exploratory preview feedback</p><h1 id="results-title">What did reviewers choose?</h1>
-      <p>These summaries use completed reviews saved here or files you import. They are not a live count of everyone who visited the site, and they are not participant-study results.</p>
-      <div class="actions"><label class="file-button" for="imports">Import review files<input id="imports" type="file" accept=".json,application/json" multiple></label><button id="download-all">Download loaded reviews</button><button id="results-home">Back to start</button></div>
+      <h1 id="results-title">How did the versions compare?</h1>
+      <details id="results-tools"><summary>Import or download reviews</summary><p>Import your colleagues’ review files to combine their responses with the reviews saved on this device.</p><div class="actions"><label class="file-button" for="imports">Import review files<input id="imports" type="file" accept=".json,application/json" multiple></label><button id="download-all">Download loaded reviews</button><button id="results-home">Back to start</button></div></details>
       <p id="import-state" role="status"></p><div id="result-content"></div>
     </section>
     <noscript>This preview needs JavaScript to play the assigned clips and save your review.</noscript>

@@ -17,10 +17,18 @@
     question: 'Question-like', non_question: 'Not question-like',
     could_finish: 'Could finish', expects_more: 'More speech expected', unsure: 'Unsure'
   });
-  const MODES = ['assigned_list', 'cut_walkthrough'];
+  const MODES = ['phrase_walkthrough', 'assigned_list', 'cut_walkthrough'];
+  const SYSTEM_ORDER = ['original', 'omnivoice', 'f5', 'cosyvoice2', 'qwen3_base', 'text'];
   const SYSTEM_NAMES = Object.freeze({original: 'Original speech', omnivoice: 'OmniVoice', f5: 'F5-TTS',
     cosyvoice2: 'CosyVoice2', qwen3_base: 'Qwen3-TTS Base', text: 'Gated text'});
   const LIMIT = 10000;
+
+  function versionOrder(a, b) {
+    const rank = value => { const index = SYSTEM_ORDER.indexOf(value); return index < 0 ? SYSTEM_ORDER.length : index; };
+    return rank(a.system) - rank(b.system) || a.system.localeCompare(b.system) ||
+      (a.condition === 'period' ? 0 : a.condition === 'question' ? 1 : 2) -
+      (b.condition === 'period' ? 0 : b.condition === 'question' ? 1 : 2) || a.condition.localeCompare(b.condition);
+  }
 
   function fail(message) { throw new Error(message); }
   function object(value, label) {
@@ -80,6 +88,7 @@
       byId.set(id, Object.freeze({
         trial_id: id, phrase_id: string(row.phrase_id, 'Phrase ID'), task: row.task,
         phrase_number: row.phrase_number,
+        exposed_text: typeof meta.exposed_text === 'string' ? meta.exposed_text : '',
         gate: row.gate, modality: row.modality, system: string(meta.system, 'System'),
         condition: string(meta.condition, 'Condition'), analysis_family: meta.analysis_family
       }));
@@ -96,6 +105,13 @@
       return (x.gate === 'earlier' ? 0 : 1) - (y.gate === 'earlier' ? 0 : 1) ||
         (x.phrase_number || 0) - (y.phrase_number || 0);
     });
+    const phraseReviewIds = Array.from(byId.keys()).sort((a, b) => {
+      const x = byId.get(a), y = byId.get(b);
+      return (x.phrase_number || 0) - (y.phrase_number || 0) || x.phrase_id.localeCompare(y.phrase_id) ||
+        (x.gate === 'earlier' ? 0 : 1) - (y.gate === 'earlier' ? 0 : 1) ||
+        (x.analysis_family === 'main' ? 0 : 1) - (y.analysis_family === 'main' ? 0 : 1) ||
+        versionOrder(x, y) || a.localeCompare(b);
+    });
     const lists = new Map();
     if (listsManifest !== undefined) {
       object(listsManifest, 'List manifest');
@@ -108,7 +124,7 @@
         lists.set(id, ids.slice());
       }
     }
-    return {build_id: buildId, byId, lists, tracks};
+    return {build_id: buildId, byId, lists, tracks, phraseReviewIds: Object.freeze(phraseReviewIds)};
   }
 
   function validateSession(input, catalog, options = {}) {
@@ -134,10 +150,13 @@
       session.list_id = input.list_id;
     }
     if (session.started_at && session.completed_at && Date.parse(session.completed_at) < Date.parse(session.started_at)) fail('Completion precedes the session start.');
-    const expected = input.mode === 'assigned_list' ? catalog.lists.get(input.selection_id) : catalog.tracks.get(input.selection_id);
+    const expected = input.mode === 'assigned_list' ? catalog.lists.get(input.selection_id) :
+      input.mode === 'phrase_walkthrough' ? (input.selection_id === 'all_phrases_v1' ? catalog.phraseReviewIds : null) :
+      catalog.tracks.get(input.selection_id);
     if (!expected) fail(input.mode === 'assigned_list' ? 'Unknown assigned list.' : 'Unknown walkthrough set.');
     const seen = new Set(), phrases = new Set();
     let sawLater = false;
+    let previousPhrase = null;
     for (const [index, row] of array(input.responses, 'Responses').entries()) {
       keys(row, ['trial_id', 'choice', 'submitted_at', 'order_index', 'audio_started', 'audio_ended', 'elapsed_ms', 'note'], 'Response');
       const id = string(row.trial_id, 'Trial ID'), trial = catalog.byId.get(id);
@@ -145,8 +164,10 @@
       if (seen.has(id)) fail('Duplicate response for stimulus: ' + id);
       seen.add(id);
       if (!CHOICES[trial.task].includes(row.choice)) fail('Invalid choice for ' + trial.task + ': ' + id);
+      if (input.mode === 'phrase_walkthrough' && trial.phrase_id !== previousPhrase) sawLater = false;
       if (sawLater && trial.gate === 'earlier') fail('An earlier cut was answered after a later cut.');
       sawLater = sawLater || trial.gate === 'later';
+      previousPhrase = trial.phrase_id;
       if (input.mode === 'assigned_list') {
         if (phrases.has(trial.phrase_id)) fail('An assigned review repeats a source phrase.');
         phrases.add(trial.phrase_id);
@@ -223,9 +244,11 @@
       const trial = catalog.byId.get(response.trial_id);
       const priorResults = session.prior_results_viewed === undefined ? null : session.prior_results_viewed;
       const priorStimuli = session.prior_stimulus_exposure === undefined ? null : session.prior_stimulus_exposure;
-      const key = JSON.stringify([session.mode, trial.analysis_family, trial.task, trial.system, trial.condition, trial.gate, priorResults, priorStimuli]);
+      const phraseId = session.mode === 'phrase_walkthrough' ? trial.phrase_id : null;
+      const key = JSON.stringify([session.mode, phraseId, trial.analysis_family, trial.task, trial.system, trial.condition, trial.gate, priorResults, priorStimuli]);
       if (!groups.has(key)) groups.set(key, {
         mode: session.mode, analysis_family: trial.analysis_family, task: trial.task,
+        ...(phraseId ? {phrase_id: phraseId, phrase_number: trial.phrase_number, exposed_text: trial.exposed_text} : {}),
         system: trial.system, condition: trial.condition, gate: trial.gate,
         prior_results_viewed: priorResults, prior_stimulus_exposure: priorStimuli,
         n_ratings: 0, counts: Object.fromEntries(CHOICES[trial.task].map(choice => [choice, 0])),
@@ -239,6 +262,7 @@
     }
     const rows = Array.from(groups.values()).map(group => ({
       mode: group.mode, analysis_family: group.analysis_family, task: group.task,
+      ...(group.phrase_id ? {phrase_id: group.phrase_id, phrase_number: group.phrase_number, exposed_text: group.exposed_text} : {}),
       system: group.system, condition: group.condition, gate: group.gate,
       prior_results_viewed: group.prior_results_viewed, prior_stimulus_exposure: group.prior_stimulus_exposure,
       n_ratings: group.n_ratings, n_sessions: group.sessions.size, n_phrases: group.phrases.size,
@@ -263,53 +287,83 @@
       if (parent) parent.appendChild(node);
       return node;
     }
+    function renderRows(rows, parent, task, includeCut) {
+      const exposures = new Map();
+      for (const row of rows) {
+        const key = JSON.stringify([row.prior_results_viewed, row.prior_stimulus_exposure]);
+        if (!exposures.has(key)) exposures.set(key, []);
+        exposures.get(key).push(row);
+      }
+      for (const exposureRows of exposures.values()) {
+        const first = exposureRows[0];
+        let exposureLabel;
+        if (first.prior_results_viewed === false && first.prior_stimulus_exposure === false) exposureLabel = 'First review in this browser';
+        else if (first.prior_results_viewed === null || first.prior_stimulus_exposure === null) {
+          const describe = value => value === null ? 'not recorded' : value ? 'yes' : 'no';
+          exposureLabel = 'Earlier exposure — results: ' + describe(first.prior_results_viewed) + '; phrases: ' + describe(first.prior_stimulus_exposure);
+        } else exposureLabel = 'Previously viewed ' + (first.prior_results_viewed && first.prior_stimulus_exposure ? 'phrases and results' : first.prior_results_viewed ? 'results' : 'phrases') + ' in this browser';
+        const exposure = element('p', exposureLabel, parent); exposure.className = 'results-exposure';
+        const wrapper = element('div', undefined, parent); wrapper.className = 'results-table-wrap';
+        const table = element('table', undefined, wrapper); table.className = 'results-table';
+        const head = element('tr', undefined, element('thead', undefined, table));
+        for (const title of ['Version', ...(includeCut ? ['Cut'] : []), 'Ratings', ...CHOICES[task].map(choice => CHOICE_LABELS[choice])]) {
+          const th = element('th', title, head); th.setAttribute('scope', 'col');
+        }
+        const body = element('tbody', undefined, table);
+        const ordered = exposureRows.slice().sort((a, b) => versionOrder(a, b) ||
+          (a.gate === 'earlier' ? 0 : 1) - (b.gate === 'earlier' ? 0 : 1));
+        for (const row of ordered) {
+          const tr = element('tr', undefined, body);
+          const version = (SYSTEM_NAMES[row.system] || row.system) + (row.analysis_family === 'punctuation' ? ' · ' + (row.condition === 'period' ? 'period input' : 'question-mark input') : '');
+          const label = element('th', version, tr); label.setAttribute('scope', 'row');
+          if (includeCut) element('td', row.gate === 'earlier' ? 'Shorter' : 'Longer', tr);
+          element('td', row.n_ratings, tr);
+          for (const choice of CHOICES[task]) element('td', row.counts[choice] + '/' + row.n_ratings + ' (' + (row.proportions[choice] * 100).toFixed(1) + '%)', tr);
+        }
+      }
+    }
     container.replaceChildren();
-    element('h2', 'Preview responses', container);
+    element('p', 'Compare the responses to the same phrase across speech and text. Differences and notes can help us decide which recordings or questions need another check.', container);
     element('p', summary.n_ratings + ' ratings from ' + summary.n_sessions_with_responses + ' completed review' + (summary.n_sessions_with_responses === 1 ? '' : 's') + '. Percentages include Unsure.', container);
-    const explanation = element('details', undefined, container);
-    element('summary', 'How to read these results', explanation);
-    element('p', 'These are collaborator checks, not recruited-participant results. One person may have created more than one session. Repeated ratings of a phrase are related; differences here do not establish significance, equivalence, or preservation.', explanation);
-    element('p', 'Earlier exposure is recorded only within this browser. Sessions with earlier exposure to phrases or results are shown separately. Each percentage uses all ratings in its row.', explanation);
-    if (!summary.groups.length) element('p', 'There are no responses to summarize yet.', container);
+    const explanation = element('details');
+    element('summary', 'How the counts are calculated', explanation);
+    element('p', 'Hearing one version can affect how someone judges the next. Use these comparisons to prepare the participant pilot.', explanation);
+    element('p', 'Each saved session is one completed review. One person may have created more than one session, so the session count is not a count of different people. We divide each response count by all ratings in that row, including Unsure, so uncertainty remains visible.', explanation);
+    element('p', 'We keep earlier single-version reviews separate from reviews that compare several versions of each phrase, because the earlier listening can influence later answers. We also separate sessions that had already viewed phrases or results in this browser; exposure elsewhere cannot be recovered from these files.', explanation);
+    if (!summary.groups.length) element('p', 'Import completed reviews to see their responses here.', container);
     for (const mode of MODES) {
       const modeRows = summary.groups.filter(row => row.mode === mode);
       if (!modeRows.length) continue;
       const section = element('section', undefined, container);
-      element('h3', mode === 'assigned_list' ? 'Assigned-list preview' : 'Shorter-then-longer walkthrough', section);
-      for (const family of ['main', 'punctuation']) for (const task of Object.keys(CHOICES)) {
-        const rows = modeRows.filter(row => row.analysis_family === family && row.task === task);
-        if (!rows.length) continue;
-        element('h4', (family === 'main' ? 'Main comparison' : 'Punctuation manipulation') + ' · ' + (task === 'question_projection' ? 'Question projection' : 'Possible completion'), section);
-        const exposures = new Map();
-        for (const row of rows) {
-          const key = JSON.stringify([row.prior_results_viewed, row.prior_stimulus_exposure]);
-          if (!exposures.has(key)) exposures.set(key, []);
-          exposures.get(key).push(row);
+      element('h2', mode === 'phrase_walkthrough' ? 'All versions of each phrase' : mode === 'assigned_list' ? 'Assigned-list preview' : 'Shorter-then-longer walkthrough', section);
+      if (mode === 'phrase_walkthrough') {
+        const phraseIds = [...new Set(modeRows.slice().sort((a, b) => a.phrase_number - b.phrase_number).map(row => row.phrase_id))];
+        for (const phraseId of phraseIds) {
+          const phraseRows = modeRows.filter(row => row.phrase_id === phraseId);
+          const phrase = element('section', undefined, section); phrase.className = 'results-phrase';
+          const task = phraseRows[0].task;
+          element('h3', 'Phrase ' + phraseRows[0].phrase_number + ' · ' + (task === 'question_projection' ? 'Question projection' : 'Possible completion'), phrase);
+          for (const gate of ['earlier', 'later']) {
+            const gateRows = phraseRows.filter(row => row.gate === gate);
+            if (!gateRows.length) continue;
+            element('h4', gate === 'earlier' ? 'Shorter cut' : 'Longer cut', phrase);
+            if (gateRows[0].exposed_text) {
+              const words = element('p', gateRows[0].exposed_text, phrase); words.className = 'results-cut-words';
+            }
+            for (const family of ['main', 'punctuation']) {
+              const rows = gateRows.filter(row => row.analysis_family === family);
+              if (!rows.length) continue;
+              element('h5', family === 'main' ? 'Original speech, neutral synthesis and text' : 'Period and question-mark synthesis', phrase);
+              renderRows(rows, phrase, task, false);
+            }
+          }
         }
-        for (const exposureRows of exposures.values()) {
-          const first = exposureRows[0];
-          let exposureLabel;
-          if (first.prior_results_viewed === false && first.prior_stimulus_exposure === false) exposureLabel = 'First review in this browser';
-          else if (first.prior_results_viewed === null || first.prior_stimulus_exposure === null) {
-            const describe = value => value === null ? 'not recorded' : value ? 'yes' : 'no';
-            exposureLabel = 'Earlier exposure — results: ' + describe(first.prior_results_viewed) + '; phrases: ' + describe(first.prior_stimulus_exposure);
-          }
-          else exposureLabel = 'Previously viewed ' + (first.prior_results_viewed && first.prior_stimulus_exposure ? 'phrases and results' : first.prior_results_viewed ? 'results' : 'phrases') + ' in this browser';
-          element('h5', exposureLabel, section);
-          const wrapper = element('div', undefined, section); wrapper.className = 'results-table-wrap';
-          const table = element('table', undefined, wrapper); table.className = 'results-table';
-          const head = element('tr', undefined, element('thead', undefined, table));
-          for (const title of ['Version', 'Cut', 'Ratings', ...CHOICES[task].map(choice => CHOICE_LABELS[choice])]) {
-            const th = element('th', title, head); th.setAttribute('scope', 'col');
-          }
-          const body = element('tbody', undefined, table);
-          for (const row of exposureRows) {
-            const tr = element('tr', undefined, body);
-            const version = (SYSTEM_NAMES[row.system] || row.system) + (row.analysis_family === 'punctuation' ? ' · ' + (row.condition === 'period' ? 'period input' : 'question-mark input') : '');
-            const label = element('th', version, tr); label.setAttribute('scope', 'row');
-            for (const value of [row.gate === 'earlier' ? 'Shorter' : 'Longer', row.n_ratings]) element('td', value, tr);
-            for (const choice of CHOICES[task]) element('td', row.counts[choice] + '/' + row.n_ratings + ' (' + (row.proportions[choice] * 100).toFixed(1) + '%)', tr);
-          }
+      } else {
+        for (const family of ['main', 'punctuation']) for (const task of Object.keys(CHOICES)) {
+          const rows = modeRows.filter(row => row.analysis_family === family && row.task === task);
+          if (!rows.length) continue;
+          element('h4', (family === 'main' ? 'Main comparison' : 'Punctuation manipulation') + ' · ' + (task === 'question_projection' ? 'Question projection' : 'Possible completion'), section);
+          renderRows(rows, section, task, true);
         }
       }
     }
@@ -318,7 +372,7 @@
       element('summary', 'Written feedback (' + summary.feedback.length + (summary.feedback.length === 1 ? ' session)' : ' sessions)'), details);
       summary.feedback.forEach((feedback, index) => {
         const article = element('article', undefined, details);
-        element('h4', 'Session ' + (index + 1) + ' · ' + (feedback.mode === 'assigned_list' ? 'Assigned list' : 'Walkthrough'), article);
+        element('h4', 'Session ' + (index + 1) + ' · ' + (feedback.mode === 'phrase_walkthrough' ? 'All versions by phrase' : feedback.mode === 'assigned_list' ? 'Assigned list' : 'Walkthrough'), article);
         for (const [key, label] of [['instructions', 'Instructions'], ['short_clips', 'Short clips'], ['technical', 'Technical issues']]) {
           if (feedback[key]) { element('h5', label, article); element('p', feedback[key], article); }
         }
@@ -333,6 +387,7 @@
         element('p', note.note, article);
       }
     }
+    container.appendChild(explanation);
     return container;
   }
 

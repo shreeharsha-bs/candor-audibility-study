@@ -4,13 +4,16 @@
 
 **[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
 
-Choose **Start preview** for the six-item experience, or **Resume preview** to
-continue. The full cut browser and technical notes are under **Study materials**.
+Choose **Start preview** to compare all versions phrase by phrase, or **Resume
+preview** to continue. Each phrase includes original speech, four TTS systems,
+text, and both cuts. Punctuation versions appear separately where available.
+The full review contains 104 responses. Earlier six-item previews and technical
+notes remain under **Study materials**.
 
 The `review/` page contains all 92 current audio cuts and 12 matching text
 prefixes: original speech, OmniVoice, F5-TTS, CosyVoice2 and Qwen3-TTS Base.
 Neutral synthesis and the separate punctuation pilot remain distinguishable.
-Shorter cuts precede longer cuts. Results are calculated locally from completed
+Shorter cuts precede longer cuts within each phrase. Results are calculated locally from completed
 reviews and imported files; this is not an automatic shared response database.
 
 See [review instructions](review/README.md) and [what was reused](review/REPO_REUSE_NOTES.md).

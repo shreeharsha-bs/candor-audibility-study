@@ -2,7 +2,7 @@
   "checked_on": "2026-10-17",
   "build_id": "deb714714f2e17a4fcfb89a1",
   "automated_tests": {
-    "javascript": 33,
+    "javascript": 43,
     "python_export": 6,
     "status": "passed"
   },
@@ -19,9 +19,15 @@
     "materials_separate_view": true,
     "new_homepage_checked": true,
     "desktop_and_390px_layouts_checked": true,
-    "browser_console_errors": false
+    "browser_console_errors": false,
+    "all_versions_first_short_group_played": true,
+    "short_group_commits_before_long_words_appear": true,
+    "individual_card_drafts_survive_reload": true,
+    "phrase_results_show_all_six_phrases_and_twelve_cuts": true,
+    "main_preview_contains_all_versions": true,
+    "main_preview_six_items": false
   },
   "engineering_test_responses_published": false,
   "response_uploads_enabled": false,
-  "notes": "Browser QA responses are engineering checks only. The simplified interface retains the existing stimulus build, audio, text and response schema. Hosted verification is recorded after publication."
+  "notes": "All-versions preview verified with local engineering test answers. New phrase_walkthrough mode covers all 104 existing presentations in 12 phrase/cut groups. Earlier reviews and exported sessions remain readable; audio and manifests are unchanged. No engineering answers are published."
 }

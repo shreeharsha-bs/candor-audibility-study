@@ -30,6 +30,29 @@ function session(overrides = {}) {
 function partial(overrides = {}) { const s = session({responses: [{trial_id: 'q1', choice: 'question'}], ...overrides}); delete s.completed_at; return s; }
 function assigned(overrides = {}) { return session({mode: 'assigned_list', selection_id: 'P01', responses: [{trial_id: 'q1', choice: 'question'}, {trial_id: 't1', choice: 'could_finish'}], ...overrides}); }
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
+function currentCatalog() {
+  const dir = path.join(__dirname, '../review/data');
+  const read = name => JSON.parse(fs.readFileSync(path.join(dir, name + '.json')));
+  return R.createCatalog(read('stimuli'), read('metadata'), read('lists'));
+}
+function allPhrases(c, overrides = {}) {
+  return session({build_id: c.build_id, mode: 'phrase_walkthrough', selection_id: 'all_phrases_v1',
+    prior_results_viewed: false, prior_stimulus_exposure: false,
+    responses: c.phraseReviewIds.map((trial_id, order_index) => ({trial_id, order_index, choice: 'unsure'})), ...overrides});
+}
+function renderSummary(summary) {
+  class Element {
+    constructor(tag, doc) { this.tag = tag; this.ownerDocument = doc; this.children = []; this.textContent = ''; this.attrs = {}; }
+    appendChild(child) { this.children.push(child); }
+    replaceChildren() { this.children = []; }
+    setAttribute(key, value) { this.attrs[key] = value; }
+    set innerHTML(_) { throw new Error('Unsafe innerHTML'); }
+    get text() { return this.textContent + ' ' + this.children.map(child => child.text).join(' '); }
+  }
+  const doc = {createElement(tag) { return new Element(tag, this); }}, container = new Element('div', doc);
+  R.render(container, summary);
+  return container;
+}
 
 test('reject wrong build and participant context, including collection wrappers', () => {
   assert.throws(() => R.validateSession(session({build_id: 'old'}), catalog), /another stimulus build/);
@@ -147,29 +170,21 @@ test('imports reject invalid JSON, unknown wrapper fields and mixed contexts ato
 });
 
 test('render uses text nodes for imported feedback and gives explicit denominators', () => {
-  class Element {
-    constructor(tag, doc) { this.tag = tag; this.ownerDocument = doc; this.children = []; this.textContent = ''; this.attrs = {}; }
-    appendChild(child) { this.children.push(child); }
-    replaceChildren() { this.children = []; }
-    setAttribute(key, value) { this.attrs[key] = value; }
-    set innerHTML(_) { throw new Error('Unsafe innerHTML'); }
-    get text() { return this.textContent + ' ' + this.children.map(child => child.text).join(' '); }
-  }
-  const doc = {createElement(tag) { return new Element(tag, this); }}, container = new Element('div', doc);
   const payload = '<img src=x onerror=alert(1)>';
-  R.render(container, R.aggregate([session({feedback: {technical: payload}})], catalog));
+  const container = renderSummary(R.aggregate([session({feedback: {technical: payload}})], catalog));
   assert.match(container.text, /1\/1 \(100\.0%\)/);
   assert.match(container.text, /One person may have created more than one session/);
-  assert.match(container.text, /not recruited-participant results/);
+  assert.match(container.text, /Compare the responses to the same phrase across speech and text/);
+  assert.match(container.text, /help us decide which recordings or questions need another check/);
+  assert.match(container.text, /Hearing one version can affect how someone judges the next/);
+  assert.doesNotMatch(container.text, /do not establish significance|not recruited-participant results/);
   assert.ok(container.text.includes(payload));
   function tags(node) { return [node.tag, ...node.children.flatMap(tags)]; }
   assert.ok(!tags(container).includes('img'));
 });
 
 test('current exported lists and all walkthrough tracks round-trip as complete previews', () => {
-  const dir = path.join(__dirname, '../review/data');
-  const read = name => JSON.parse(fs.readFileSync(path.join(dir, name + '.json')));
-  const c = R.createCatalog(read('stimuli'), read('metadata'), read('lists'));
+  const c = currentCatalog();
   const sessions = [];
   for (const [mode, selections] of [['assigned_list', c.lists], ['cut_walkthrough', c.tracks]]) {
     for (const [selection_id, ids] of selections) {
@@ -183,4 +198,89 @@ test('current exported lists and all walkthrough tracks round-trip as complete p
   }
   assert.equal(sessions.length, 42);
   assert.equal(R.aggregate(sessions, c).n_ratings, 272);
+});
+
+test('phrase review covers all 104 versions once with the agreed per-phrase, cut and system ordering', () => {
+  const c = currentCatalog(), rows = c.phraseReviewIds.map(id => c.byId.get(id));
+  assert.equal(rows.length, 104); assert.equal(new Set(c.phraseReviewIds).size, 104);
+  assert.deepEqual([...new Set(rows.map(row => row.phrase_number))], [1, 2, 3, 4, 5, 6]);
+  const mainSystems = ['original', 'omnivoice', 'f5', 'cosyvoice2', 'qwen3_base', 'text'];
+  const punctuation = ['omnivoice', 'f5', 'cosyvoice2', 'qwen3_base'].flatMap(system => [system + ':period', system + ':question']);
+  for (let phrase = 1; phrase <= 6; phrase++) {
+    const group = rows.filter(row => row.phrase_number === phrase), half = group.length / 2;
+    assert.ok(group.slice(0, half).every(row => row.gate === 'earlier'));
+    assert.ok(group.slice(half).every(row => row.gate === 'later'));
+    for (const gate of ['earlier', 'later']) {
+      const cut = group.filter(row => row.gate === gate);
+      assert.deepEqual(cut.slice(0, 6).map(row => row.system), mainSystems);
+      assert.ok(cut.slice(0, 6).every(row => row.analysis_family === 'main'));
+      assert.deepEqual(cut.slice(6).map(row => row.system + ':' + row.condition), phrase <= 2 ? punctuation : []);
+    }
+  }
+  const dir = path.join(__dirname, '../review/data'), read = name => JSON.parse(fs.readFileSync(path.join(dir, name + '.json')));
+  const stimuli = read('stimuli'), metadata = read('metadata'); stimuli.stimuli.reverse(); metadata.stimuli.reverse();
+  assert.deepEqual(R.createCatalog(stimuli, metadata, read('lists')).phraseReviewIds, c.phraseReviewIds);
+});
+
+test('phrase mode allows shorter cuts again at the next phrase while retaining strict coverage and resume validation', () => {
+  const c = currentCatalog(), s = allPhrases(c);
+  assert.deepEqual(R.importJSON(JSON.stringify(s), c), [s]);
+  const firstNextPhrase = s.responses.findIndex(response => c.byId.get(response.trial_id).phrase_number === 2);
+  assert.equal(c.byId.get(s.responses[firstNextPhrase - 1].trial_id).gate, 'later');
+  assert.equal(c.byId.get(s.responses[firstNextPhrase].trial_id).gate, 'earlier');
+  const partial = {...s, responses: s.responses.slice(0, firstNextPhrase + 1)}; delete partial.completed_at;
+  assert.equal(R.validateSession(partial, c).responses.length, firstNextPhrase + 1);
+  assert.throws(() => R.aggregate([partial], c), /Finish this review/);
+  assert.throws(() => R.validateSession({...partial, completed_at: s.completed_at}, c), /every trial/);
+  assert.throws(() => R.validateSession({...s, selection_id: 'all_phrases_v2'}, c), /Unknown walkthrough/);
+  const reordered = clone(s); [reordered.responses[0], reordered.responses[14]] = [reordered.responses[14], reordered.responses[0]];
+  assert.throws(() => R.validateSession(reordered, c), /walkthrough set|earlier cut/);
+  const duplicate = clone(s); duplicate.responses[1] = duplicate.responses[0];
+  assert.throws(() => R.validateSession(duplicate, c), /Duplicate response/);
+});
+
+test('phrase summaries keep phrases, cuts and punctuation separate and preserve legacy mode counts', () => {
+  const c = currentCatalog(), first = allPhrases(c, {session_id: 'all-first'}), second = allPhrases(c, {session_id: 'all-second'});
+  first.responses[0].choice = 'question';
+  const old = session({build_id: c.build_id, session_id: 'old-assigned', mode: 'assigned_list', selection_id: 'P01',
+    responses: c.lists.get('P01').map(trial_id => ({trial_id, choice: 'unsure'}))});
+  const summary = R.aggregate([first, second, old], c), rows = summary.groups.filter(row => row.mode === 'phrase_walkthrough');
+  assert.equal(summary.n_ratings, 214); assert.equal(summary.n_sessions, 3);
+  assert.equal(rows.length, 104); assert.equal(new Set(rows.map(row => row.phrase_id)).size, 6);
+  assert.equal(rows.filter(row => row.analysis_family === 'main').length, 72);
+  assert.equal(rows.filter(row => row.analysis_family === 'punctuation').length, 32);
+  assert.ok(rows.every(row => row.n_phrases === 1 && row.n_ratings === 2 && row.n_sessions === 2));
+  assert.ok(rows.every(row => typeof row.exposed_text === 'string' && row.exposed_text.length > 0));
+  const one = rows.find(row => row.phrase_number === 1 && row.system === 'original' && row.gate === 'earlier');
+  assert.deepEqual(one.counts, {question: 1, non_question: 0, unsure: 1}); assert.equal(one.proportions.unsure, 0.5);
+  const legacy = summary.groups.filter(row => row.mode === 'assigned_list');
+  assert.equal(legacy.reduce((n, row) => n + row.n_ratings, 0), 6);
+  assert.ok(legacy.every(row => !Object.hasOwn(row, 'phrase_id')));
+});
+
+test('phrase result display explains its purpose and keeps each phrase and synthesis comparison inspectable', () => {
+  const c = currentCatalog(), input = allPhrases(c);
+  input.responses[0].note = 'The final word is unclear.';
+  const container = renderSummary(R.aggregate([input], c));
+  const visit = node => [node, ...node.children.flatMap(visit)], nodes = visit(container);
+  const phrases = nodes.filter(node => node.className === 'results-phrase');
+  assert.equal(phrases.length, 6);
+  assert.equal(nodes.filter(node => node.className === 'results-cut-words').length, 12);
+  for (const [index, phrase] of phrases.entries()) {
+    assert.match(phrase.text, new RegExp('Phrase ' + (index + 1)));
+    assert.ok(phrase.text.indexOf('Shorter cut') < phrase.text.indexOf('Longer cut'));
+    assert.match(phrase.text, /Original speech, neutral synthesis and text/);
+    assert.match(phrase.text, /Gated text/);
+    for (const gate of ['earlier', 'later']) {
+      const reference = [...c.byId.values()].find(row => row.phrase_number === index + 1 && row.gate === gate);
+      assert.ok(phrase.text.includes(reference.exposed_text));
+    }
+    if (index < 2) assert.match(phrase.text, /Period and question-mark synthesis/);
+    else assert.doesNotMatch(phrase.text, /Period and question-mark synthesis/);
+  }
+  assert.match(container.text, /Use these comparisons to prepare the participant pilot/);
+  assert.match(container.text, /104 ratings from 1 completed review/);
+  assert.match(container.text, /1\/1 \(100\.0%\)/);
+  assert.match(container.text, /The final word is unclear/);
+  assert.equal(container.children.findIndex(node => node.tag === 'details') > container.children.findIndex(node => node.textContent.includes('Compare the responses to the same phrase')), true);
 });

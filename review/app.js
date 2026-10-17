@@ -2,17 +2,19 @@
 (async () => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const panels = ['home', 'materials', 'trial', 'feedback', 'complete', 'results'];
+  const panels = ['home', 'materials', 'trial', 'phrase-trial', 'feedback', 'complete', 'results'];
+  const phraseMode='phrase_walkthrough', phraseSelection='all_phrases_v1';
   const names = {original:'Original speech',omnivoice:'OmniVoice',f5:'F5-TTS',cosyvoice2:'CosyVoice2',qwen3_base:'Qwen3-TTS Base',text:'Gated text'};
   const labels = {question_projection:[['question','Question'],['non_question','Non-question'],['unsure','Unsure']],possible_completion:[['could_finish','Could finish here'],['expects_more','More speech expected'],['unsure','Unsure']]};
-  let manifest, metadata, listData, catalog, trials, meta, tracks, key, store, current, sequence, chosen, began, started, ended, requested, previewListId, storageFailed=false;
+  let manifest, metadata, listData, catalog, trials, meta, tracks, key, store, current, sequence, chosen, began, started, ended, requested, phraseRows=[], phraseUIs=new Map(), storageFailed=false;
   const reportError = message => { $('error').textContent=message; $('error').hidden=false; };
   function storageWarning(){reportError('This browser could not save your review. Keep this page open and download it when finished. Responses currently remain only in this open page.');}
-  function panel(id){$('audio').pause(); panels.forEach(p=>$(p).hidden=p!==id);$('footer').hidden=id==='trial'||id==='feedback'; $('error').hidden=true;if(storageFailed)storageWarning();window.scrollTo(0,0);}
+  function panel(id){$('audio').pause();for(const ui of phraseUIs.values())if(ui.audio)ui.audio.pause(); panels.forEach(p=>$(p).hidden=p!==id);$('footer').hidden=id==='trial'||id==='phrase-trial'||id==='feedback'; $('error').hidden=true;if(storageFailed)storageWarning();window.scrollTo(0,0);}
   function persist(){try{localStorage.setItem(key,JSON.stringify(store));storageFailed=false;$('save-state').textContent='Saved on this device';return true;}catch(e){storageFailed=true;storageWarning();$('save-state').textContent='Browser saving unavailable';return false;}}
   function option(parent,value,text){const e=document.createElement('option');e.value=value;e.textContent=text;parent.append(e);}
   function route(view){
     const params=new URLSearchParams(location.search);params.delete('view');
+    if(requested)params.set('list',requested);
     if(view==='home')params.delete('set');else params.set('view',view);
     history.replaceState(null,'',location.pathname+(params.size?'?'+params.toString():''));
     const materialsParams=new URLSearchParams();if(requested)materialsParams.set('list',requested);materialsParams.set('view','materials');
@@ -20,24 +22,20 @@
     $('home-link').href=requested?'?list='+encodeURIComponent(requested):'./';
   }
   function unfinished(mode,selection){return store.sessions.filter(s=>s.mode===mode&&!s.completed_at&&(!selection||s.selection_id===selection)).sort((a,b)=>(Date.parse(b.started_at)||0)-(Date.parse(a.started_at)||0)||store.sessions.indexOf(b)-store.sessions.indexOf(a))[0];}
-  function selectPreviewList(){
-    const valid=id=>listData.lists.some(l=>l.list_id===id);
-    const latest=unfinished('assigned_list');
-    previewListId=requested||(latest&&latest.selection_id)||(valid(store.previewListId)&&store.previewListId)||listData.lists[Math.floor(Math.random()*listData.lists.length)].list_id;
-    if(store.previewListId!==previewListId){store.previewListId=previewListId;persist();}
-  }
-  function idsFor(mode,selection){if(mode==='assigned_list'){const x=listData.lists.find(l=>l.list_id===selection);if(!x)throw Error('Unknown list');return x.stimulus_ids;} const x=tracks.find(t=>t.id===selection);if(!x)throw Error('Unknown review set');return x.ids;}
+  function idsFor(mode,selection){if(mode===phraseMode)return catalog.phraseReviewIds;if(mode==='assigned_list'){const x=listData.lists.find(l=>l.list_id===selection);if(!x)throw Error('Unknown list');return x.stimulus_ids;} const x=tracks.find(t=>t.id===selection);if(!x)throw Error('Unknown review set');return x.ids;}
   function newSession(mode,selection){return {schema_version:1,build_id:manifest.build_id,review_context:'collaborator_preview',session_id:crypto.randomUUID(),mode,selection_id:selection,started_at:new Date().toISOString(),prior_results_viewed:!!store.resultsViewed,prior_stimulus_exposure:store.seenStimuli.length>0||store.sessions.some(s=>s.responses.length>0),responses:[]};}
-  function recordExposure(){const id=sequence[current.responses.length];store.sessionExposure[current.session_id]=store.sessionExposure[current.session_id]||[];if(!store.sessionExposure[current.session_id].includes(id)){store.sessionExposure[current.session_id].push(id);if(!store.seenStimuli.includes(id))store.seenStimuli.push(id);persist();}}
+  function recordStimulusExposure(id){store.sessionExposure[current.session_id]=store.sessionExposure[current.session_id]||[];if(!store.sessionExposure[current.session_id].includes(id)){store.sessionExposure[current.session_id].push(id);if(!store.seenStimuli.includes(id))store.seenStimuli.push(id);persist();}}
+  function recordExposure(){recordStimulusExposure(sequence[current.responses.length]);}
   function start(mode,selection){
     current=unfinished(mode,selection);
     if(!current){current=newSession(mode,selection);store.sessions.push(current);}else{current.prior_results_viewed=!!current.prior_results_viewed||!!store.resultsViewed;current.prior_stimulus_exposure=!!current.prior_stimulus_exposure||!!store.materialsViewed||Object.entries(store.sessionExposure).some(([id,seen])=>id!==current.session_id&&seen.length>0)||store.sessions.some(s=>s.session_id!==current.session_id&&s.responses.length>0);}
     sequence=idsFor(mode,selection);persist();showTrial();
   }
-  function showHome(){selectPreviewList();route('home');panel('home');$('start-assigned').textContent=unfinished('assigned_list',previewListId)?'Resume preview':'Start preview';$('saved-results').hidden=!store.sessions.some(s=>s.completed_at)&&!store.imports.length;}
+  function showHome(){route('home');panel('home');$('start-assigned').textContent=unfinished(requested?'assigned_list':phraseMode,requested||phraseSelection)?'Resume preview':'Start preview';$('saved-results').hidden=!store.sessions.some(s=>s.completed_at)&&!store.imports.length;}
   function showMaterials(){route('materials');panel('materials');details();}
   function showTrial(){
     if(current.responses.length===sequence.length){showFeedback();return;}
+    if(current.mode===phraseMode){showPhrase();return;}
     panel('trial');const t=trials.get(sequence[current.responses.length]);chosen=null;began=performance.now();started=false;ended=false;
     $('progress').textContent=`Item ${current.responses.length+1} of ${sequence.length}`;
     $('progress-bar').max=sequence.length;$('progress-bar').value=current.responses.length;
@@ -51,6 +49,64 @@
   function saveNext(){
     const t=trials.get(sequence[current.responses.length]);if(!chosen||(t.modality==='audio'&&!ended))return;
     current.responses.push({trial_id:t.trial_id,choice:chosen,order_index:current.responses.length,submitted_at:new Date().toISOString(),elapsed_ms:Math.round(performance.now()-began),audio_started:started,audio_ended:ended,note:$('clip-note').value.trim().slice(0,5000)});
+    delete store.drafts[current.session_id];persist();showTrial();
+  }
+  function phraseDraft(id){
+    const draft=store.drafts[current.session_id]||(store.drafts[current.session_id]={});
+    draft.versions=draft.versions||{};
+    return draft.versions[id]||(draft.versions[id]={});
+  }
+  function rememberPhrase(){
+    const saved=persist();$('phrase-save-state').textContent=saved?'Saved on this device':'Browser saving unavailable';updatePhrase();
+  }
+  function phraseReady(t){const d=phraseDraft(t.trial_id);return !!d.choice&&(t.modality==='text'||d.audio_ended===true);}
+  function updatePhrase(){
+    const ready=phraseRows.filter(phraseReady).length;
+    $('phrase-rated').textContent=`${ready} of ${phraseRows.length} versions rated`;
+    $('phrase-progress-bar').value=current.responses.length+ready;
+    $('phrase-next').disabled=ready!==phraseRows.length;
+    for(const t of phraseRows){const ui=phraseUIs.get(t.trial_id);if(ui)ui.status.textContent=phraseReady(t)?'Rated':t.modality==='audio'&&!phraseDraft(t.trial_id).audio_ended?'Listen, then choose an answer.':'Choose an answer.';}
+  }
+  function showPhrase(){
+    panel('phrase-trial');phraseUIs=new Map();
+    const first=trials.get(sequence[current.responses.length]);
+    phraseRows=sequence.slice(current.responses.length).map(id=>trials.get(id)).filter(t=>t.phrase_id===first.phrase_id&&t.gate===first.gate);
+    const phraseCount=new Set(manifest.stimuli.map(t=>t.phrase_id)).size;
+    $('phrase-progress').textContent=`Phrase ${first.phrase_number} of ${phraseCount} · ${first.gate==='earlier'?'Shorter cut':'Longer cut'}`;
+    $('phrase-progress-bar').max=sequence.length;
+    $('phrase-question').textContent=first.task==='question_projection'?'Does this seem like a question, or the beginning of one?':'Could the speaker reasonably finish here, or is more speech expected?';
+    $('phrase-next').textContent=first.gate==='earlier'?'Continue to the longer cut':current.responses.length+phraseRows.length===sequence.length?'Finish review':'Continue to the next phrase';
+    $('phrase-content').replaceChildren();$('phrase-save-state').textContent=storageFailed?'Browser saving unavailable':'';
+    function element(tag,text,parent){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;parent.append(el);return el;}
+    for(const family of ['main','punctuation']){
+      const rows=phraseRows.filter(t=>meta.get(t.trial_id).analysis_family===family);if(!rows.length)continue;
+      const section=element('section',undefined,$('phrase-content'));
+      if(family==='punctuation')element('h3','Punctuation versions',section);
+      const grid=element('div',undefined,section);grid.className='version-grid';
+      for(const t of rows){
+        const m=meta.get(t.trial_id),draft=phraseDraft(t.trial_id),rowBegan=performance.now();
+        const card=element('article',undefined,grid);card.className='card version-card';card.setAttribute('data-trial-id',t.trial_id);
+        element('h3',(names[m.system]||m.system)+(family==='punctuation'?' · '+(m.condition==='period'?'period input':'question-mark input'):''),card);
+        const ui={};phraseUIs.set(t.trial_id,ui);
+        if(t.modality==='audio'){
+          const audio=element('audio',undefined,card);audio.controls=true;audio.preload='metadata';audio.src=t.audio_url;ui.audio=audio;
+          audio.onplay=()=>{if(audio.paused)return;for(const other of phraseUIs.values())if(other.audio&&other.audio!==audio)other.audio.pause();draft.audio_started=true;recordStimulusExposure(t.trial_id);rememberPhrase();};
+          audio.onended=()=>{draft.audio_started=true;draft.audio_ended=true;rememberPhrase();};
+          audio.onerror=()=>{if(!$('phrase-trial').hidden&&phraseUIs.get(t.trial_id)===ui)reportError('A recording could not play. Reload to retry; your saved answers will remain.');};
+        }else{const words=element('p',t.text,card);words.className='words';recordStimulusExposure(t.trial_id);}
+        const choices=element('div',undefined,card);choices.className='choices';
+        for(const [value,label] of labels[t.task]){const b=element('button',label,choices);b.type='button';b.setAttribute('aria-pressed',String(draft.choice===value));b.onclick=()=>{draft.choice=value;draft.submitted_at=new Date().toISOString();draft.elapsed_ms=Math.round(performance.now()-rowBegan);for(const x of choices.children)x.setAttribute('aria-pressed',String(x===b));rememberPhrase();};}
+        ui.status=element('p',undefined,card);ui.status.className='muted';ui.status.setAttribute('role','status');
+        const noteBox=element('details',undefined,card);element('summary','Add a note',noteBox);
+        const note=element('textarea',undefined,noteBox);note.rows=2;note.value=draft.note||'';note.setAttribute('aria-label','Note for '+names[m.system]+(family==='punctuation'?' '+m.condition:''));
+        if(note.value)noteBox.open=true;note.oninput=()=>{draft.note=note.value.slice(0,5000);rememberPhrase();};
+      }
+    }
+    updatePhrase();
+  }
+  function savePhrase(){
+    if(!phraseRows.every(phraseReady))return;
+    for(const t of phraseRows){const draft=phraseDraft(t.trial_id);current.responses.push({trial_id:t.trial_id,choice:draft.choice,order_index:current.responses.length,submitted_at:draft.submitted_at,elapsed_ms:draft.elapsed_ms||0,audio_started:t.modality==='audio'&&!!draft.audio_started,audio_ended:t.modality==='audio'&&!!draft.audio_ended,note:(draft.note||'').trim()});}
     delete store.drafts[current.session_id];persist();showTrial();
   }
   function showFeedback(){panel('feedback');const f=store.drafts[current.session_id]?.feedback||current.feedback||{};$('feedback-instructions').value=f.instructions||'';$('feedback-short').value=f.short_clips||'';$('feedback-technical').value=f.technical||'';}
@@ -80,8 +136,12 @@
     function addTrack(family,system,condition){const rows=manifest.stimuli.filter(t=>{const m=meta.get(t.trial_id);return m.analysis_family===family&&m.system===system&&(family==='main'||m.condition===condition);}).sort((a,b)=>(a.gate==='earlier'?0:1)-(b.gate==='earlier'?0:1)||a.phrase_number-b.phrase_number);if(rows.length)tracks.push({id:[family,system,condition].join('_'),label:(family==='punctuation'?'Punctuation pilot · ':'')+names[system]+(family==='punctuation'?' · '+(condition==='period'?'period input':'question-mark input'):'')+` (${rows.length} items)`,ids:rows.map(t=>t.trial_id)});}
     for(const t of tracks)option($('track'),t.id,t.label);
     const params=new URLSearchParams(location.search);requested=listData.lists.some(x=>x.list_id===params.get('list'))?params.get('list'):null;
+    for(const l of listData.lists)option($('legacy-list'),l.list_id,l.list_id+(unfinished('assigned_list',l.list_id)?' · In progress':''));
+    $('legacy-list').value=requested||unfinished('assigned_list')?.selection_id||listData.lists[0].list_id;
     if(params.get('set')&&tracks.some(x=>x.id===params.get('set')))$('track').value=params.get('set');
-    $('start-assigned').onclick=()=>start('assigned_list',previewListId);$('start-track').onclick=()=>start('cut_walkthrough',$('track').value);$('save-next').onclick=saveNext;$('pause').onclick=()=>current.mode==='cut_walkthrough'?showMaterials():showHome();$('materials-home').onclick=showHome;
+    $('start-assigned').onclick=()=>start(requested?'assigned_list':phraseMode,requested||phraseSelection);$('start-track').onclick=()=>start('cut_walkthrough',$('track').value);$('save-next').onclick=saveNext;$('pause').onclick=()=>current.mode==='cut_walkthrough'?showMaterials():showHome();$('materials-home').onclick=showHome;
+    $('resume-list').onclick=()=>{requested=$('legacy-list').value;route('home');start('assigned_list',requested);};
+    $('phrase-next').onclick=savePhrase;$('phrase-pause').onclick=showHome;
     $('audio').onplay=()=>{started=true;recordExposure();};$('audio').onended=()=>{ended=true;$('save-state').textContent='Ready to save your judgment.';updateSave();};$('audio').onerror=()=>{if(!$('trial').hidden&&$('audio').getAttribute('src'))reportError('This clip could not play. Check your connection and reload to resume. Your earlier answers are saved.');};
     $('clip-note').oninput=()=>{store.drafts[current.session_id]={note:$('clip-note').value};persist();};
     for(const id of ['feedback-instructions','feedback-short','feedback-technical'])$(id).oninput=()=>{store.drafts[current.session_id]={feedback:feedback()};persist();};

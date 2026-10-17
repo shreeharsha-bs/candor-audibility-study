@@ -1,43 +1,47 @@
 # Speech continuation user study preview
 
 [Open the preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).
-This is for collaborators to check the questions and recordings before the
-recruited pilot. No consent, recruitment quota, payment or production eligibility
-is implied by publication. Three audio endings remain under review.
+Colleagues can compare every version of each phrase and flag unclear questions
+or recordings before the recruited pilot. Three audio endings remain under review.
 
 ## Give feedback
 
 1. Choose **Start preview**, or **Resume preview** to continue an unfinished
-   review. The preview contains six different phrases, one cut and one version
-   per phrase. These judgments concern questionhood or possible completion;
-   they do not approve technical endpoints.
+   review. For each phrase, the page shows original speech, all four TTS systems,
+   and gated text together. Answer each version, then continue to the longer cut
+   of that phrase. The longer words and audio remain hidden until the shorter
+   versions are answered.
 2. Answer question projection or possible completion, with **Unsure** available.
    Audio trials require playback to reach the end before continuing; this is a
    preview interaction rule, not a settled participant-exclusion rule.
-3. Download the completed review and share the JSON file with Harsha through
+3. Punctuation versions appear in their own section for the two phrases that
+   have them. Each phrase therefore has either 12 versions (six per cut) or
+   28 versions (six main and eight punctuation versions per cut). The complete
+   review covers all 104 presentations: 92 audio and 12 text.
+4. Pause whenever needed. Individual choices and notes save automatically, even
+   before continuing to the next cut. Reload and choose **Resume preview** to
+   continue. Only one recording plays at a time.
+5. Download the completed review and share the JSON file with Harsha through
    your usual channel. Written feedback and per-clip notes are included.
 
 The **Study materials** footer link opens a separate view at `?view=materials`.
-It contains the complete cut walkthrough, system selector, and endpoint notes.
+It contains the single-system walkthroughs, endpoint notes, and earlier lists.
 Each neutral set has twelve items; each separate punctuation set has four.
 Existing `?set=main_text_text` links open that view with gated text selected.
 
-An assigned list can still be linked as `?list=P01` through `?list=P28`. A valid
-explicit list takes priority. Otherwise the preview resumes the most recently
-started unfinished assigned-list session, including one with no saved answers
-or one awaiting final feedback. If none exists, it uses the browser's saved list
-or chooses one uniformly at random and remembers it. Walkthroughs are never
-resumed as participant previews. This is a browser-local assignment, not global
-balanced recruitment; the 28 lists are coverage templates, not a sample size.
+Earlier six-item previews remain available through `?list=P01` to `?list=P28`,
+or under **Earlier six-item previews** in Study materials. Their saved reviews
+are preserved. The plain `/review/` address always opens the full comparison;
+an old unfinished six-item review does not replace it.
 
 The shorter prefix of each phrase has fewer words, even when speaking rates
-differ across systems. All shorter-prefix items precede longer-prefix items.
-No full phrase or transcript is exposed before an audio judgment. A walkthrough
-does expose a phrase twice; this reduces later-word exposure before the short
-judgment but does not remove familiarity or carryover. Walkthrough and assigned-
-list summaries therefore remain separate. Starting another review records prior
-stimulus exposure in this browser. Viewing results is also recorded for later
-reviews. These browser flags cannot detect exposure on another device.
+differ across systems. The full comparison presents shorter then longer cuts
+within each phrase. System names and the matching gated text are visible so
+reviewers can compare the versions directly. Hearing or reading one version can
+affect the next answer, so these comparisons help prepare the participant pilot.
+They remain separate from the earlier single-version previews in the results.
+Single-system walkthroughs keep their existing order: all shorter cuts, then
+all longer cuts. The original recordings and text have not changed.
 
 ## Calculate results here
 
@@ -45,10 +49,11 @@ After completing a review, choose **See results**. Import other completed JSON
 reviews to calculate combined summaries in the same browser. To analyse files
 without doing a review, open **Analyse downloaded reviews** in Study materials,
 or use `?view=results`. Counts and response
-percentages include Unsure in their denominators. Main and punctuation trials,
-the two tasks, systems, cuts, review modes and recorded prior exposure remain
-separate. The page counts sessions, not distinct people. It shows descriptive
-preview feedback, with no significance tests or equivalence claims.
+percentages include Unsure in their denominators. The full-review results show
+each phrase separately, so differences between versions refer to the same words.
+Main and punctuation versions also remain separate. A full comparison produces
+one completed review containing 104 responses; results wait until it is finished.
+The page counts completed reviews, since it has no way to identify distinct people.
 
 Imports check the build, assigned sequence, valid responses and complete review.
 Exact copies of a session count once; conflicting copies are rejected. Wrong-
@@ -61,8 +66,11 @@ planned host and store for the recruited Prolific pilot.
 Browser saving is specific to the origin and build. Reload and choose **Resume
 preview** to continue; walkthroughs resume from their selected set in Study
 materials. The simplified interface preserves the build ID, storage key, audio,
-text, reviews, drafts, imports and export formats. Assignment and materials-view
-bookkeeping are stored outside exported sessions. Expanding the stimulus details
+text, reviews, drafts and imports. The response schema gains the additive mode
+`phrase_walkthrough` with selection `all_phrases_v1`; old exports still import.
+Each cut's draft answers are held by stimulus ID and committed in their fixed
+order on Continue, allowing the cards to be answered in any order. Materials-view
+bookkeeping is stored outside exported sessions. Expanding the stimulus details
 records prior exposure for any later judgments. Old versions remain in browser
 storage when a build changes.
 Use downloads for backup. The earlier pilot's browser storage is untouched.
