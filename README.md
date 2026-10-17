@@ -1,5 +1,24 @@
 # CANDOR Audio Judgment Study
 
+## Current collaborator preview — October 17, 2026
+
+**[Open the speech and text preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
+
+The `review/` page contains all 92 current audio cuts and 12 matching text
+prefixes: original speech, OmniVoice, F5-TTS, CosyVoice2 and Qwen3-TTS Base.
+Neutral synthesis and the separate punctuation pilot remain distinguishable.
+Shorter cuts precede longer cuts. Results are calculated locally from completed
+reviews and imported files; this is not an automatic shared response database.
+
+See [review instructions](review/README.md) and [what was reused](review/REPO_REUSE_NOTES.md).
+Three audio endpoints still need listening approval. This is a collaborator
+preview, not the recruited Prolific pilot. The earlier app, recordings, response
+endpoint and local-storage keys below remain unchanged apart from a link to the
+current preview. The historical next-speaker task is not the current possible-
+completion task.
+
+## Earlier pilot
+
 Static GitHub Pages study for the CANDOR proxy-task audibility lists.
 
 Current intended pilot: short, blinded CANDOR question-act and floor-transfer

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Review the CANDOR speech and text pilot, starting with shorter cuts.">
+  <title>CANDOR · Speech and text preview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header><a href="./" class="brand">CANDOR <span>Speech &amp; text</span></a><span class="badge">Collaborator preview</span></header>
+  <main>
+    <div id="error" role="alert" hidden></div>
+    <section id="home" hidden aria-labelledby="home-title">
+      <p class="eyebrow">Before the participant pilot</p>
+      <h1 id="home-title">How would you interpret<br>this phrase?</h1>
+      <p class="intro">Try the questions, listen to the cuts, and tell us what needs attention. Shorter cuts always come first. Text versions reveal the same words as the audio.</p>
+      <div class="notice">This is a preview for feedback. Three audio endings still need checking. Responses stay in your browser; download them to share with Harsha.</div>
+      <div class="cards">
+        <section class="card"><p class="eyebrow">Quick preview · 6 items</p><h2>Try the participant task</h2><p>One cut and one version of each phrase. Audio trials hide the words and the system name.</p><label for="list">Preview list</label><select id="list"></select><button id="start-assigned" class="primary">Try this list</button></section>
+        <section class="card"><p class="eyebrow">Check both cuts</p><h2>Review a set of cuts</h2><p>Review the shorter cuts, then the longer ones. Choose audio or the matching gated text.</p><label for="track">Set to review</label><select id="track"></select><button id="start-track" class="primary">Review these cuts</button></section>
+      </div>
+      <details><summary>What are we comparing?</summary><p>We compare original speech, four voice-cloning systems, and text containing the same words. The main comparison uses neutral synthesis instructions. A separate question pilot compares synthesis with a period or question mark; that punctuation is never displayed in text trials.</p><p>These short reviews check the task and recordings. Seeing both cuts or several versions can influence later judgments. Such feedback remains separate from recruited participant data.</p><p>There is no automatic shared response collection on this site. A reviewer can download their file. Harsha can import several files on the results page to calculate their combined summaries locally.</p></details>
+      <button id="saved-results" class="link-button" hidden>View completed reviews and results</button>
+      <p id="load-note" class="muted"></p>
+    </section>
+    <section id="trial" class="card focus-card" hidden aria-labelledby="task-question">
+      <div class="progress-row"><span id="progress"></span><span id="gate" class="badge"></span></div>
+      <progress id="progress-bar" max="1" value="0"></progress>
+      <p id="phase-note" class="muted"></p>
+      <audio id="audio" controls preload="metadata"></audio>
+      <p id="words" class="words" hidden></p>
+      <fieldset><legend id="task-question"></legend><div id="choices" class="choices"></div></fieldset>
+      <p class="muted">There is no correct-answer feedback. Choose Unsure when you cannot tell.</p>
+      <label for="clip-note">Anything to flag? <span class="muted">Optional</span></label><textarea id="clip-note" rows="2" placeholder="For example: a word sounds cut off, or the task is unclear."></textarea>
+      <div class="actions"><button id="save-next" class="primary" disabled>Save and continue</button><span id="save-state" role="status"></span></div>
+      <button id="pause" class="link-button">Pause and return home</button>
+    </section>
+    <section id="feedback" class="card focus-card" hidden aria-labelledby="feedback-title">
+      <p class="eyebrow">Review complete</p><h1 id="feedback-title">What should we improve?</h1><p>These are optional. Your judgments and feedback will be included in the download.</p>
+      <label for="feedback-instructions">Were the questions clear?</label><textarea id="feedback-instructions" rows="2"></textarea>
+      <label for="feedback-short">Did the shorter cuts give you enough to judge?</label><textarea id="feedback-short" rows="2"></textarea>
+      <label for="feedback-technical">Any playback or other problems?</label><textarea id="feedback-technical" rows="2"></textarea>
+      <button id="finish" class="primary">Save feedback and finish</button>
+    </section>
+    <section id="complete" class="card focus-card" hidden aria-labelledby="complete-title">
+      <p id="complete-status" class="eyebrow">Saved on this device</p><h1 id="complete-title">Thank you for checking.</h1><p>Download your review and share the file with Harsha. This page has not sent your responses anywhere.</p>
+      <div class="actions"><button id="download-current" class="primary">Download this review</button><button id="show-results">See results</button><button id="home-button">Back to start</button></div>
+      <p class="muted">Viewing results may influence your judgments in another review. Later reviews will record that you have seen them.</p>
+    </section>
+    <section id="results" hidden aria-labelledby="results-title">
+      <p class="eyebrow">Exploratory preview feedback</p><h1 id="results-title">What did reviewers choose?</h1>
+      <p>These summaries use completed reviews saved here or files you import. They are not a live count of everyone who visited the site, and they are not participant-study results.</p>
+      <div class="actions"><label class="file-button" for="imports">Import review files<input id="imports" type="file" accept=".json,application/json" multiple></label><button id="download-all">Download loaded reviews</button><button id="results-home">Back to start</button></div>
+      <p id="import-state" role="status"></p><div id="result-content"></div>
+      <details><summary>Inspect stimulus details after judging</summary><p>The two corrected endpoints and one unresolved F5 endpoint remain marked. These records describe the preview materials, not final study eligibility.</p><div id="stimulus-details"></div></details>
+    </section>
+    <noscript>This preview needs JavaScript to play the assigned clips and save your review.</noscript>
+  </main>
+  <footer>Two cuts · original speech + four TTS systems · matching text<br><a href="../">Earlier pilot</a> · <a href="https://github.com/shreeharsha-bs/candor-audibility-study">Source and instructions</a><p id="build-label"></p></footer>
+  <script src="results.js"></script><script src="app.js"></script>
+</body>
+</html>

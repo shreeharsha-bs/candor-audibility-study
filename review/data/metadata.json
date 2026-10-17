@@ -1,0 +1,941 @@
+{
+  "build_id": "deb714714f2e17a4fcfb89a1",
+  "stimuli": [
+    {
+      "stimulus_id": "t_045a14ba2e601687f038",
+      "system": "qwen3_base",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_05b894e2bd7a7c8da266",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_07c323d0eb11dc295506",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_0868c507b3adca948534",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_08b776e0cb3453479c0d",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_096e53b91fd9842ca754",
+      "system": "qwen3_base",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_097b3e8b87562d75269e",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_0d1f6865120010b1ccd2",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_1154a1a75ac5b6738603",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_11beb81858216deb620f",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_130a50117bfa2af744e2",
+      "system": "f5",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_13d6dfcd43a3dfaccf57",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_1490aae721f220616996",
+      "system": "cosyvoice2",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_14a9ade24e595321671d",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_166263314734c657622e",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_1702ba7a3d5cdc5b3c31",
+      "system": "omnivoice",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_1baa2b71ed32d2391c2c",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_1cb712e903a294a25867",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_1d4dd096a96989989827",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_22eacd1aed17eab3ccd4",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_249e78c6c8568ad2aa41",
+      "system": "f5",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_27801733a1b67abc243a",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_28cd8ad4b95c3baf054b",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_29f7eadb313c541ac64c",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_2ba503a2098bad707881",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_2da854861ba9766d5249",
+      "system": "f5",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_32913c74b0f6d0baa2da",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_35ad02cf01dd38a97c26",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_3837545a7211eaaa6d17",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_38a28e7482552d296fb5",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_3a2f83be7db023902a5b",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_3d1ecd330d907640a0e1",
+      "system": "cosyvoice2",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_3dc9d8a05a885947e815",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_4310b1dc1e41c1fe8076",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_44b2d6552799304df55d",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_4964a9b4100fed7e5342",
+      "system": "cosyvoice2",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_4e8055dd3d4bef92c562",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_4ff530caaccd8ee85514",
+      "system": "qwen3_base",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_502392cc34b7b0e550b5",
+      "system": "omnivoice",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_55349b081ce2c4381f46",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_57069ce605f8369f87c5",
+      "system": "cosyvoice2",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_587bacc75c85446105cf",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_58f9fc07b47024ca7663",
+      "system": "qwen3_base",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_61ffa2dc8c9614d2f668",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_655863602663045577a2",
+      "system": "f5",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_68c58d2bba4b36c85088",
+      "system": "f5",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_691b7af044c7f5c16a17",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_699dff68f49e1a285f3f",
+      "system": "omnivoice",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_6ac96b121ec8dce7eade",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_71154f73b2a297838ef9",
+      "system": "qwen3_base",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_77fd9ba9ab7432949663",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_78bc300da97b253548f6",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_7bc62518e1ff60411f5c",
+      "system": "omnivoice",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_7e12dde28d9637de7dc0",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_86d38a9720625ef4edcb",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_887fe090aafa04262362",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_88b9ddcecf6cbdc69774",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_88e9eb4cf4b02307f67e",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_8a8e1ac01db390d1159d",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_8b57fb536b4d11b8fc6f",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": true,
+      "endpoint_status": "pending"
+    },
+    {
+      "stimulus_id": "t_8cf033312f8ef3bea53d",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched was the Aaron Hernandez",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_8ff755d6c094c7df2ead",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_9406110274962c1971c5",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_942d49592415c5532926",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_94e82524cdb80146ed59",
+      "system": "f5",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_9597a8c2d054ebc838e8",
+      "system": "omnivoice",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_95c9e66a735495f34c0b",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_95e20d3f7745351b2140",
+      "system": "cosyvoice2",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_9776e380d55af5bac055",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_9ad66d88b965948ebcf3",
+      "system": "omnivoice",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_9faa6d111aaec5fd5157",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_b062d4a09295929d68cb",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_b20f870cb86ea7fef664",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_b32719af6d15907708db",
+      "system": "cosyvoice2",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_b71c1eb0dc71a9ccbc86",
+      "system": "f5",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_b7a69b3137dc4226e459",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": true,
+      "endpoint_status": "needs_change"
+    },
+    {
+      "stimulus_id": "t_babd1561ac34a700bcd4",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c0991f0bf648ff3eacfc",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c1a8298ffa35c59e8995",
+      "system": "cosyvoice2",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c57a7a863724717e2228",
+      "system": "omnivoice",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c5de9f268f5f2a99245b",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c7f44c0040128bc53e47",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_c928c0a369bc4c665d56",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_cb351ffdd1766605b37f",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "The last one that I watched",
+      "pending_endpoint": true,
+      "endpoint_status": "pending"
+    },
+    {
+      "stimulus_id": "t_cb8d1097345587ea26bb",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_cc100b01ac91614c2c92",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_cc48102584a1146a5f11",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_d47c90e091dd8fa2c580",
+      "system": "omnivoice",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_d95fd6172a2cac510641",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_d980331783504e049377",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_daf7acef198bd243fe24",
+      "system": "cosyvoice2",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_db2be42c4ab39c3bae7d",
+      "system": "qwen3_base",
+      "condition": "question",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_dc247ca4f7088721c314",
+      "system": "f5",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got a middle",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_dda261edd3d223669715",
+      "system": "qwen3_base",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_e85787cc477a9237a631",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_eb54e23557370b8a8cb4",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_ebac682957f33b1e6934",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_ec7ddb295b330f31d2d8",
+      "system": "cosyvoice2",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_efc81d52418e761c9331",
+      "system": "omnivoice",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "I'll probably never",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_f381fea0b9191207d11b",
+      "system": "text",
+      "condition": "text",
+      "analysis_family": "main",
+      "exposed_text": "I'm so glad to hear",
+      "pending_endpoint": false,
+      "endpoint_status": "not_applicable"
+    },
+    {
+      "stimulus_id": "t_f3b005fe548a915a2a9d",
+      "system": "f5",
+      "condition": "neutral",
+      "analysis_family": "main",
+      "exposed_text": "And only one person has ever called about our dog",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_f7abd7d98938d75dbd3d",
+      "system": "qwen3_base",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "Yep number one place to go",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_fc082643edc17cf716c6",
+      "system": "qwen3_base",
+      "condition": "period",
+      "analysis_family": "punctuation",
+      "exposed_text": "So you still got",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    },
+    {
+      "stimulus_id": "t_fd67a7860a008adabff3",
+      "system": "original",
+      "condition": "original",
+      "analysis_family": "main",
+      "exposed_text": "And only one person",
+      "pending_endpoint": false,
+      "endpoint_status": "accepted_endpoint_review"
+    }
+  ]
+}

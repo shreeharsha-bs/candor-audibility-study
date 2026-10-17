@@ -1,0 +1,21 @@
+{
+  "checked_on": "2026-10-17",
+  "build_id": "deb714714f2e17a4fcfb89a1",
+  "automated_tests": {
+    "javascript": 22,
+    "python_export": 6,
+    "status": "passed"
+  },
+  "browser_checks": {
+    "six_audio_files_played": true,
+    "reload_resumed_at_next_item": true,
+    "feedback_downloaded": true,
+    "duplicate_import_did_not_increase_counts": true,
+    "text_prefix_shown_without_audio": true,
+    "shorter_first": true,
+    "narrow_layout_checked": true
+  },
+  "engineering_test_responses_published": false,
+  "response_uploads_enabled": false,
+  "notes": "Browser QA responses are engineering checks only. Hosted verification is recorded after publication."
+}
