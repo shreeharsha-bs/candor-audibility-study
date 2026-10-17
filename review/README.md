@@ -1,4 +1,4 @@
-# Speech and text preview
+# Speech continuation user study preview
 
 [Open the preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).
 This is for collaborators to check the questions and recordings before the
@@ -7,17 +7,28 @@ is implied by publication. Three audio endings remain under review.
 
 ## Give feedback
 
-1. Choose **Try the participant task** for six different phrases, one cut and
-   one version per phrase. An assigned list can be linked as `?list=P01` through
-   `?list=P28`. These are coverage templates, not a participant-count decision.
-2. Or choose **Review a set of cuts** to check both cuts from original speech,
-   a TTS system, or gated text. Each neutral set has twelve items; each separate
-   punctuation set has four. `?set=main_text_text` selects gated text.
-3. Answer question projection or possible completion, with **Unsure** available.
+1. Choose **Start preview**, or **Resume preview** to continue an unfinished
+   review. The preview contains six different phrases, one cut and one version
+   per phrase. These judgments concern questionhood or possible completion;
+   they do not approve technical endpoints.
+2. Answer question projection or possible completion, with **Unsure** available.
    Audio trials require playback to reach the end before continuing; this is a
    preview interaction rule, not a settled participant-exclusion rule.
-4. Download the completed review and share the JSON file with Harsha through
+3. Download the completed review and share the JSON file with Harsha through
    your usual channel. Written feedback and per-clip notes are included.
+
+The **Study materials** footer link opens a separate view at `?view=materials`.
+It contains the complete cut walkthrough, system selector, and endpoint notes.
+Each neutral set has twelve items; each separate punctuation set has four.
+Existing `?set=main_text_text` links open that view with gated text selected.
+
+An assigned list can still be linked as `?list=P01` through `?list=P28`. A valid
+explicit list takes priority. Otherwise the preview resumes the most recently
+started unfinished assigned-list session, including one with no saved answers
+or one awaiting final feedback. If none exists, it uses the browser's saved list
+or chooses one uniformly at random and remembers it. Walkthroughs are never
+resumed as participant previews. This is a browser-local assignment, not global
+balanced recruitment; the 28 lists are coverage templates, not a sample size.
 
 The shorter prefix of each phrase has fewer words, even when speaking rates
 differ across systems. All shorter-prefix items precede longer-prefix items.
@@ -32,8 +43,8 @@ reviews. These browser flags cannot detect exposure on another device.
 
 After completing a review, choose **See results**. Import other completed JSON
 reviews to calculate combined summaries in the same browser. To analyse files
-without doing a review, open **Already have downloaded reviews?** on the start
-page. Counts and response
+without doing a review, open **Analyse downloaded reviews** in Study materials,
+or use `?view=results`. Counts and response
 percentages include Unsure in their denominators. Main and punctuation trials,
 the two tasks, systems, cuts, review modes and recorded prior exposure remain
 separate. The page counts sessions, not distinct people. It shows descriptive
@@ -47,8 +58,13 @@ is posted to Google Sheets, Cognition or GitHub. GitHub Pages serves the app and
 audio but cannot itself write a shared response database. Cognition remains the
 planned host and store for the recruited Prolific pilot.
 
-Browser saving is specific to the origin and build. Reload and choose the same
-list/set to resume. Old versions remain in browser storage when a build changes.
+Browser saving is specific to the origin and build. Reload and choose **Resume
+preview** to continue; walkthroughs resume from their selected set in Study
+materials. The simplified interface preserves the build ID, storage key, audio,
+text, reviews, drafts, imports and export formats. Assignment and materials-view
+bookkeeping are stored outside exported sessions. Expanding the stimulus details
+records prior exposure for any later judgments. Old versions remain in browser
+storage when a build changes.
 Use downloads for backup. The earlier pilot's browser storage is untouched.
 Because this repository is public, its audio and analysis metadata are public;
 UI blinding is not access control. No private source IDs, local filesystem paths,

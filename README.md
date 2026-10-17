@@ -2,7 +2,10 @@
 
 ## Current collaborator preview — October 17, 2026
 
-**[Open the speech and text preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
+**[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
+
+Choose **Start preview** for the six-item experience, or **Resume preview** to
+continue. The full cut browser and technical notes are under **Study materials**.
 
 The `review/` page contains all 92 current audio cuts and 12 matching text
 prefixes: original speech, OmniVoice, F5-TTS, CosyVoice2 and Qwen3-TTS Base.
