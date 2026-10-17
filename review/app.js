@@ -48,7 +48,7 @@
     const wrap=$('stimulus-details');wrap.replaceChildren();const table=document.createElement('table');const head=document.createElement('tr');for(const title of ['Phrase / cut','Version','Words','Endpoint review']){const cell=document.createElement('th');cell.textContent=title;head.append(cell);}table.append(head);
     for(const t of [...manifest.stimuli].sort((a,b)=>a.phrase_number-b.phrase_number||(a.gate==='earlier'?0:1)-(b.gate==='earlier'?0:1))){const m=meta.get(t.trial_id),row=document.createElement('tr');for(const value of [t.phrase_number+' / '+(t.gate==='earlier'?'shorter':'longer'),(names[m.system]||m.system)+' · '+m.condition,m.exposed_text,m.pending_endpoint?'Needs checking':t.modality==='text'?'Matching words':'Accepted endpoint']){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}table.append(row);}const scroller=document.createElement('div');scroller.className='table-wrap';scroller.append(table);wrap.append(scroller);
   }
-  function showResults(){try{const sessions=loaded();if(!sessions.length){reportError('Complete a review first. Results stay hidden while you judge.');return;}panel('results');store.resultsViewed=true;persist();CandorResults.render($('result-content'),CandorResults.aggregate(sessions,catalog));details();}catch(e){reportError(e.message);}}
+  function showResults(allowEmpty=false){try{const sessions=loaded();if(!sessions.length&&allowEmpty!==true){reportError('Complete a review first, or choose Analyse downloaded reviews on the start page.');return;}panel('results');store.resultsViewed=true;persist();CandorResults.render($('result-content'),CandorResults.aggregate(sessions,catalog));details();}catch(e){reportError(e.message);}}
   async function importFiles(){
     try{let joined=loaded();for(const file of $('imports').files){if(file.size>10*1024*1024)throw Error('A review file is larger than 10 MB.');joined=CandorResults.importJSON(await file.text(),catalog,joined);}
       store.imports=joined.filter(s=>!completed().some(own=>own.session_id===s.session_id));persist();CandorResults.render($('result-content'),CandorResults.aggregate(joined,catalog));$('import-state').textContent=`Loaded ${joined.length} unique completed review sessions. Files were processed in this browser only.`;
@@ -71,6 +71,7 @@
     $('clip-note').oninput=()=>{store.drafts[current.session_id]={note:$('clip-note').value};persist();};
     for(const id of ['feedback-instructions','feedback-short','feedback-technical'])$(id).oninput=()=>{store.drafts[current.session_id]={feedback:feedback()};persist();};
     $('finish').onclick=finish;$('download-current').onclick=()=>download(current,'candor-review-'+current.session_id+'.json');$('show-results').onclick=showResults;$('saved-results').onclick=showResults;$('home-button').onclick=showHome;$('results-home').onclick=showHome;$('imports').onchange=importFiles;$('download-all').onclick=()=>download({schema_version:1,build_id:manifest.build_id,review_context:'collaborator_preview',sessions:loaded()},'candor-loaded-reviews.json');
+    $('analyse-files').onclick=()=>showResults(true);
     $('build-label').textContent='Preview build '+manifest.build_id;showHome();
   }catch(e){reportError('The preview could not start: '+e.message+' Please reload or let Harsha know.');}
 })();

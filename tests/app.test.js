@@ -41,6 +41,20 @@ function storage() {
   return {data, failWrites: false, getItem: key => data.get(key) || null,
     setItem(key, value) { if (this.failWrites) throw new Error('QuotaExceededError'); data.set(key, String(value)); }};
 }
+
+test('analysis-only view imports completed files without creating a review or inventing judgments', async () => {
+  const donor = await boot(); donor.finishText();
+  const exported = JSON.stringify(donor.getState().sessions[0]);
+  const page = await boot(); page.$('analyse-files').click();
+  assert.equal(page.$('results').hidden, false);
+  assert.equal(page.getState().sessions.length, 0);
+  assert.equal(page.getState().resultsViewed, true);
+  page.$('imports').files = [{size: exported.length, text: async () => exported}];
+  await page.$('imports').onchange();
+  assert.equal(page.getState().imports.length, 1);
+  assert.match(page.$('result-content').textContent, /12 ratings from 1 completed review/);
+  assert.equal(page.getState().sessions.length, 0);
+});
 async function boot(saved = storage(), search = '') {
   const elements = new Map();
   const document = {getElementById: id => { if (!elements.has(id)) throw Error('Unknown DOM ID ' + id); return elements.get(id); },

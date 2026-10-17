@@ -31,7 +31,9 @@ reviews. These browser flags cannot detect exposure on another device.
 ## Calculate results here
 
 After completing a review, choose **See results**. Import other completed JSON
-reviews to calculate combined summaries in the same browser. Counts and response
+reviews to calculate combined summaries in the same browser. To analyse files
+without doing a review, open **Already have downloaded reviews?** on the start
+page. Counts and response
 percentages include Unsure in their denominators. Main and punctuation trials,
 the two tasks, systems, cuts, review modes and recorded prior exposure remain
 separate. The page counts sessions, not distinct people. It shows descriptive
