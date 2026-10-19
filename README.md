@@ -1,13 +1,15 @@
 # CANDOR Audio Judgment Study
 
-## Current collaborator preview — October 17, 2026
+## Current collaborator preview — October 19, 2026
 
 **[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
 
 Choose **Start preview** to compare all versions phrase by phrase, or **Resume
 preview** to continue. Each phrase includes original speech, four TTS systems,
 text, and both cuts. Punctuation versions appear separately where available.
-The full review contains 104 responses. Earlier six-item previews and technical
+The full review contains 104 presentations. Playback and answers are optional:
+Continue saves any answers and notes and records the rest as skipped. Skipped
+versions do not enter rating counts or percentages. Earlier six-item previews and technical
 notes remain under **Study materials**.
 
 The `review/` page contains all 92 current audio cuts and 12 matching text

@@ -259,13 +259,51 @@ test('analysis-only route imports completed files without creating a review or i
   assert.deepEqual(reloaded.getState().imports, [JSON.parse(exported)]);
 });
 
-test('audio requires a choice and a full playback before advancing; playback is never automatic', async () => {
+test('single-version reviews allow skipping, partial playback and answers without playback', async () => {
   const page = await boot(storage(), '?view=materials'); page.startTrack('main_original_original'); const {$} = page;
-  assert.equal($('audio').hidden, false); assert.equal($('save-next').disabled, true);
+  assert.equal($('audio').hidden, false); assert.equal($('save-next').disabled, false);
   assert.equal($('footer').hidden, true);
-  page.choose(); assert.equal($('save-next').disabled, true); $('save-next').onclick();
-  assert.equal($('progress').textContent, 'Item 1 of 12'); assert.equal(page.getState().seenStimuli.length, 0);
-  page.play(); assert.equal($('save-next').disabled, true); page.end(); assert.equal($('save-next').disabled, false);
+  $('clip-note').value = 'Skipped note'; $('clip-note').oninput(); $('save-next').click();
+  assert.equal(page.getState().seenStimuli.length, 0);
+  assert.deepEqual(page.getState().sessions[0].responses.map(r => [r.choice, r.audio_started, r.audio_ended, r.note]), [['skipped', false, false, 'Skipped note']]);
+  page.choose(); page.play();
+  assert.equal($('save-next').disabled, false); $('save-next').click();
+  page.choose(0); $('save-next').click();
+  const responses = page.getState().sessions[0].responses;
+  assert.deepEqual(responses.map(r => [r.choice, r.audio_started, r.audio_ended]), [['skipped', false, false], ['unsure', true, false], ['could_finish', false, false]]);
+  assert.deepEqual(responses.map(r => r.order_index), [0, 1, 2]);
+  assert.equal($('progress').textContent, 'Item 4 of 12'); assert.equal($('results').hidden, true);
+});
+
+test('single-version draft answers, notes and partial-playback flags survive reload', async () => {
+  const saved = storage(), page = await boot(saved, '?view=materials'); page.startTrack('main_original_original');
+  page.choose(); page.play(); page.$('clip-note').value = 'Only heard the start'; page.$('clip-note').oninput();
+  const resumed = await boot(saved, '?view=materials'); resumed.startTrack('main_original_original');
+  assert.equal(resumed.$('choices').children[2].getAttribute('aria-pressed'), 'true');
+  assert.equal(resumed.$('clip-note').value, 'Only heard the start');
+  resumed.$('save-next').click(); const response = resumed.getState().sessions[0].responses[0];
+  assert.equal(response.choice, 'unsure'); assert.equal(response.audio_started, true); assert.equal(response.audio_ended, false);
+  assert.equal(response.note, 'Only heard the start');
+});
+
+test('skipping unheard audio does not fabricate exposure in a later review', async () => {
+  const page = await boot(storage(), '?view=materials'); page.startTrack('main_original_original');
+  page.$('save-next').click(); page.$('pause').click(); page.startTrack('main_f5_neutral');
+  assert.equal(page.getState().sessions[1].prior_stimulus_exposure, false);
+  assert.equal(page.getState().seenStimuli.length, 0);
+});
+
+test('earlier assigned-list links also allow skipping and finish without ratings', async () => {
+  const page = await boot(storage(), '?list=P01'); page.startPreview();
+  for (let i = 0; i < 6; i++) page.$('save-next').click();
+  assert.equal(page.$('feedback').hidden, false); page.$('finish').click();
+  assert.equal(page.$('complete').hidden, false, page.$('error').textContent);
+  assert.ok(page.getState().sessions[0].responses.every(r => r.choice === 'skipped'));
+});
+
+test('complete audio playback is still recorded when a reviewer chooses to listen', async () => {
+  const page = await boot(storage(), '?view=materials'); page.startTrack('main_original_original'); const {$} = page;
+  page.choose(); page.play(); page.end();
   $('save-next').click(); assert.equal($('progress').textContent, 'Item 2 of 12');
   const response = page.getState().sessions[0].responses[0];
   assert.equal(response.audio_started, true); assert.equal(response.audio_ended, true);
@@ -358,24 +396,71 @@ test('first phrase card group contains every shorter version and no longer audio
       assert.ok(card.textContent.includes(t.text));
     }
   }
-  assert.equal(page.$('phrase-next').disabled, true);
+  assert.equal(page.$('phrase-next').disabled, false);
   assert.equal(page.getState().sessions[0].responses.length, 0);
 });
 
-test('group advancement requires a separate choice and completed playback for every audio version', async () => {
+test('a whole group can be skipped before continuing to the longer cut', async () => {
+  const page = await boot(); page.startPreview();
+  const ids = page.cards().map(card => card.getAttribute('data-trial-id'));
+  page.$('phrase-next').click();
+  const responses = page.getState().sessions[0].responses;
+  assert.deepEqual(responses.map(r => r.trial_id), ids);
+  assert.ok(responses.every(r => r.choice === 'skipped' && !r.audio_started && !r.audio_ended));
+  assert.match(page.$('phrase-progress').textContent, /Phrase\s*1\s*of\s*6.*Longer/i);
+});
+
+test('group ratings count without playback and never require it for advancement', async () => {
   const page = await boot(); page.startPreview(); const cards = page.cards();
   for (const card of cards) page.rateCard(card, 2, false);
-  assert.equal(page.$('phrase-next').disabled, true);
-  page.$('phrase-next').onclick(); assert.equal(page.getState().sessions[0].responses.length, 0);
-  const audioCards = cards.filter(c => c.querySelector('audio'));
-  for (const card of audioCards.slice(0, -1)) { const a = card.querySelector('audio'); a.onplay(); a.onended(); }
-  assert.equal(page.$('phrase-next').disabled, true);
-  const last = audioCards.at(-1).querySelector('audio'); last.onplay();
-  assert.equal(page.$('phrase-next').disabled, true); last.onended();
+  assert.equal(page.$('phrase-rated').textContent, '14 of 14 versions rated');
   assert.equal(page.$('phrase-next').disabled, false); page.$('phrase-next').click();
   assert.equal(page.getState().sessions[0].responses.length, 14);
+  assert.ok(page.getState().sessions[0].responses.every(r => r.choice === 'unsure' && !r.audio_started && !r.audio_ended));
   assert.match(page.$('phrase-progress').textContent, /Phrase\s*1\s*of\s*6.*Longer/i);
   assert.ok(page.cards().every(c => byTrial.get(c.getAttribute('data-trial-id')).gate === 'later'));
+});
+
+test('mixed skipped and rated drafts retain notes and partial playback across reload and export', async () => {
+  const saved = storage(), page = await boot(saved); page.startPreview();
+  const [rated, skipped] = page.cards().filter(card => card.querySelector('audio'));
+  page.rateCard(rated, 0, false); rated.querySelector('audio').onplay();
+  const note = skipped.querySelector('textarea'); note.value = 'Comment without a rating'; note.oninput();
+  const ratedId = rated.getAttribute('data-trial-id'), skippedId = skipped.getAttribute('data-trial-id');
+  const resumed = await boot(saved); resumed.startPreview();
+  assert.equal(resumed.cards().find(c => c.getAttribute('data-trial-id') === ratedId).querySelector('.choices').children[0].getAttribute('aria-pressed'), 'true');
+  assert.equal(resumed.cards().find(c => c.getAttribute('data-trial-id') === skippedId).querySelector('textarea').value, note.value);
+  for (let i = 0; i < 12; i++) resumed.$('phrase-next').click();
+  resumed.$('finish').click(); assert.equal(resumed.$('complete').hidden, false, resumed.$('error').textContent);
+  resumed.$('download-current').click(); const exported = await resumed.downloads.at(-1).text();
+  const record = JSON.parse(exported), answer = record.responses.find(r => r.trial_id === ratedId);
+  assert.equal(answer.choice, 'question'); assert.equal(answer.audio_started, true); assert.equal(answer.audio_ended, false);
+  assert.equal(record.responses.find(r => r.trial_id === skippedId).note, note.value);
+  assert.equal(record.responses.filter(r => r.choice === 'skipped').length, 103);
+  const receiver = await boot(storage(), '?view=results');
+  receiver.$('imports').files = [{size: exported.length, text: async () => exported}]; await receiver.$('imports').onchange();
+  assert.equal(receiver.getState().imports.length, 1, receiver.$('import-state').textContent);
+  assert.match(receiver.$('result-content').textContent, /1 ratings from 1 completed review/);
+  assert.match(receiver.$('result-content').textContent, /Comment without a rating/);
+});
+
+test('an all-skipped review can finish, provide feedback and round-trip through downloads', async () => {
+  const page = await boot(); page.startPreview();
+  for (let i = 0; i < 12; i++) page.$('phrase-next').click();
+  assert.equal(page.$('feedback').hidden, false);
+  page.$('feedback-instructions').value = 'Feedback-only check'; page.$('feedback-instructions').oninput(); page.$('finish').click();
+  assert.equal(page.$('complete').hidden, false, page.$('error').textContent);
+  page.$('show-results').click();
+  assert.match(page.$('result-content').textContent, /0 ratings from 1 completed review/);
+  assert.match(page.$('result-content').textContent, /No ratings were given/);
+  assert.match(page.$('result-content').textContent, /Feedback-only check/);
+  assert.doesNotMatch(page.$('result-content').textContent, /NaN|Infinity/);
+  page.$('download-all').click(); const exported = await page.downloads.at(-1).text();
+  const receiver = await boot(storage(), '?view=results');
+  receiver.$('imports').files = [{size: exported.length, text: async () => exported}]; await receiver.$('imports').onchange();
+  assert.equal(receiver.getState().imports.length, 1, receiver.$('import-state').textContent);
+  assert.ok(receiver.getState().imports[0].responses.every(r => r.choice === 'skipped'));
+  assert.match(receiver.$('result-content').textContent, /Feedback-only check/);
 });
 
 test('switching recordings pauses the previous player without letting a stale play event pause the new one', async () => {

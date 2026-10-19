@@ -163,7 +163,7 @@
       if (!trial) fail('Unknown stimulus: ' + id);
       if (seen.has(id)) fail('Duplicate response for stimulus: ' + id);
       seen.add(id);
-      if (!CHOICES[trial.task].includes(row.choice)) fail('Invalid choice for ' + trial.task + ': ' + id);
+      if (row.choice !== 'skipped' && !CHOICES[trial.task].includes(row.choice)) fail('Invalid choice for ' + trial.task + ': ' + id);
       if (input.mode === 'phrase_walkthrough' && trial.phrase_id !== previousPhrase) sawLater = false;
       if (sawLater && trial.gate === 'earlier') fail('An earlier cut was answered after a later cut.');
       sawLater = sawLater || trial.gate === 'later';
@@ -238,10 +238,13 @@
 
   function aggregate(inputs, catalog) {
     const sessions = mergeSessions([], inputs, catalog), groups = new Map();
-    let nRatings = 0;
+    let nRatings = 0, nSkipped = 0;
     const notes = [];
     for (const session of sessions) for (const response of session.responses) {
       const trial = catalog.byId.get(response.trial_id);
+      if (response.note) notes.push({mode: session.mode, trial_id: response.trial_id, system: trial.system,
+        condition: trial.condition, gate: trial.gate, task: trial.task, phrase_number: trial.phrase_number, note: response.note});
+      if (response.choice === 'skipped') { nSkipped++; continue; }
       const priorResults = session.prior_results_viewed === undefined ? null : session.prior_results_viewed;
       const priorStimuli = session.prior_stimulus_exposure === undefined ? null : session.prior_stimulus_exposure;
       const phraseId = session.mode === 'phrase_walkthrough' ? trial.phrase_id : null;
@@ -257,8 +260,6 @@
       const group = groups.get(key);
       group.n_ratings++; group.counts[response.choice]++; nRatings++;
       group.sessions.add(session.session_id); group.phrases.add(trial.phrase_id); group.selections.add(session.selection_id);
-      if (response.note) notes.push({mode: session.mode, trial_id: response.trial_id, system: trial.system,
-        condition: trial.condition, gate: trial.gate, task: trial.task, phrase_number: trial.phrase_number, note: response.note});
     }
     const rows = Array.from(groups.values()).map(group => ({
       mode: group.mode, analysis_family: group.analysis_family, task: group.task,
@@ -270,9 +271,9 @@
       proportions: Object.fromEntries(Object.entries(group.counts).map(([key, n]) => [key, n / group.n_ratings]))
     })).sort((a, b) => [a.mode, a.analysis_family, a.task, a.system, a.condition, a.gate].join('|').localeCompare([b.mode, b.analysis_family, b.task, b.system, b.condition, b.gate].join('|')));
     return {build_id: catalog.build_id, review_context: CONTEXT, n_sessions: sessions.length,
-      n_sessions_with_responses: sessions.filter(s => s.responses.length).length,
+      n_sessions_with_responses: sessions.filter(s => s.responses.some(r => r.choice !== 'skipped')).length,
       n_completed_sessions: sessions.filter(s => s.completed_at).length,
-      n_ratings: nRatings, groups: rows, notes,
+      n_ratings: nRatings, n_skipped: nSkipped, groups: rows, notes,
       feedback: sessions.filter(s => s.feedback && Object.values(s.feedback).some(Boolean)).map(s => ({
         session_id: s.session_id, mode: s.mode, selection_id: s.selection_id, ...s.feedback
       }))};
@@ -324,13 +325,13 @@
     }
     container.replaceChildren();
     element('p', 'Compare the responses to the same phrase across speech and text. Differences and notes can help us decide which recordings or questions need another check.', container);
-    element('p', summary.n_ratings + ' ratings from ' + summary.n_sessions_with_responses + ' completed review' + (summary.n_sessions_with_responses === 1 ? '' : 's') + '. Percentages include Unsure.', container);
+    element('p', summary.n_ratings + ' ratings from ' + summary.n_completed_sessions + ' completed review' + (summary.n_completed_sessions === 1 ? '' : 's') + '. Percentages include Unsure.' + (summary.n_skipped ? ' Skipped versions are not counted as ratings.' : ''), container);
     const explanation = element('details');
     element('summary', 'How the counts are calculated', explanation);
     element('p', 'Hearing one version can affect how someone judges the next. Use these comparisons to prepare the participant pilot.', explanation);
     element('p', 'Each saved session is one completed review. One person may have created more than one session, so the session count is not a count of different people. We divide each response count by all ratings in that row, including Unsure, so uncertainty remains visible.', explanation);
     element('p', 'We keep earlier single-version reviews separate from reviews that compare several versions of each phrase, because the earlier listening can influence later answers. We also separate sessions that had already viewed phrases or results in this browser; exposure elsewhere cannot be recovered from these files.', explanation);
-    if (!summary.groups.length) element('p', 'Import completed reviews to see their responses here.', container);
+    if (!summary.groups.length) element('p', summary.n_completed_sessions ? 'No ratings were given. Any notes and feedback appear below.' : 'Import completed reviews to see their responses here.', container);
     for (const mode of MODES) {
       const modeRows = summary.groups.filter(row => row.mode === mode);
       if (!modeRows.length) continue;

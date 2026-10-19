@@ -8,12 +8,13 @@ or recordings before the recruited pilot. Three audio endings remain under revie
 
 1. Choose **Start preview**, or **Resume preview** to continue an unfinished
    review. For each phrase, the page shows original speech, all four TTS systems,
-   and gated text together. Answer each version, then continue to the longer cut
-   of that phrase. The longer words and audio remain hidden until the shorter
-   versions are answered.
+   and gated text together. Listen and answer selectively, then continue to the
+   longer cut of that phrase. Continue is always available; unanswered versions
+   are saved as skipped.
 2. Answer question projection or possible completion, with **Unsure** available.
-   Audio trials require playback to reach the end before continuing; this is a
-   preview interaction rule, not a settled participant-exclusion rule.
+   Playback and answers are optional throughout the collaborator preview,
+   including earlier lists and single-system walkthroughs. You can leave notes
+   without rating a clip. The recruited-participant study is unchanged.
 3. Punctuation versions appear in their own section for the two phrases that
    have them. Each phrase therefore has either 12 versions (six per cut) or
    28 versions (six main and eight punctuation versions per cut). The complete
@@ -49,10 +50,12 @@ After completing a review, choose **See results**. Import other completed JSON
 reviews to calculate combined summaries in the same browser. To analyse files
 without doing a review, open **Analyse downloaded reviews** in Study materials,
 or use `?view=results`. Counts and response
-percentages include Unsure in their denominators. The full-review results show
+percentages include Unsure in their denominators. Skipped versions are excluded
+from rating counts and percentages; their notes are retained. A review can
+finish with no ratings and still provide written feedback. The full-review results show
 each phrase separately, so differences between versions refer to the same words.
 Main and punctuation versions also remain separate. A full comparison produces
-one completed review containing 104 responses; results wait until it is finished.
+one completed review containing 104 rated-or-skipped records; results wait until it is finished.
 The page counts completed reviews, since it has no way to identify distinct people.
 
 Imports check the build, assigned sequence, valid responses and complete review.
@@ -67,7 +70,8 @@ Browser saving is specific to the origin and build. Reload and choose **Resume
 preview** to continue; walkthroughs resume from their selected set in Study
 materials. The simplified interface preserves the build ID, storage key, audio,
 text, reviews, drafts and imports. The response schema gains the additive mode
-`phrase_walkthrough` with selection `all_phrases_v1`; old exports still import.
+`phrase_walkthrough` with selection `all_phrases_v1`, and `choice: "skipped"`
+records unanswered versions without treating them as Unsure; old exports still import.
 Each cut's draft answers are held by stimulus ID and committed in their fixed
 order on Continue, allowing the cards to be answered in any order. Materials-view
 bookkeeping is stored outside exported sessions. Expanding the stimulus details

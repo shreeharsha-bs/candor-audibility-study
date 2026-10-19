@@ -99,6 +99,39 @@ test('validated complete imports retain Unsure in each row denominator', () => {
   assert.equal(earlier.n_sessions, 2);
 });
 
+test('skips import without becoming ratings or changing Unsure denominators', () => {
+  const skipped = session({session_id: 'with-skips', responses: [
+    {trial_id: 'q1', choice: 'skipped', note: 'Could not listen here', audio_started: false, audio_ended: false},
+    {trial_id: 'q2', choice: 'unsure', audio_started: true, audio_ended: false}
+  ]});
+  const imported = R.importJSON(JSON.stringify(skipped), catalog);
+  assert.deepEqual(imported, [skipped]);
+  const summary = R.aggregate([session(), ...imported], catalog);
+  assert.equal(summary.n_ratings, 3); assert.equal(summary.n_skipped, 1);
+  const early = summary.groups.find(row => row.gate === 'earlier');
+  assert.equal(early.n_ratings, 1); assert.equal(early.proportions.question, 1);
+  assert.equal(early.n_sessions, 1);
+  const later = summary.groups.find(row => row.gate === 'later');
+  assert.equal(later.n_ratings, 2); assert.equal(later.proportions.unsure, 0.5);
+  assert.equal(later.proportions.non_question, 0.5);
+  assert.ok(summary.groups.every(row => !Object.hasOwn(row.counts, 'skipped')));
+  assert.equal(summary.notes[0].note, 'Could not listen here');
+});
+
+test('all-skipped completed reviews retain notes and feedback with no percentage rows', () => {
+  const input = session({responses: [
+    {trial_id: 'q1', choice: 'skipped', note: 'A useful note'}, {trial_id: 'q2', choice: 'skipped'}
+  ], feedback: {instructions: 'Feedback without ratings'}});
+  const summary = R.aggregate([input], catalog);
+  assert.equal(summary.n_completed_sessions, 1); assert.equal(summary.n_sessions_with_responses, 0);
+  assert.equal(summary.n_ratings, 0); assert.equal(summary.n_skipped, 2);
+  assert.deepEqual(summary.groups, []); assert.equal(summary.notes.length, 1); assert.equal(summary.feedback.length, 1);
+  const rendered = renderSummary(summary).text;
+  assert.match(rendered, /0 ratings from 1 completed review/);
+  assert.match(rendered, /A useful note/); assert.match(rendered, /Feedback without ratings/);
+  assert.doesNotMatch(rendered, /NaN|Infinity|Import completed reviews to see/);
+});
+
 test('keep punctuation, tasks, gates and exposure modes separate', () => {
   const data = [session(), assigned({session_id: 'assigned'}),
     session({session_id: 'punct', selection_id: 'punctuation_f5_question', responses: [{trial_id: 'p1', choice: 'unsure'}]})];

@@ -23,12 +23,13 @@
   }
   function unfinished(mode,selection){return store.sessions.filter(s=>s.mode===mode&&!s.completed_at&&(!selection||s.selection_id===selection)).sort((a,b)=>(Date.parse(b.started_at)||0)-(Date.parse(a.started_at)||0)||store.sessions.indexOf(b)-store.sessions.indexOf(a))[0];}
   function idsFor(mode,selection){if(mode===phraseMode)return catalog.phraseReviewIds;if(mode==='assigned_list'){const x=listData.lists.find(l=>l.list_id===selection);if(!x)throw Error('Unknown list');return x.stimulus_ids;} const x=tracks.find(t=>t.id===selection);if(!x)throw Error('Unknown review set');return x.ids;}
-  function newSession(mode,selection){return {schema_version:1,build_id:manifest.build_id,review_context:'collaborator_preview',session_id:crypto.randomUUID(),mode,selection_id:selection,started_at:new Date().toISOString(),prior_results_viewed:!!store.resultsViewed,prior_stimulus_exposure:store.seenStimuli.length>0||store.sessions.some(s=>s.responses.length>0),responses:[]};}
+  function hasResponseExposure(session){return session.responses.some(r=>r.choice!=='skipped'||r.audio_started===true);}
+  function newSession(mode,selection){return {schema_version:1,build_id:manifest.build_id,review_context:'collaborator_preview',session_id:crypto.randomUUID(),mode,selection_id:selection,started_at:new Date().toISOString(),prior_results_viewed:!!store.resultsViewed,prior_stimulus_exposure:store.seenStimuli.length>0||store.sessions.some(hasResponseExposure),responses:[]};}
   function recordStimulusExposure(id){store.sessionExposure[current.session_id]=store.sessionExposure[current.session_id]||[];if(!store.sessionExposure[current.session_id].includes(id)){store.sessionExposure[current.session_id].push(id);if(!store.seenStimuli.includes(id))store.seenStimuli.push(id);persist();}}
   function recordExposure(){recordStimulusExposure(sequence[current.responses.length]);}
   function start(mode,selection){
     current=unfinished(mode,selection);
-    if(!current){current=newSession(mode,selection);store.sessions.push(current);}else{current.prior_results_viewed=!!current.prior_results_viewed||!!store.resultsViewed;current.prior_stimulus_exposure=!!current.prior_stimulus_exposure||!!store.materialsViewed||Object.entries(store.sessionExposure).some(([id,seen])=>id!==current.session_id&&seen.length>0)||store.sessions.some(s=>s.session_id!==current.session_id&&s.responses.length>0);}
+    if(!current){current=newSession(mode,selection);store.sessions.push(current);}else{current.prior_results_viewed=!!current.prior_results_viewed||!!store.resultsViewed;current.prior_stimulus_exposure=!!current.prior_stimulus_exposure||!!store.materialsViewed||Object.entries(store.sessionExposure).some(([id,seen])=>id!==current.session_id&&seen.length>0)||store.sessions.some(s=>s.session_id!==current.session_id&&hasResponseExposure(s));}
     sequence=idsFor(mode,selection);persist();showTrial();
   }
   function showHome(){route('home');panel('home');$('start-assigned').textContent=unfinished(requested?'assigned_list':phraseMode,requested||phraseSelection)?'Resume preview':'Start preview';$('saved-results').hidden=!store.sessions.some(s=>s.completed_at)&&!store.imports.length;}
@@ -36,19 +37,20 @@
   function showTrial(){
     if(current.responses.length===sequence.length){showFeedback();return;}
     if(current.mode===phraseMode){showPhrase();return;}
-    panel('trial');const t=trials.get(sequence[current.responses.length]);chosen=null;began=performance.now();started=false;ended=false;
+    panel('trial');const t=trials.get(sequence[current.responses.length]),draft=store.drafts[current.session_id]||{};chosen=draft.choice||null;began=performance.now();started=!!draft.audio_started;ended=!!draft.audio_ended;
     $('progress').textContent=`Item ${current.responses.length+1} of ${sequence.length}`;
     $('progress-bar').max=sequence.length;$('progress-bar').value=current.responses.length;
     const audio=$('audio');audio.removeAttribute('src');audio.load();audio.hidden=t.modality!=='audio';$('words').hidden=t.modality!=='text';$('words').textContent='';
     if(t.modality==='audio'){audio.src=t.audio_url;audio.load();}else{$('words').textContent=t.text;recordExposure();}
     $('task-question').textContent=t.task==='question_projection'?(t.modality==='audio'?'Does this sound like a question, or the beginning of one?':'Do these words suggest a question, or the beginning of one?'):(t.modality==='audio'?'Could the speaker reasonably finish here, or does more speech sound expected?':'Could the speaker reasonably finish after these words, or is more expected?');
-    $('choices').replaceChildren();for(const [value,label] of labels[t.task]){const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-pressed','false');b.onclick=()=>{chosen=value;for(const x of $('choices').children)x.setAttribute('aria-pressed',String(x===b));updateSave();};$('choices').append(b);}
-    $('clip-note').value=store.drafts[current.session_id]?.note||'';$('save-state').textContent=t.modality==='audio'?'Listen once before continuing.':'';updateSave();
+    $('choices').replaceChildren();for(const [value,label] of labels[t.task]){const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-pressed',String(chosen===value));b.onclick=()=>{chosen=value;for(const x of $('choices').children)x.setAttribute('aria-pressed',String(x===b));rememberTrial();};$('choices').append(b);}
+    $('clip-note').value=draft.note||'';$('save-state').textContent='Answers are optional.';updateSave();
   }
-  function updateSave(){const t=trials.get(sequence[current.responses.length]);$('save-next').disabled=!chosen||(t.modality==='audio'&&!ended);}
+  function updateSave(){$('save-next').disabled=false;}
+  function rememberTrial(){store.drafts[current.session_id]={choice:chosen,audio_started:started,audio_ended:ended,note:$('clip-note').value.slice(0,5000)};persist();updateSave();}
   function saveNext(){
-    const t=trials.get(sequence[current.responses.length]);if(!chosen||(t.modality==='audio'&&!ended))return;
-    current.responses.push({trial_id:t.trial_id,choice:chosen,order_index:current.responses.length,submitted_at:new Date().toISOString(),elapsed_ms:Math.round(performance.now()-began),audio_started:started,audio_ended:ended,note:$('clip-note').value.trim().slice(0,5000)});
+    const t=trials.get(sequence[current.responses.length]);
+    current.responses.push({trial_id:t.trial_id,choice:chosen||'skipped',order_index:current.responses.length,submitted_at:new Date().toISOString(),elapsed_ms:Math.round(performance.now()-began),audio_started:started,audio_ended:ended,note:$('clip-note').value.trim().slice(0,5000)});
     delete store.drafts[current.session_id];persist();showTrial();
   }
   function phraseDraft(id){
@@ -59,13 +61,13 @@
   function rememberPhrase(){
     const saved=persist();$('phrase-save-state').textContent=saved?'Saved on this device':'Browser saving unavailable';updatePhrase();
   }
-  function phraseReady(t){const d=phraseDraft(t.trial_id);return !!d.choice&&(t.modality==='text'||d.audio_ended===true);}
+  function phraseRated(t){return !!phraseDraft(t.trial_id).choice;}
   function updatePhrase(){
-    const ready=phraseRows.filter(phraseReady).length;
+    const ready=phraseRows.filter(phraseRated).length;
     $('phrase-rated').textContent=`${ready} of ${phraseRows.length} versions rated`;
     $('phrase-progress-bar').value=current.responses.length+ready;
-    $('phrase-next').disabled=ready!==phraseRows.length;
-    for(const t of phraseRows){const ui=phraseUIs.get(t.trial_id);if(ui)ui.status.textContent=phraseReady(t)?'Rated':t.modality==='audio'&&!phraseDraft(t.trial_id).audio_ended?'Listen, then choose an answer.':'Choose an answer.';}
+    $('phrase-next').disabled=false;
+    for(const t of phraseRows){const ui=phraseUIs.get(t.trial_id);if(ui)ui.status.textContent=phraseRated(t)?'Rated':'Answer optional';}
   }
   function showPhrase(){
     panel('phrase-trial');phraseUIs=new Map();
@@ -92,7 +94,7 @@
           const audio=element('audio',undefined,card);audio.controls=true;audio.preload='metadata';audio.src=t.audio_url;ui.audio=audio;
           audio.onplay=()=>{if(audio.paused)return;for(const other of phraseUIs.values())if(other.audio&&other.audio!==audio)other.audio.pause();draft.audio_started=true;recordStimulusExposure(t.trial_id);rememberPhrase();};
           audio.onended=()=>{draft.audio_started=true;draft.audio_ended=true;rememberPhrase();};
-          audio.onerror=()=>{if(!$('phrase-trial').hidden&&phraseUIs.get(t.trial_id)===ui)reportError('A recording could not play. Reload to retry; your saved answers will remain.');};
+          audio.onerror=()=>{if(!$('phrase-trial').hidden&&phraseUIs.get(t.trial_id)===ui)reportError('A recording could not play. You can continue without it, or reload to retry. Your saved answers will remain.');};
         }else{const words=element('p',t.text,card);words.className='words';recordStimulusExposure(t.trial_id);}
         const choices=element('div',undefined,card);choices.className='choices';
         for(const [value,label] of labels[t.task]){const b=element('button',label,choices);b.type='button';b.setAttribute('aria-pressed',String(draft.choice===value));b.onclick=()=>{draft.choice=value;draft.submitted_at=new Date().toISOString();draft.elapsed_ms=Math.round(performance.now()-rowBegan);for(const x of choices.children)x.setAttribute('aria-pressed',String(x===b));rememberPhrase();};}
@@ -105,8 +107,7 @@
     updatePhrase();
   }
   function savePhrase(){
-    if(!phraseRows.every(phraseReady))return;
-    for(const t of phraseRows){const draft=phraseDraft(t.trial_id);current.responses.push({trial_id:t.trial_id,choice:draft.choice,order_index:current.responses.length,submitted_at:draft.submitted_at,elapsed_ms:draft.elapsed_ms||0,audio_started:t.modality==='audio'&&!!draft.audio_started,audio_ended:t.modality==='audio'&&!!draft.audio_ended,note:(draft.note||'').trim()});}
+    for(const t of phraseRows){const draft=phraseDraft(t.trial_id);current.responses.push({trial_id:t.trial_id,choice:draft.choice||'skipped',order_index:current.responses.length,submitted_at:draft.submitted_at||new Date().toISOString(),elapsed_ms:draft.elapsed_ms||0,audio_started:t.modality==='audio'&&!!draft.audio_started,audio_ended:t.modality==='audio'&&!!draft.audio_ended,note:(draft.note||'').trim()});}
     delete store.drafts[current.session_id];persist();showTrial();
   }
   function showFeedback(){panel('feedback');const f=store.drafts[current.session_id]?.feedback||current.feedback||{};$('feedback-instructions').value=f.instructions||'';$('feedback-short').value=f.short_clips||'';$('feedback-technical').value=f.technical||'';}
@@ -142,8 +143,8 @@
     $('start-assigned').onclick=()=>start(requested?'assigned_list':phraseMode,requested||phraseSelection);$('start-track').onclick=()=>start('cut_walkthrough',$('track').value);$('save-next').onclick=saveNext;$('pause').onclick=()=>current.mode==='cut_walkthrough'?showMaterials():showHome();$('materials-home').onclick=showHome;
     $('resume-list').onclick=()=>{requested=$('legacy-list').value;route('home');start('assigned_list',requested);};
     $('phrase-next').onclick=savePhrase;$('phrase-pause').onclick=showHome;
-    $('audio').onplay=()=>{started=true;recordExposure();};$('audio').onended=()=>{ended=true;$('save-state').textContent='Ready to save your judgment.';updateSave();};$('audio').onerror=()=>{if(!$('trial').hidden&&$('audio').getAttribute('src'))reportError('This clip could not play. Check your connection and reload to resume. Your earlier answers are saved.');};
-    $('clip-note').oninput=()=>{store.drafts[current.session_id]={note:$('clip-note').value};persist();};
+    $('audio').onplay=()=>{started=true;recordExposure();rememberTrial();};$('audio').onended=()=>{started=true;ended=true;rememberTrial();};$('audio').onerror=()=>{if(!$('trial').hidden&&$('audio').getAttribute('src'))reportError('This clip could not play. You can continue without it, or reload to retry. Your earlier answers are saved.');};
+    $('clip-note').oninput=rememberTrial;
     for(const id of ['feedback-instructions','feedback-short','feedback-technical'])$(id).oninput=()=>{store.drafts[current.session_id]={feedback:feedback()};persist();};
     $('finish').onclick=finish;$('download-current').onclick=()=>download(current,'candor-review-'+current.session_id+'.json');$('show-results').onclick=showResults;$('saved-results').onclick=showResults;$('home-button').onclick=showHome;$('results-home').onclick=showHome;$('imports').onchange=importFiles;$('download-all').onclick=()=>download({schema_version:1,build_id:manifest.build_id,review_context:'collaborator_preview',sessions:loaded()},'candor-loaded-reviews.json');
     $('analyse-files').onclick=()=>showResults(true);
