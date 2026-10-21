@@ -1,5 +1,14 @@
 # CANDOR Audio Judgment Study
 
+## 40-phrase study preview
+
+[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
+Each preview follows a complete 40-phrase assignment. Recordings still in
+preparation are marked clearly. Responses stay in the reviewer's browser and can
+be downloaded at the end; this page does not collect recruited-participant data.
+The earlier [colleague walkthrough](https://shreeharsha-bs.github.io/candor-audibility-study/review/)
+and its saved review formats remain available.
+
 ## Current collaborator preview — October 19, 2026
 
 **[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
