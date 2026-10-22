@@ -2,14 +2,21 @@
 
 ## 40-phrase study preview
 
-[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
-Each preview follows a complete 40-phrase assignment. Recordings still in
-preparation are marked clearly. Responses stay in the reviewer's browser and can
-be downloaded at the end; this page does not collect recruited-participant data.
-The earlier [colleague walkthrough](https://shreeharsha-bs.github.io/candor-audibility-study/review/)
-and its saved review formats remain available.
+[Open all phrases and versions](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials),
+or [try the participant task](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
 
-## Current collaborator preview — October 19, 2026
+The complete preview includes 40 phrases, two partial cuts and the full target:
+1,272 audio presentations and 120 matching text presentations. The question task
+includes neutral, period and question-mark synthesis from four systems; the
+possible-completion task uses neutral synthesis. The materials view starts with
+the shorter cuts and lets colleagues select any phrase and version.
+
+Answers and notes stay in the reviewer's browser and can be downloaded. These
+are provisional materials for colleague feedback; recruited-participant data
+collection has not started. Existing recordings, earlier reviews and their
+storage formats remain available in the historical walkthrough below.
+
+## Earlier six-phrase walkthrough — October 19, 2026
 
 **[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
 

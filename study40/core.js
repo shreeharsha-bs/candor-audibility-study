@@ -5,6 +5,12 @@
   const OPTIONS={question_projection:[['question','Yes'],['non_question','No'],['unsure','Unsure']],possible_completion:[['could_finish_here','Could finish here'],['more_speech_expected','More speech expected'],['unsure','Unsure']]};
   const copy=value=>JSON.parse(JSON.stringify(value));
   const identity=ids=>[ids.PROLIFIC_PID,ids.STUDY_ID,ids.SESSION_ID].join('::');
+  function materialExposure(raw,at){
+    let value;try{value=typeof raw==='string'?JSON.parse(raw):raw;}catch(_){return {scope:'this_browser_and_site_only',observed_at:at,readable:false,presentations:{}};}
+    const presentations={};
+    for(const [id,time]of Object.entries(value?.presentations||{}))if(/^p_[a-f0-9]+$/.test(id)&&typeof time==='string'&&Number.isFinite(Date.parse(time)))presentations[id]=time;
+    return {scope:'this_browser_and_site_only',observed_at:at,readable:true,presentations};
+  }
   function question(task,modality){
     if(task==='question_projection')return modality==='audio'?'Does this sound like someone asking a question, or starting to ask one?':'Do these words suggest someone asking a question, or starting to ask one?';
     return modality==='audio'?'At this point, could the speaker reasonably finish, or does more speech sound expected?':'At this point, could the speaker reasonably finish, or do more words seem expected?';
@@ -17,7 +23,7 @@
       if(row.ready){
         if(!row.input_fingerprint)throw Error('A study item is missing its content identity.');
         if(row.modality==='text'&&(typeof row.text!=='string'||!row.text||/[.?!,;:]/.test(row.text)))throw Error('The text item must contain unpunctuated words.');
-        if(row.modality==='audio'&&(typeof row.audio_url!=='string'||!/^(?:https:\/\/shreeharsha-bs\.github\.io\/candor-audibility-study\/study40\/)?audio\/p_[a-f0-9]+\.wav$/.test(row.audio_url)))throw Error('An audio item has an invalid filename.');
+        if(row.modality==='audio'&&(typeof row.audio_url!=='string'||!/^(?:https:\/\/shreeharsha-bs\.github\.io\/candor-audibility-study\/study40\/)?audio\/p_[a-f0-9]+(?:_[a-f0-9]{12})?\.wav$/.test(row.audio_url)))throw Error('An audio item has an invalid filename.');
       }
     }
     for(const cohort of data.cohorts){
@@ -122,5 +128,5 @@
     if(record.technical_problem?record.answer!==null:!OPTIONS[row.task].some(([v])=>v===record.answer))throw Error('Invalid response value.');
     return true;
   }
-  return {STORAGE_PREFIX,TASKS,OPTIONS,identity,question,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
+  return {STORAGE_PREFIX,TASKS,OPTIONS,identity,materialExposure,question,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
 });

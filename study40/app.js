@@ -28,6 +28,14 @@
     }
     const registry=C.claim(oldRegistry,a,now());
     let state=C.prepareState(JSON.parse(storage.getItem(key)||'null'),a,now()),busy=false,player=null,dirtyTimer=null,previewEntered=live||config.host==='cognition';
+    const observeMaterials=stage=>{
+      if(live)return;
+      const observation=C.materialExposure(storage.getItem('candor_study40_materials_exposure_v1'),now());
+      state.material_exposure_observations=state.material_exposure_observations||{};
+      state.material_exposure_observations[stage]=observation;
+      if(stage==='before_start')state.prior_material_exposure=observation;
+    };
+    if(!live){observeMaterials('latest_resume');if(!state.preview_started&&!state.responses.length)observeMaterials('before_start');}
     if(live){
       if(!adapter?.validateSession)throw Error('This study is not open yet. Please return to your invitation.');
       const validation=await adapter.validateSession({assignment:a,completed:state.status==='completed'});
@@ -40,6 +48,7 @@
     function showError(message){const old=container.querySelector('[role="alert"]');if(old)old.remove();container.prepend(el('p',message,{role:'alert',class:'error'}));}
     function page(title){stop();container.replaceChildren();container.append(el('p',live?'Speech continuation study':'Speech continuation user study preview',{class:'eyebrow'}),el('h1',title));}
     function continueButton(label,fn){container.append(button(label,async()=>{if(busy)return;busy=true;try{await fn();}catch(e){showError(e.message);}finally{busy=false;}},true));}
+    function materialsLink(){if(live||config.host==='cognition')return;const footer=el('footer'),url=new URL(location.href);url.searchParams.set('view','materials');footer.append(el('a','View all phrases and versions',{href:url.href}));container.append(footer);}
     async function record(value){
       state.pending_record=value;save();
       try{if(adapter?.record)await adapter.record(value);}catch(e){render();throw e;}
@@ -112,17 +121,17 @@
     function end(){
       page('One last thing');container.append(el('p','Was anything unclear, too short to judge, or difficult to use? Your comments are optional.'));
       const textarea=el('textarea',undefined,{rows:'4','aria-label':'Final feedback'});textarea.value=state.feedback||'';textarea.oninput=()=>{state.feedback=textarea.value;save();};container.append(textarea);
-      continueButton('Finish',async()=>{const value=C.finish(state,textarea.value,now());save();if(adapter?.complete)await adapter.complete(value);else{C.acknowledge(state,{acknowledged:true,storage:'local_preview'},now());save();render();}});
+      continueButton('Finish',async()=>{observeMaterials('at_completion');const value=C.finish(state,textarea.value,now());if(!live)value.material_exposure_observations=state.material_exposure_observations;save();if(adapter?.complete)await adapter.complete(value);else{C.acknowledge(state,{acknowledged:true,storage:'local_preview'},now());save();render();}});
     }
     function render(){
       if(state.pending_record){page('Save your response');container.append(el('p','Your response is kept on this device. Please try saving it again to continue.'));continueButton('Try again',()=>record(state.pending_record));return;}
       if(state.status==='declined'){page('Thank you');container.append(el('p','You have chosen not to take part. You can close this page.'));return;}
-      if(state.status==='completed'){page('Thank you');container.append(el('p',live?'Your responses have been saved.':'Your preview responses have been saved on this device.'));if(!live)container.append(button('Download preview responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));return;}
+      if(state.status==='completed'){page('Thank you');container.append(el('p',live?'Your responses have been saved.':'Your preview responses have been saved on this device.'));if(!live)container.append(button('Download preview responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
       if(state.status==='awaiting_save'){page('Saving your responses');container.append(el('p','Please keep this page open while your responses are saved.'));return;}
       if(!live&&!previewEntered){
         page('Speech continuation user study preview');container.querySelector('.eyebrow').hidden=true;
-        container.append(el('p',`This preview has 40 excerpts. ${a.trials.filter(r=>r.ready).length} are ready to try; the others are still being prepared.`));
-        continueButton(state.preview_started?'Resume preview':'Start preview',()=>{previewEntered=true;state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});return;
+        if(a.trials.some(r=>!r.ready))container.append(el('p',`This preview has 40 excerpts. ${a.trials.filter(r=>r.ready).length} are ready to try; the others are still being prepared.`));
+        continueButton(state.preview_started?'Resume preview':'Start preview',()=>{previewEntered=true;observeMaterials(state.preview_started?'latest_resume':'before_start');state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});materialsLink();return;
       }
       if(!state.consent?.accepted){consent();return;}if(!state.hearing||(live&&state.headphones!==true)){hearing();return;}
       const row=C.current(state);if(!row){end();return;}
@@ -137,6 +146,10 @@
     const container=document.getElementById('study');
     try{const [data,config]=await Promise.all(['manifest.json','config.json'].map(async path=>{const r=await fetch(path);if(!r.ok)throw Error('The study could not load. Please try again.');return r.json();}));
       if(config.mode==='live')throw Error('Please open the study using your participant invitation.');
+      if(new URLSearchParams(location.search).get('view')==='materials'){
+        const response=await fetch('materials.json');if(!response.ok)throw Error('The phrase collection could not load. Please try again.');
+        C.catalog(data);await root.Study40Materials.mount({container,data,materials:await response.json()});return;
+      }
       await mount({container,data,config});
     }catch(e){container.replaceChildren(el('h1','Study unavailable'),el('p',e.message,{role:'alert'}));}
   }
