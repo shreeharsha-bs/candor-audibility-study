@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "build_id": "b_5ddba4ad0d579865b9b3d9ac",
+  "build_id": "b_c3b2bc2b17726130c304e881",
   "purpose": "colleague_materials_preview",
   "phrases": [
     {
@@ -4885,27 +4885,18 @@
     }
   ],
   "preparation_notes": {
-    "p_f69de3b36d45aceed3cbd0be": "Please check the pronunciation of D.C. near the end.",
-    "p_5962b07ef63a8189981544df": "Please check the pronunciation of D.C. near the end.",
-    "p_8e9ad9faa03e95b7315e375f": "Please check whether the word before 'before adulthood' sounds like 'like' or 'but'.",
-    "p_8cf84853866cd6806f2453c3": "Please check whether the word before 'before adulthood' sounds like 'like' or 'but'.",
-    "p_e7404142de1d080d112cc64d": "Please check the repeated 'to' near 'live there'.",
-    "p_923721ce951f351eebf4ffad": "Please check the repeated 'to' near 'live there'.",
-    "p_cb8e9cd033c8dd6e0e9eb499": "Please check the repeated 'to' near 'live there'.",
-    "p_961ceb14e080e26411a01f14": "Please check the repeated 'to' near 'live there'.",
-    "p_1eb69b2bd49383c581d4c9b3": "Please check the repeated 'to' near 'live there'.",
-    "p_32f6d96480c6c0387f1afd36": "Please check the repeated 'to' near 'live there'.",
-    "p_452f466acd8fcf759eb6e842": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_bf1e2f0b04e3817a7279f551": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_22f91ef14a6ac27083f66ad2": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_473ceb4ed50bfa09355702ab": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_c77154100d32c3e95a29ec85": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_6dc8199aa1bab822c798231a": "Check the short false start before 'to Atlantic City'; it may sound like the letter T.",
-    "p_8e8037b20b5ed83e43d62195": "Please check whether 'and' is present before 'it's like ridiculous'.",
-    "p_d54758724478de6ae7417c09": "Please check the opening words 'uh, it, I'.",
-    "p_0c9e62aa00ad50814f4e5da1": "Please check the opening words 'uh, it, I'.",
-    "p_6ce39e53377718dc61726d95": "Please check the opening words 'uh, it, I'.",
-    "p_20039950ed305b9547268234": "Please check that the final word 'right' is audible."
+    "p_e7404142de1d080d112cc64d": "Kept unchanged after listening review of the repeated 'to'.",
+    "p_923721ce951f351eebf4ffad": "Kept unchanged after listening review of the repeated 'to'.",
+    "p_452f466acd8fcf759eb6e842": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_bf1e2f0b04e3817a7279f551": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_22f91ef14a6ac27083f66ad2": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_473ceb4ed50bfa09355702ab": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_c77154100d32c3e95a29ec85": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_6dc8199aa1bab822c798231a": "Kept unchanged: the interrupted 't-' can sound like the letter T.",
+    "p_20039950ed305b9547268234": "Kept unchanged: the reviewer heard 'Yeah, I know it' rather than 'Yeah, I know, right'.",
+    "p_f69de3b36d45aceed3cbd0be": "Replacement for the D.C. pronunciation. Please check the ending.",
+    "p_5962b07ef63a8189981544df": "Replacement for the D.C. pronunciation. Please check the ending.",
+    "p_1618aa9773d801a41def8f8f": "Replacement for the D.C. pronunciation. Please check the ending."
   },
   "total_presentations": 1392,
   "ready_presentations": 1392

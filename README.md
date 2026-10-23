@@ -5,6 +5,8 @@
 [Open all phrases and versions](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials),
 or [try the participant task](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
 
+**October 23 update:** phrase 1’s CosyVoice2 recordings use `D C` to correct the acronym pronunciation in all three synthesis conditions. Their cuts were rebuilt; F5 audio remains unchanged. Earlier audio URLs and saved reviews remain available.
+
 The complete preview includes 40 phrases, two partial cuts and the full target:
 1,272 audio presentations and 120 matching text presentations. The question task
 includes neutral, period and question-mark synthesis from four systems; the
