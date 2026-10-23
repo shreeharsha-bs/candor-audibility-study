@@ -73,10 +73,16 @@
       continueButton('Continue',()=>{if(!select.value)throw Error('Please choose an answer about your hearing.');state.hearing=select.value;state.headphones=head.checked;save();if(live&&!head.checked)throw Error('Please use headphones and confirm the checkbox before continuing.');render();});
     }
     function instructions(row){
-      page(row.task==='question_projection'?'Questions':'Finishing a phrase');
+      page(row.task==='question_projection'?'Questions':'How the speaker will continue');
       container.append(el('p','You will hear or read short excerpts from conversations. An excerpt may contain only part of what someone said. Answer from what you hear or read.'));
-      container.append(el('p',row.task==='question_projection'?'Decide whether the speaker seems to be asking a question, or starting to ask one.':'Decide whether the speaker could reasonably finish at that point, or whether more speech seems expected.'));
-      container.append(el('p','Choose Unsure if you cannot tell. You can replay the audio.'));
+      if(row.task==='question_projection')container.append(el('p','Decide whether the speaker seems to be asking a question, or starting to ask one.'));
+      else{
+        container.append(el('p','Predict whether the speaker will finish the current sentence and stop, or finish it and continue with another thought.'));
+        const example=el('div',undefined,{class:'instruction-example'});
+        example.append(el('p','For example, you might hear “The last film I watched…”'),el('p','One possibility is “The last film I watched was a comedy,” followed by the speaker stopping.'),el('p','Another is “The last film I watched was a comedy. I really liked the ending.”'));
+        container.append(example,el('p','Some items contain the full phrase. For those separate checks, judge whether you expect the speaker to stop there or continue with another thought.'));
+      }
+      container.append(el('p','Choose the answer that best matches your expectation. You can replay the audio.'));
       continueButton('Begin',()=>{state.instructions_seen.push(row.task);save();render();});
     }
     function breakPage(row){
@@ -87,6 +93,7 @@
       page('');container.querySelector('h1').remove();
       const draft=C.startTrial(state,now());save();
       container.append(el('p',`Item ${state.responses.length+1} of ${a.trials.length}`,{class:'progress'}));
+      if(row.task==='possible_completion'&&C.context(row)==='full_target_check')container.append(el('p','Full phrase check',{class:'assessment-label'}));
       if(row.modality==='audio'){
         player=el('audio',undefined,{controls:'',preload:'auto','aria-label':'Conversation excerpt'});player.src=row.audio_url;container.append(player);
         const media=player;
@@ -100,13 +107,13 @@
         media.onerror=()=>{draft.playback_errors.push({at:now(),code:media.error?.code||null});playbackEvent('error');showError('The audio could not play. You can try again or choose Report a technical problem.');};
         const replay=button('Replay',()=>{media.currentTime=0;const p=media.play();if(p?.catch)p.catch(()=>showError('Use the audio player to try playing the excerpt.'));});replay.className='secondary';container.append(replay);
       }else container.append(el('p',row.text,{class:'words'}));
-      container.append(el('h2',C.question(row.task,row.modality)));
+      container.append(el('h2',C.question(row.task,row.modality,C.context(row))));
       const choices=el('div',undefined,{class:'answers',role:'group','aria-label':'Your answer'});
       const technical=el('details'),summary=el('summary','Report a technical problem'),problem=el('select',undefined,{'aria-label':'Technical problem'});
       for(const [value,text]of [['','Choose a problem'],['audio_load','Audio did not load'],['audio_playback','Audio would not play'],['display','The excerpt did not display'],['other','Another technical problem']])problem.append(el('option',text,{value}));
       technical.append(summary,problem);technical.open=Boolean(draft.technical_problem);problem.value=draft.technical_problem||'';
       const updateChoice=()=>{for(const child of choices.children)child.setAttribute('aria-pressed',String(child.dataset.value===draft.answer));};
-      for(const [value,label]of C.OPTIONS[row.task]){const b=button(label,()=>{draft.answer=value;draft.technical_problem=null;problem.value='';technical.open=false;updateChoice();save();});b.dataset.value=value;choices.append(b);}updateChoice();
+      for(const [value,label]of C.options(row)){const b=button(label,()=>{draft.answer=value;draft.technical_problem=null;problem.value='';technical.open=false;updateChoice();save();});b.dataset.value=value;choices.append(b);}updateChoice();
       problem.onchange=()=>{draft.technical_problem=problem.value||null;if(problem.value)draft.answer=null;updateChoice();save();};
       container.append(choices,technical);
       const noteLabel=el('label','Note (optional)',{for:'note'}),note=el('textarea',undefined,{id:'note',rows:'2'});note.value=draft.note;note.oninput=()=>{draft.note=note.value;save();};noteLabel.append(note);container.append(noteLabel);
@@ -130,7 +137,7 @@
       if(state.status==='awaiting_save'){page('Saving your responses');container.append(el('p','Please keep this page open while your responses are saved.'));return;}
       if(!live&&!previewEntered){
         page('Speech continuation user study preview');container.querySelector('.eyebrow').hidden=true;
-        if(a.trials.some(r=>!r.ready))container.append(el('p',`This preview has 40 excerpts. ${a.trials.filter(r=>r.ready).length} are ready to try; the others are still being prepared.`));
+        if(a.trials.some(r=>!r.ready))container.append(el('p',`This preview has ${a.trials.length} excerpts. ${a.trials.filter(r=>r.ready).length} are ready to try; the others are still being prepared.`));
         continueButton(state.preview_started?'Resume preview':'Start preview',()=>{previewEntered=true;observeMaterials(state.preview_started?'latest_resume':'before_start');state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});materialsLink();return;
       }
       if(!state.consent?.accepted){consent();return;}if(!state.hearing||(live&&state.headphones!==true)){hearing();return;}

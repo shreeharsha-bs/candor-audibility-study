@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "build_id": "b_c3b2bc2b17726130c304e881",
+  "build_id": "b_fe245126d8541c0a60f8e310",
   "purpose": "colleague_materials_preview",
   "phrases": [
     {
@@ -3862,152 +3862,6 @@
       ]
     },
     {
-      "phrase_number": 34,
-      "task": "question_projection",
-      "versions": [
-        {
-          "version_index": 0,
-          "label": "Text",
-          "modality": "text",
-          "cuts": {
-            "early": "p_ecbe6b7387ed2c86efc36d5e",
-            "late": "p_a5277e526cacaa58f95c2508",
-            "full": "p_2aa9517c086d1d554a47c6e1"
-          }
-        },
-        {
-          "version_index": 1,
-          "label": "Original",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_f623229ca09518e3d156fa31",
-            "late": "p_d07ffd1ae7b7831c14399e2f",
-            "full": "p_313dd88495a145d1e175a237"
-          }
-        },
-        {
-          "version_index": 2,
-          "label": "OmniVoice · Neutral",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_204e99490941693766791d33",
-            "late": "p_1fa4e6a15c9a286904ff0971",
-            "full": "p_b1aacf420056ad36cb1a94cd"
-          }
-        },
-        {
-          "version_index": 3,
-          "label": "F5-TTS · Neutral",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_95a7f0b3d7750baf9117461b",
-            "late": "p_ef20c0cfbbc5927a690a2d13",
-            "full": "p_e55a559de29ff5cf05f56b5f"
-          }
-        },
-        {
-          "version_index": 4,
-          "label": "CosyVoice2 · Neutral",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_4fc6e273d0ac9c69d5864e78",
-            "late": "p_c207c7f0f9064dce8481ff41",
-            "full": "p_6b343b0c4bfec8388997f380"
-          }
-        },
-        {
-          "version_index": 5,
-          "label": "Qwen3-TTS · Neutral",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_f08e9cfb93e321eaf8f93fbc",
-            "late": "p_cf76d64f477c6529b7c48910",
-            "full": "p_f857f634be5dc99f2837778a"
-          }
-        },
-        {
-          "version_index": 6,
-          "label": "OmniVoice · Period",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_f24dfffd1d1700e6b6d3fac9",
-            "late": "p_4e3d73a3af74f573f3c34108",
-            "full": "p_c3e9b931e22429e6b6176148"
-          }
-        },
-        {
-          "version_index": 7,
-          "label": "F5-TTS · Period",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_7195f6ea5cffeee0d03376d2",
-            "late": "p_9d7846cbbd61112a5cb804bf",
-            "full": "p_0ce7df1541403ef95a9099b5"
-          }
-        },
-        {
-          "version_index": 8,
-          "label": "CosyVoice2 · Period",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_294fa25896011b22bf09307a",
-            "late": "p_089179756a2e356cdf8e4cbd",
-            "full": "p_25b2660220adccacdcb20714"
-          }
-        },
-        {
-          "version_index": 9,
-          "label": "Qwen3-TTS · Period",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_a90a50301031f824344f14d5",
-            "late": "p_db8efdd2939c6407fe585816",
-            "full": "p_b58a9acc31937264b9e64db6"
-          }
-        },
-        {
-          "version_index": 10,
-          "label": "OmniVoice · Question mark",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_096f27d9402648a750d46ebb",
-            "late": "p_f76ec52615502c580eaf3210",
-            "full": "p_8abbca3d3b44d401da97480c"
-          }
-        },
-        {
-          "version_index": 11,
-          "label": "F5-TTS · Question mark",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_f2f31ead394f1013a5c27359",
-            "late": "p_5f1912112b763b14df588670",
-            "full": "p_0872524d8dfd8e6bc4d809c7"
-          }
-        },
-        {
-          "version_index": 12,
-          "label": "CosyVoice2 · Question mark",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_d0a3d08581f349dda3daf596",
-            "late": "p_4bc696ed5da131b86b7a69e5",
-            "full": "p_ac048be7cd2f400b097c10e9"
-          }
-        },
-        {
-          "version_index": 13,
-          "label": "Qwen3-TTS · Question mark",
-          "modality": "audio",
-          "cuts": {
-            "early": "p_29bc7b15ca0828efdeff13a1",
-            "late": "p_6067ebe0450ac0d245e836ef",
-            "full": "p_72e93d05d95a5dba5e2d1439"
-          }
-        }
-      ]
-    },
-    {
       "phrase_number": 35,
       "task": "question_projection",
       "versions": [
@@ -4898,6 +4752,6 @@
     "p_5962b07ef63a8189981544df": "Replacement for the D.C. pronunciation. Please check the ending.",
     "p_1618aa9773d801a41def8f8f": "Replacement for the D.C. pronunciation. Please check the ending."
   },
-  "total_presentations": 1392,
-  "ready_presentations": 1392
+  "total_presentations": 1350,
+  "ready_presentations": 1350
 }

@@ -1,17 +1,23 @@
 # CANDOR Audio Judgment Study
 
-## 40-phrase study preview
+## 39-phrase study preview
 
 [Open all phrases and versions](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials),
 or [try the participant task](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
 
 **October 23 update:** phrase 1’s CosyVoice2 recordings use `D C` to correct the acronym pronunciation in all three synthesis conditions. Their cuts were rebuilt; F5 audio remains unchanged. Earlier audio URLs and saved reviews remain available.
 
-The complete preview includes 40 phrases, two partial cuts and the full target:
-1,272 audio presentations and 120 matching text presentations. The question task
+The current preview includes 39 phrases, two partial cuts and the full target:
+1,233 audio presentations and 117 matching text presentations. Phrase #34 has
+been excluded; the other phrase numbers and all earlier audio remain unchanged. The question task
 includes neutral, period and question-mark synthesis from four systems; the
-possible-completion task uses neutral synthesis. The materials view starts with
+turn-extent task uses neutral synthesis. The materials view starts with
 the shorter cuts and lets colleagues select any phrase and version.
+
+Partial cuts ask whether the speaker will finish the current sentence and stop,
+or continue with another thought. Full clips provide a separate check at the end of the reviewed phrase. Both tasks have two answer choices. Earlier responses remain downloadable
+under their original questions; new answers are saved with their question version
+and partial/full context.
 
 Answers and notes stay in the reviewer's browser and can be downloaded. These
 are provisional materials for colleague feedback; recruited-participant data

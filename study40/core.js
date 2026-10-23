@@ -2,7 +2,11 @@
   'use strict';
   const STORAGE_PREFIX='candor_study40_v1';
   const TASKS=['question_projection','possible_completion'];
-  const OPTIONS={question_projection:[['question','Yes'],['non_question','No'],['unsure','Unsure']],possible_completion:[['could_finish_here','Could finish here'],['more_speech_expected','More speech expected'],['unsure','Unsure']]};
+  const OPTIONS={question_projection:[['question','Yes'],['non_question','No']],possible_completion:[['stop_after_sentence','Finish this sentence and stop speaking'],['continue_after_sentence','Finish this sentence and continue with another thought']]};
+  const FULL_OPTIONS=[['stop_after_sentence','Stop speaking'],['continue_after_sentence','Continue with another thought']];
+  const protocol=row=>row.response_protocol||(row.task==='possible_completion'?'turn_extent_v1':'binary_question_v1');
+  const context=row=>row.assessment_context||'partial_prediction';
+  const options=row=>row.task==='possible_completion'&&context(row)==='full_target_check'?FULL_OPTIONS:OPTIONS[row.task];
   const copy=value=>JSON.parse(JSON.stringify(value));
   const identity=ids=>[ids.PROLIFIC_PID,ids.STUDY_ID,ids.SESSION_ID].join('::');
   function materialExposure(raw,at){
@@ -11,15 +15,17 @@
     for(const [id,time]of Object.entries(value?.presentations||{}))if(/^p_[a-f0-9]+$/.test(id)&&typeof time==='string'&&Number.isFinite(Date.parse(time)))presentations[id]=time;
     return {scope:'this_browser_and_site_only',observed_at:at,readable:true,presentations};
   }
-  function question(task,modality){
+  function question(task,modality,assessmentContext='partial_prediction'){
     if(task==='question_projection')return modality==='audio'?'Does this sound like someone asking a question, or starting to ask one?':'Do these words suggest someone asking a question, or starting to ask one?';
-    return modality==='audio'?'At this point, could the speaker reasonably finish, or does more speech sound expected?':'At this point, could the speaker reasonably finish, or do more words seem expected?';
+    return assessmentContext==='full_target_check'?'Do you expect the speaker to stop here or continue with another thought?':'How do you expect the speaker to continue?';
   }
   function catalog(data){
     if(data.schema_version!==1||!data.build_id||!Array.isArray(data.cohorts)||!data.presentations)throw Error('Study materials could not be read.');
     const lists=new Map(),presentations=new Map(Object.entries(data.presentations));
     for(const [id,row] of presentations){
       if(row.presentation_id!==id||!TASKS.includes(row.task)||!['audio','text'].includes(row.modality)||typeof row.ready!=='boolean')throw Error('A study item has an invalid identity.');
+      if(row.assessment_context!==undefined&&!['partial_prediction','full_target_check'].includes(row.assessment_context))throw Error('A study item has an invalid assessment context.');
+      if(row.response_protocol!==undefined&&row.response_protocol!==(row.task==='possible_completion'?'turn_extent_v1':'binary_question_v1'))throw Error('A study item has an invalid question version.');
       if(row.ready){
         if(!row.input_fingerprint)throw Error('A study item is missing its content identity.');
         if(row.modality==='text'&&(typeof row.text!=='string'||!row.text||/[.?!,;:]/.test(row.text)))throw Error('The text item must contain unpunctuated words.');
@@ -41,7 +47,8 @@
             trials.push({...trial,...row,block_index:block.block_index});
           }
         }
-        if(trials.length!==40||new Set(trials.map(t=>t.presentation_id)).size!==40||trials.filter(t=>t.task==='question_projection').length!==28||trials.filter(t=>t.task==='possible_completion').length!==12||new Set(list.blocks.map(b=>b.task)).size!==2)throw Error('A study list must have 28 question and 12 completion items.');
+        const total=data.active_phrase_count||40,counts=data.task_counts||{question_projection:28,possible_completion:12};
+        if(trials.length!==total||new Set(trials.map(t=>t.presentation_id)).size!==total||TASKS.some(task=>trials.filter(t=>t.task===task).length!==counts[task])||new Set(list.blocks.map(b=>b.task)).size!==2)throw Error('A study list does not match the active phrase collection.');
         lists.set(list.list_id,{...list,cohort_id:cohort.cohort_id,trials});
       }
     }
@@ -93,10 +100,10 @@
     if(!row.ready)throw Error('This preview item is not available for a judgment.');
     if(draft.technical_problem){
       if(!['audio_load','audio_playback','display','other'].includes(draft.technical_problem)||draft.answer!==null)throw Error('A technical problem must be recorded separately from an answer.');
-    }else if(!OPTIONS[row.task].some(([value])=>value===draft.answer))throw Error('Please choose an answer, or report a technical problem.');
+    }else if(!options(row).some(([value])=>value===draft.answer))throw Error('Please choose an answer, or report a technical problem.');
     const duration=Date.parse(now)-Date.parse(draft.started_at);
     if(!Number.isFinite(duration)||duration<0)throw Error('Response timing could not be recorded. Please try again.');
-    const record={schema_version:1,record_type:'judgment',response_id:identity(s.assignment.ids)+'::'+row.presentation_id,...copy(s.assignment.ids),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,condition_number:s.assignment.condition_number,run_mode:s.assignment.mode,trial_id:row.presentation_id,presentation_id:row.presentation_id,trial_index:s.responses.length+1,presented_trial_index:s.responses.length+1,scheduled_trial_index:row.trial_index,block_index:row.block_index,task:row.task,modality:row.modality,input_fingerprint:row.input_fingerprint,...copy(draft),responded_at:now,response_time_ms:duration,hearing:s.hearing,headphones:s.headphones,consent_at:s.consent?.at||null};
+    const record={schema_version:1,record_type:'judgment',response_id:identity(s.assignment.ids)+'::'+row.presentation_id,...copy(s.assignment.ids),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,condition_number:s.assignment.condition_number,run_mode:s.assignment.mode,trial_id:row.presentation_id,presentation_id:row.presentation_id,trial_index:s.responses.length+1,presented_trial_index:s.responses.length+1,scheduled_trial_index:row.trial_index,block_index:row.block_index,task:row.task,modality:row.modality,input_fingerprint:row.input_fingerprint,...copy(draft),assessment_context:context(row),response_protocol:protocol(row),responded_at:now,response_time_ms:duration,hearing:s.hearing,headphones:s.headphones,consent_at:s.consent?.at||null};
     s.responses.push(record);s.draft=null;return record;
   }
   function skipUnavailable(s,now){
@@ -123,10 +130,10 @@
   function validateServerEnvelope(record,assignment,seen){
     if(identity(record)!==identity(assignment.ids)||record.build_id!==assignment.build_id||record.cohort_id!==assignment.cohort_id||record.list_id!==assignment.list_id)throw Error('Response assignment mismatch.');
     const row=assignment.trials[(record.presented_trial_index||record.trial_index)-1];
-    if(!row||row.presentation_id!==record.presentation_id||row.input_fingerprint!==record.input_fingerprint||row.task!==record.task||row.modality!==record.modality)throw Error('Response item mismatch.');
+    if(!row||row.presentation_id!==record.presentation_id||row.input_fingerprint!==record.input_fingerprint||row.task!==record.task||row.modality!==record.modality||record.assessment_context!==context(row)||record.response_protocol!==protocol(row))throw Error('Response item mismatch.');
     if(seen?.has(record.response_id))throw Error('Duplicate response ID.');
-    if(record.technical_problem?record.answer!==null:!OPTIONS[row.task].some(([v])=>v===record.answer))throw Error('Invalid response value.');
+    if(record.technical_problem?record.answer!==null:!options(row).some(([v])=>v===record.answer))throw Error('Invalid response value.');
     return true;
   }
-  return {STORAGE_PREFIX,TASKS,OPTIONS,identity,materialExposure,question,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
+  return {STORAGE_PREFIX,TASKS,OPTIONS,options,protocol,context,identity,materialExposure,question,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
 });
