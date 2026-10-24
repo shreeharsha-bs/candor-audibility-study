@@ -21,9 +21,9 @@
     const oldRegistry=JSON.parse(storage.getItem(registryKey)||'{}'),oldState=JSON.parse(storage.getItem(key)||'null');
     if(!live&&!oldState&&oldRegistry[ids.PROLIFIC_PID]?.build_id!==a.build_id)delete oldRegistry[ids.PROLIFIC_PID];
     if(!live&&oldState&&oldState.assignment.build_id!==a.build_id){
-      container.replaceChildren(el('h1','This preview has been updated'),el('p','Your earlier responses are still saved. Download them before starting the updated preview.'));
+      container.replaceChildren(el('h1','This study has been updated'),el('p','Your earlier responses are still saved. Download them before starting the updated study.'));
       container.append(button('Download earlier responses',()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...oldState},null,2)],{type:'application/json'}));const link=el('a',undefined,{href:url,download:'candor-study40-earlier-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));
-      container.append(button('Start updated preview',()=>{storage.setItem(key+':archive:'+oldState.assignment.build_id,JSON.stringify(oldState));storage.removeItem(key);delete oldRegistry[ids.PROLIFIC_PID];storage.setItem(registryKey,JSON.stringify(oldRegistry));root.location.reload();},true));
+      container.append(button('Start updated study',()=>{storage.setItem(key+':archive:'+oldState.assignment.build_id,JSON.stringify(oldState));storage.removeItem(key);delete oldRegistry[ids.PROLIFIC_PID];storage.setItem(registryKey,JSON.stringify(oldRegistry));root.location.reload();},true));
       return {migration:true};
     }
     const registry=C.claim(oldRegistry,a,now());
@@ -48,7 +48,7 @@
     const saveSoon=()=>{if(dirtyTimer)clearTimeout(dirtyTimer);dirtyTimer=setTimeout(()=>{try{save();}catch(e){showError('Your browser could not save progress. Please keep this page open and contact the researcher.');}},250);};
     const stop=()=>{if(playerController){playerController.destroy();playerController=null;}if(player){player.pause();player.removeAttribute('src');player.load();player=null;}if(dirtyTimer)clearTimeout(dirtyTimer);};
     function showError(message){const old=container.querySelector('[role="alert"]');if(old)old.remove();container.prepend(el('p',message,{role:'alert',class:'error'}));}
-    function page(title){stop();container.replaceChildren();container.append(el('p',live?'Speech continuation study':'Speech continuation user study preview',{class:'eyebrow'}),el('h1',title));}
+    function page(title){stop();container.replaceChildren();container.append(el('p','Speech study',{class:'eyebrow'}),el('h1',title));}
     function continueButton(label,fn){const control=button(label,async()=>{if(busy)return;busy=true;try{await fn();}catch(e){showError(e.message);}finally{busy=false;}},true);container.append(control);return control;}
     function materialsLink(){if(live||config.host==='cognition')return;const footer=el('footer'),url=new URL(location.href);url.searchParams.set('view','materials');footer.append(el('a','View all phrases and versions',{href:url.href}));container.append(footer);}
     async function record(value){
@@ -59,10 +59,10 @@
     }
     function consent(){
       page('Welcome');
-      const paragraphs=config.consent_paragraphs?.length?config.consent_paragraphs:['The consent form will be added before the study opens. You can try the task in this preview.'];
+      const paragraphs=config.consent_paragraphs?.length?config.consent_paragraphs:(live?[]:['This is a researcher run of the study. Responses from this run are kept separate from participant data.']);
       for(const p of paragraphs)container.append(el('p',p));
-      continueButton(live?'I agree to take part':'Continue preview',()=>{state.consent={accepted:true,at:now(),version:config.consent_version||'preview_placeholder'};save();render();});
-      container.append(button(live?'I do not agree':'Leave preview',async()=>{state.consent={accepted:false,at:now()};state.status='declined';save();if(adapter?.decline)await adapter.decline({record_type:'consent_declined',...a.ids,build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,declined_at:state.consent.at});else render();}));
+      continueButton(live?'I agree to take part':'Continue',()=>{state.consent={accepted:true,at:now(),version:config.consent_version||'preview_placeholder'};save();render();});
+      container.append(button(live?'I do not agree':'Leave study',async()=>{state.consent={accepted:false,at:now()};state.status='declined';save();if(adapter?.decline)await adapter.decline({record_type:'consent_declined',...a.ids,build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,declined_at:state.consent.at});else render();}));
     }
     function hearing(){
       page('Before you begin');
@@ -154,8 +154,8 @@
     function unavailable(row){
       page('This excerpt is still being prepared');
       container.append(el('p',`Item ${state.responses.length+1} of ${a.trials.length}`,{class:'progress'}));
-      container.append(el('p','You can continue to the next item in this preview.'));
-      continueButton('Continue preview',()=>record(C.skipUnavailable(state,now())));
+      container.append(el('p','You can continue to the next item.'));
+      continueButton('Continue',()=>record(C.skipUnavailable(state,now())));
     }
     function end(){
       page('One last thing');container.append(el('p','Was anything unclear, too short to judge, or difficult to use? Your comments are optional.'));
@@ -166,12 +166,12 @@
       if(state.pending_record){page('Save your response');container.append(el('p','Your response is kept on this device. Please try saving it again to continue.'));continueButton('Try again',()=>record(state.pending_record));return;}
       if(state.status==='declined'){page('Thank you');container.append(el('p','You have chosen not to take part. You can close this page.'));return;}
       if(state.status==='setup_failed'){page('The audio check could not be completed');container.append(el('p','Your technical-problem report has been saved. This study needs working audio. Please return to the study invitation and report the problem.'));return;}
-      if(state.status==='completed'){page('Thank you');container.append(el('p',live?'Your responses have been saved.':'Your preview responses have been saved on this device.'));if(!live)container.append(button('Download preview responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
+      if(state.status==='completed'){page('Thank you');container.append(el('p',config.host==='cognition'?'Your responses have been saved in Cognition.':'Your responses have been saved on this device.'));if(!live)container.append(button('Download responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
       if(state.status==='awaiting_save'){page('Saving your responses');container.append(el('p','Please keep this page open while your responses are saved.'));return;}
       if(!live&&!previewEntered){
-        page('Speech continuation user study preview');container.querySelector('.eyebrow').hidden=true;
-        if(a.trials.some(r=>!r.ready))container.append(el('p',`This preview has ${a.trials.length} excerpts. ${a.trials.filter(r=>r.ready).length} are ready to try; the others are still being prepared.`));
-        continueButton(state.preview_started?'Resume preview':'Start preview',()=>{previewEntered=true;observeMaterials(state.preview_started?'latest_resume':'before_start');state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});materialsLink();return;
+        page('Speech study');container.querySelector('.eyebrow').hidden=true;
+        if(a.trials.some(r=>!r.ready))container.append(el('p',`This study has ${a.trials.length} excerpts. ${a.trials.filter(r=>r.ready).length} are ready; the others are still being prepared.`));
+        continueButton(state.preview_started?'Resume study':'Start study',()=>{previewEntered=true;observeMaterials(state.preview_started?'latest_resume':'before_start');state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});materialsLink();return;
       }
       if(!state.consent?.accepted){consent();return;}if(!state.hearing||(live&&state.headphones!==true)){hearing();return;}
       if(data.practice&&!state.audio_setup?.audible_confirmed){audioSetup();return;}
