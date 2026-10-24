@@ -5,15 +5,21 @@ cohorts, each with 42 server-assigned conditions and 39 experimental trials per
 participant. They include the jsPsych html-keyboard-response plugin and load all
 audio from this repository's GitHub Pages site. Use jsPsych 8.2.3.
 
-W01 is deployed to https://p9uk26euoi.cognition.run/ through the
-`cognition-participant` branch and **Deploy Cognition participant study** workflow.
-W02 requires its own Cognition task when the second cohort is opened.
+The W01 task is https://p9uk26euoi.cognition.run/. W02 requires its own
+Cognition task when the second cohort is opened.
 
-The current packages display participant information and stop before consent or
-trials because final consent/privacy text and the Prolific completion URL have
-not yet been supplied. Update the source participant settings and rebuild both
-packages once those values are available. This is an explicit configuration gap,
-not a researcher self-test label on participant data.
+These public packages contain participant consent/privacy information, but
+`completion_url` is deliberately null. The configured version is uploaded directly
+to Cognition from the local researcher workspace; never commit its completion code
+here. The GitHub import workflow has been retired to prevent overwriting the
+Cognition-only settings. Earlier import branches remain historical references.
+
+Participants must agree before the hearing and volume checks, practice and
+experimental trials. Consent version: `participant_consent_v1_2026-10-24`.
+Prolific return happens only after the global Cognition completion callback.
+A complete saved run and return still need checking through the hosted task
+before recruitment. Use Prolific's **Manually review** completion path and match
+submitted participant IDs against saved Cognition responses before approval.
 
 All 84 assignments and 1,237 audio files retain their identities and content.
 Partial remaining-length judgments and full-target possible-completion judgments

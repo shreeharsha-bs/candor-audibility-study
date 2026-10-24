@@ -16,11 +16,15 @@ and response exports are not published.
 
 ## Cognition deployment
 
-The `cognition-participant` branch contains the self-contained W01 `index.js`.
-The manual **Deploy Cognition participant study** workflow imports it using the
-existing `COGNITION_PERSONAL_ACCESS_TOKEN` secret and jsPsych 8.2.3. Audio loads
-from this site's permanent paths. The previous self-test branch remains historical
-and is no longer the deployment target.
+The public `cognition/index-W01.js` and `index-W02.js` packages contain the study
+and consent information, with the Prolific completion URL omitted. Configure
+that URL directly in Cognition using the local participant package. Do not commit
+the configured package or completion code to this repository. Audio loads from
+this site's permanent paths.
+
+The previous GitHub-to-Cognition import workflow has been retired so it cannot
+overwrite the task's Cognition-only configuration with an incomplete public
+package. Previous import and self-test branches remain historical references.
 
 The task uses 42 Cognition conditions for W01. W02 has a separate package and must
 use a separate task, also with 42 conditions. In Prolific, paste the Cognition
@@ -32,15 +36,18 @@ app redirects only after Cognition confirms its final save.
 Genuine Prolific arrivals are recorded as `run_mode=live`, `source=prolific`.
 Direct visits use a separate direct session identity and remain excluded from
 participant analysis. Both use participant-facing wording. No answers or IDs
-are invented. Incomplete consent/return settings show the study introduction
-but prevent participation; publishing this package does not assert those inputs
-are complete.
+are invented. Consent/privacy information and the researcher-supplied Prolific
+completion link are configured in the local Cognition upload package. Verify the
+hosted configuration after uploading it. Consent records its version and acceptance
+time. Responses are retained while useful for research, individual responses
+are not shared, and withdrawal requests go to shbs@kth.se.
 
 ## Check before the first six participants
 
 Complete the configured study through Prolific's preview, inspect the Cognition
 Finished status, download its data, and verify 39 judgments, five practice records,
-audio setup and completion. Confirm the return to Prolific. Preserve test runs
+audio setup and completion. Confirm the return to Prolific. Set the Prolific completion path to **Manually
+review**, then match submissions to saved Cognition responses before approval. Preserve test runs
 and exclude them from recruitment analysis. Check actual timing and payment
 before the first six paid participants within the planned 84.
 
