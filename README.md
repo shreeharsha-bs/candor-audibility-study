@@ -17,7 +17,7 @@ and response exports are not published.
 ## Cognition deployment
 
 The public `cognition/index-W01.js` and `index-W02.js` packages contain the study
-and consent information, with the Prolific completion URL omitted. Configure
+and the short consent confirmation, with the Prolific completion URL omitted. Configure
 that URL directly in Cognition using the local participant package. Do not commit
 the configured package or completion code to this repository. Audio loads from
 this site's permanent paths.
@@ -36,9 +36,9 @@ app redirects only after Cognition confirms its final save.
 Genuine Prolific arrivals are recorded as `run_mode=live`, `source=prolific`.
 Direct visits use a separate direct session identity and remain excluded from
 participant analysis. Both use participant-facing wording. No answers or IDs
-are invented. Consent/privacy information and the researcher-supplied Prolific
-completion link are configured in the local Cognition upload package. Verify the
-hosted configuration after uploading it. Consent records its version and acceptance
+are invented. Full study information is in the Prolific study description. Cognition displays
+only the researcher-provided consent sentence and agree/decline buttons. The
+Prolific completion link is configured only in Cognition. Consent records its version and acceptance
 time. Responses are retained while useful for research, individual responses
 are not shared, and withdrawal requests go to shbs@kth.se.
 
