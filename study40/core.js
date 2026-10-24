@@ -19,7 +19,23 @@
   }
   function options(row){const definition=responseProtocol(row);return context(row)==='full_target_check'&&definition.fullOptions?definition.fullOptions:definition.options;}
   const copy=value=>JSON.parse(JSON.stringify(value));
-  const identity=ids=>[ids.PROLIFIC_PID,ids.STUDY_ID,ids.SESSION_ID].join('::');
+  const identity=ids=>ids.direct_session_id?'direct::'+ids.direct_session_id:[ids.PROLIFIC_PID,ids.STUDY_ID,ids.SESSION_ID].join('::');
+  const participantKey=a=>a.ids.direct_session_id?identity(a.ids):a.ids.PROLIFIC_PID;
+  function deploymentMetadata(a){
+    if(!a.source)return {};
+    return {source:a.source,assignment_method:a.assignment_method,host_condition_number:a.host_condition_number,response_validation:'local_and_analysis_v1',save_method:'cognition_jspsych_trial_v1'};
+  }
+  function validCompletionUrl(value){
+    let url;try{url=new URL(value);}catch(_){return false;}
+    return url.protocol==='https:'&&url.hostname==='app.prolific.com'&&url.pathname==='/submissions/complete'&&Boolean(url.searchParams.get('cc')?.trim())&&!/[{}]/.test(url.searchParams.get('cc'));
+  }
+  function participantSettings(config,source){
+    const missing=[];
+    if(!Array.isArray(config.consent_paragraphs)||!config.consent_paragraphs.length||config.consent_paragraphs.some(p=>typeof p!=='string'||!p.trim()))missing.push('participant consent and privacy information');
+    if(typeof config.consent_version!=='string'||!config.consent_version.trim())missing.push('consent version');
+    if(source==='prolific'&&!validCompletionUrl(config.completion_url))missing.push('Prolific completion link');
+    return missing;
+  }
   function materialExposure(raw,at){
     let value;try{value=typeof raw==='string'?JSON.parse(raw):raw;}catch(_){return {scope:'this_browser_and_site_only',observed_at:at,readable:false,presentations:{}};}
     const presentations={};
@@ -71,27 +87,34 @@
     return {data,lists,presentations};
   }
   function chooseAssignment(c,config,ids,serverCondition,query){
-    const live=config.mode==='live',params=query||new URLSearchParams();
+    const live=config.mode==='live',native=config.mode==='participant',params=query||new URLSearchParams();
+    const idNames=['PROLIFIC_PID','STUDY_ID','SESSION_ID'],filled=idNames.filter(name=>typeof ids[name]==='string'&&ids[name].trim());
+    const source=native?(filled.length===3?'prolific':'direct'):null;
+    if(native){
+      if(config.host!=='cognition')throw Error('Please open the study using the Cognition invitation.');
+      if((filled.length!==0&&filled.length!==3)||idNames.some(name=>source==='prolific'?(typeof ids[name]!=='string'||/[{}]/.test(ids[name])):(ids[name]!==null&&ids[name]!==undefined&&ids[name]!==''))||(source==='direct'&&(typeof ids.direct_session_id!=='string'||!ids.direct_session_id))||(source==='prolific'&&ids.direct_session_id))throw Error('Please open the study using your original participant invitation.');
+      if(params.has('condition')||params.has('list')||params.has('cohort'))throw Error('Please use the original participant invitation link.');
+    }
     if(live){
       const ready=['consent_approved','production_frozen','hosted_save_export_verified','duplicate_check_verified'];
       if(ready.some(name=>config[name]!==true)||c.data.production_frozen!==true||!config.consent_paragraphs?.length)throw Error('This study is not open yet. Please return to the study invitation.');
       if(Object.values(ids).length!==3||Object.values(ids).some(v=>typeof v!=='string'||!v.trim()||/[{}]/.test(v)))throw Error('Please open the study using your participant invitation.');
       if(params.has('condition')||params.has('list')||params.has('cohort'))throw Error('Please use the original participant invitation link.');
     }
-    const explicitList=!live&&params.get('list')?c.lists.get(params.get('list')):null;
-    if(!live&&params.get('list')&&!explicitList)throw Error('That preview list is unavailable.');
-    const cohort=live?config.cohort_id:(explicitList?.cohort_id||params.get('cohort')||config.preview_assignment?.cohort_id||config.cohort_id||c.data.cohorts[0].cohort_id);
-    const condition=live||config.host==='cognition'?Number(serverCondition):Number(explicitList?.condition_number||params.get('condition')||config.preview_assignment?.condition_number||1);
+    const explicitList=!live&&!native&&params.get('list')?c.lists.get(params.get('list')):null;
+    if(!live&&!native&&params.get('list')&&!explicitList)throw Error('That preview list is unavailable.');
+    const cohort=live||native?config.cohort_id:(explicitList?.cohort_id||params.get('cohort')||config.preview_assignment?.cohort_id||config.cohort_id||c.data.cohorts[0].cohort_id);
+    const condition=live||native||config.host==='cognition'?Number(serverCondition):Number(explicitList?.condition_number||params.get('condition')||config.preview_assignment?.condition_number||1);
     if(!Number.isInteger(condition)||condition<1||condition>42)throw Error('A study list has not been assigned. Please reopen your invitation.');
     const list=[...c.lists.values()].find(x=>x.cohort_id===cohort&&x.condition_number===condition);
     if(!list)throw Error('The assigned study list is unavailable.');
-    if(live&&list.trials.some(row=>!row.ready))throw Error('This study is not open yet. Please return to the study invitation.');
+    if((live||native)&&list.trials.some(row=>!row.ready))throw Error('This study is not open yet. Please return to the study invitation.');
     const trials=list.trials;
-    return {build_id:c.data.build_id,schedule_id:c.data.schedule_id,cohort_id:cohort,list_id:list.list_id,condition_number:condition,mode:live?'live':'preview',...(c.data.playback_policy?{playback_policy:c.data.playback_policy}:{}),ids:copy(ids),trials:copy(trials)};
+    return {build_id:c.data.build_id,schedule_id:c.data.schedule_id,cohort_id:cohort,list_id:list.list_id,condition_number:condition,mode:live||source==='prolific'?'live':'preview',...(native?{source,assignment_method:'cognition_server_condition_v1',host_condition_number:Number(serverCondition)}:{}),...(c.data.playback_policy?{playback_policy:c.data.playback_policy}:{}),ids:copy(ids),trials:copy(trials)};
   }
   function stateKey(a){return STORAGE_PREFIX+':'+a.mode+':'+identity(a.ids);}
   function claim(registry,a,now){
-    const result=copy(registry||{}),id=a.ids.PROLIFIC_PID,old=result[id];
+    const result=copy(registry||{}),id=participantKey(a),old=result[id];
     if(old&&(old.identity!==identity(a.ids)||old.cohort_id!==a.cohort_id||old.list_id!==a.list_id||old.build_id!==a.build_id))throw Error('A study session has already been started for this participant. Please return to that session.');
     result[id]=old||{identity:identity(a.ids),cohort_id:a.cohort_id,list_id:a.list_id,build_id:a.build_id,started_at:now,completed:false};
     return result;
@@ -124,7 +147,7 @@
     if(!audioReady(s.assignment,row,draft))throw Error('Please listen to the complete excerpt before continuing.');
     const duration=Date.parse(now)-Date.parse(draft.started_at);
     if(!Number.isFinite(duration)||duration<0)throw Error('Response timing could not be recorded. Please try again.');
-    const record={schema_version:1,record_type:'judgment',response_id:identity(s.assignment.ids)+'::'+row.presentation_id,...copy(s.assignment.ids),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,condition_number:s.assignment.condition_number,run_mode:s.assignment.mode,trial_id:row.presentation_id,presentation_id:row.presentation_id,trial_index:s.responses.length+1,presented_trial_index:s.responses.length+1,scheduled_trial_index:row.trial_index,block_index:row.block_index,task:row.task,modality:row.modality,input_fingerprint:row.input_fingerprint,...copy(draft),assessment_context:context(row),response_protocol:protocol(row),responded_at:now,response_time_ms:duration,hearing:s.hearing,headphones:s.headphones,consent_at:s.consent?.at||null};
+    const record={schema_version:1,record_type:'judgment',response_id:identity(s.assignment.ids)+'::'+row.presentation_id,...copy(s.assignment.ids),...deploymentMetadata(s.assignment),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,condition_number:s.assignment.condition_number,run_mode:s.assignment.mode,trial_id:row.presentation_id,presentation_id:row.presentation_id,trial_index:s.responses.length+1,presented_trial_index:s.responses.length+1,scheduled_trial_index:row.trial_index,block_index:row.block_index,task:row.task,modality:row.modality,input_fingerprint:row.input_fingerprint,...copy(draft),assessment_context:context(row),response_protocol:protocol(row),responded_at:now,response_time_ms:duration,hearing:s.hearing,headphones:s.headphones,consent_at:s.consent?.at||null,...(s.assignment.source?{consent_version:s.consent?.version||null}:{})};
     s.responses.push(record);s.draft=null;return record;
   }
   function skipUnavailable(s,now){
@@ -136,7 +159,7 @@
   function finish(s,feedback,now){
     if(current(s)||s.status!=='active')throw Error('The study is not ready to finish.');
     s.feedback=String(feedback||'');s.finished_at=now;s.status='awaiting_save';
-    return {record_type:'completion',...copy(s.assignment.ids),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,run_mode:s.assignment.mode,response_count:s.responses.length,feedback:s.feedback,finished_at:now};
+    return {record_type:'completion',...copy(s.assignment.ids),...deploymentMetadata(s.assignment),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,run_mode:s.assignment.mode,response_count:s.responses.length,feedback:s.feedback,finished_at:now};
   }
   function acknowledge(s,receipt,now){
     if(s.status!=='awaiting_save'||receipt?.acknowledged!==true)throw Error('The final save has not been confirmed.');
@@ -144,9 +167,8 @@
   }
   function completionUrl(s,config){
     if(s.status!=='completed'||!s.save_acknowledged||s.assignment.mode!=='live')return null;
-    let url;try{url=new URL(config.completion_url);}catch(_){throw Error('The return link is unavailable. Please contact the researcher.');}
-    if(url.protocol!=='https:'||url.hostname!=='app.prolific.com'||url.pathname!=='/submissions/complete'||!url.searchParams.get('cc'))throw Error('The return link is unavailable. Please contact the researcher.');
-    return url.href;
+    if(!validCompletionUrl(config.completion_url))throw Error('The return link is unavailable. Please contact the researcher.');
+    return new URL(config.completion_url).href;
   }
   function validateServerEnvelope(record,assignment,seen){
     if(identity(record)!==identity(assignment.ids)||record.build_id!==assignment.build_id||record.cohort_id!==assignment.cohort_id||record.list_id!==assignment.list_id)throw Error('Response assignment mismatch.');
@@ -157,5 +179,5 @@
     if(!audioReady(assignment,row,record))throw Error('The complete first listen has not been recorded.');
     return true;
   }
-  return {STORAGE_PREFIX,TASKS,OPTIONS,RESPONSE_PROTOCOLS,options,protocol,context,identity,materialExposure,question,questionFor,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,audioReady,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
+  return {STORAGE_PREFIX,TASKS,OPTIONS,RESPONSE_PROTOCOLS,options,protocol,context,identity,participantKey,deploymentMetadata,participantSettings,materialExposure,question,questionFor,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,audioReady,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
 });

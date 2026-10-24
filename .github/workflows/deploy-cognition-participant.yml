@@ -1,4 +1,4 @@
-name: Deploy Cognition self-test
+name: Deploy Cognition participant study
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: cognition-researcher-self-test
+  group: cognition-participant-study
   cancel-in-progress: false
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Check out only the import package
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: cognition-self-test
+          ref: cognition-participant
           persist-credentials: false
       - name: Import the full study into Cognition
         id: deploy
@@ -34,7 +34,7 @@ jobs:
         with:
           personal-access-token: ${{ secrets.COGNITION_PERSONAL_ACCESS_TOKEN }}
           jspsych-version: '8.2.3'
-      - name: Show the personal study link
+      - name: Show the participant study link
         env:
           COGNITION_LINK: ${{ steps.deploy.outputs.link }}
         run: |
@@ -44,14 +44,12 @@ jobs:
           url = urlsplit(os.environ['COGNITION_LINK'])
           if url.scheme != 'https' or not (url.hostname or '').endswith('.cognition.run'):
               raise SystemExit('Cognition did not return a valid task URL. Check the import log.')
-          query = dict(parse_qsl(url.query))
-          query.pop('demo', None)
-          query.update(condition='1', preview_id='harsha-self-test-01')
-          link = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), url.fragment))
+          link = urlunsplit((url.scheme, url.netloc, url.path, '', ''))
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write('## Your complete 39-item study\n\n')
-              summary.write(f'[Open the full study]({link})\n\n')
-              summary.write('Complete the volume check, five practices and 39 experimental items, then press Finish. ')
-              summary.write('Check Finished in the Cognition dashboard and download the JSON. ')
-              summary.write('This records your real researcher test separately from recruited participants.\n')
+              summary.write('## Participant study\n\n')
+              summary.write(f'[Open the study]({link})\n\n')
+              summary.write('This deploys the W01 participant package with 42 server-assigned conditions. ')
+              summary.write('In Prolific, use URL parameters for PROLIFIC_PID, STUDY_ID and SESSION_ID. ')
+              summary.write('Do not add a condition override. Complete consent and return-link settings ')
+              summary.write('and verify a full saved run before recruitment.\n')
           PY

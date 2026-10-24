@@ -4,8 +4,9 @@
   const el=(tag,text,attrs={})=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;for(const [k,v]of Object.entries(attrs))node.setAttribute(k,v);return node;};
   function button(text,action,primary=false){const b=el('button',text,{type:'button'});if(primary)b.className='primary';b.onclick=action;return b;}
   async function mount({container,data,config,adapter=null,storage=localStorage,serverCondition=root.CONDITION}){
-    const params=new URLSearchParams(location.search),c=C.catalog(data),live=config.mode==='live';
-    const qa=params.get('qa')==='1';
+    const params=new URLSearchParams(location.search),c=C.catalog(data),native=config.mode==='participant',live=config.mode==='live'||native;
+    if(native&&(!Number.isInteger(Number(serverCondition))||Number(serverCondition)<1||Number(serverCondition)>42))throw Error('The study list has not been assigned. Please reopen your invitation.');
+    const qa=!native&&params.get('qa')==='1';
     if(qa){const base=storage;storage={getItem:key=>base.getItem(key+'_qa'),setItem:(key,value)=>base.setItem(key+'_qa',value),removeItem:key=>base.removeItem(key+'_qa')};}
     const preview=params.get('preview_id')||'local';
     if(!live&&config.host!=='cognition'&&!['cohort','condition','list'].some(k=>params.has(k))){
@@ -15,9 +16,16 @@
       config={...config,preview_assignment:choice};
     }
     const ids=Object.fromEntries(['PROLIFIC_PID','STUDY_ID','SESSION_ID'].map(k=>[k,params.get(k)||(live?'':('preview_'+preview+'_'+k))]));
-    const a=C.chooseAssignment(c,config,ids,serverCondition,params);
+    if(native&&Object.values(ids).every(value=>!value)){
+      const directKey=C.STORAGE_PREFIX+':direct_session:'+data.build_id+':'+config.cohort_id;
+      let directId=storage.getItem(directKey);if(!directId){directId=root.crypto.randomUUID();storage.setItem(directKey,directId);}for(const name of Object.keys(ids))ids[name]=null;ids.direct_session_id=directId;
+    }
+    const previousNative=native?JSON.parse(storage.getItem(C.stateKey({mode:ids.direct_session_id?'preview':'live',ids}))||'null'):null;
+    const assignmentCondition=previousNative?.assignment?.condition_number??serverCondition;
+    const a=C.chooseAssignment(c,config,ids,assignmentCondition,params);
+    if(native){a.host_condition_number=Number(serverCondition);if(previousNative)a.assignment_method='cognition_server_condition_local_resume_v1';}
     if(!live&&!params.has('PROLIFIC_PID')){for(const name of Object.keys(ids)){ids[name]+='_'+a.list_id;a.ids[name]=ids[name];}}
-    const key=C.stateKey(a),registryKey=C.STORAGE_PREFIX+':registry:'+a.mode;
+    const key=C.stateKey(a),registryKey=C.STORAGE_PREFIX+':registry:'+(native?'participant':a.mode);
     const oldRegistry=JSON.parse(storage.getItem(registryKey)||'{}'),oldState=JSON.parse(storage.getItem(key)||'null');
     if(!live&&!oldState&&oldRegistry[ids.PROLIFIC_PID]?.build_id!==a.build_id)delete oldRegistry[ids.PROLIFIC_PID];
     if(!live&&oldState&&oldState.assignment.build_id!==a.build_id){
@@ -28,6 +36,7 @@
     }
     const registry=C.claim(oldRegistry,a,now());
     let state=C.prepareState(JSON.parse(storage.getItem(key)||'null'),a,now()),busy=false,player=null,playerController=null,dirtyTimer=null,previewEntered=live||config.host==='cognition';
+    if(native)Object.assign(state.assignment,C.deploymentMetadata(a));
     state.practice_responses=state.practice_responses||[];
     if(data.playback_policy==='complete_first_listen_v1'&&(!data.practice?.volume_check||data.practice.items?.length!==5))throw Error('The practice materials could not load. Please contact the researcher.');
     const observeMaterials=stage=>{
@@ -38,7 +47,7 @@
       if(stage==='before_start')state.prior_material_exposure=observation;
     };
     if(!live){observeMaterials('latest_resume');if(!state.preview_started&&!state.responses.length)observeMaterials('before_start');}
-    if(live){
+    if(config.mode==='live'){
       if(!adapter?.validateSession)throw Error('This study is not open yet. Please return to your invitation.');
       const validation=await adapter.validateSession({assignment:a,completed:state.status==='completed'});
       if(!validation||validation.accepted!==true)throw Error('This session could not be confirmed. Please contact the researcher.');
@@ -62,7 +71,7 @@
       const paragraphs=config.consent_paragraphs?.length?config.consent_paragraphs:(live?[]:['This is a researcher run of the study. Responses from this run are kept separate from participant data.']);
       for(const p of paragraphs)container.append(el('p',p));
       continueButton(live?'I agree to take part':'Continue',()=>{state.consent={accepted:true,at:now(),version:config.consent_version||'preview_placeholder'};save();render();});
-      container.append(button(live?'I do not agree':'Leave study',async()=>{state.consent={accepted:false,at:now()};state.status='declined';save();if(adapter?.decline)await adapter.decline({record_type:'consent_declined',...a.ids,build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,declined_at:state.consent.at});else render();}));
+      container.append(button(live?'I do not agree':'Leave study',async()=>{state.consent={accepted:false,at:now()};state.status='declined';save();if(adapter?.decline)await adapter.decline({record_type:'consent_declined',...a.ids,...C.deploymentMetadata(a),build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,declined_at:state.consent.at});else render();}));
     }
     function hearing(){
       page('Before you begin');
@@ -80,7 +89,7 @@
     }
     function preparationRecord(row,draft,type){
       const responded=now();
-      return {schema_version:1,record_type:type,...a.ids,build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,response_id:[a.ids.PROLIFIC_PID,a.ids.STUDY_ID,a.ids.SESSION_ID].join('::')+'::practice::'+row.practice_id,practice_id:row.practice_id,modality:row.modality,input_fingerprint:row.input_fingerprint,...(row.task?{task:row.task,response_protocol:C.protocol(row),assessment_context:C.context(row)}:{}),...draft,responded_at:responded,response_time_ms:Date.parse(responded)-Date.parse(draft.started_at)};
+      return {schema_version:1,record_type:type,...a.ids,...C.deploymentMetadata(a),build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,response_id:C.identity(a.ids)+'::practice::'+row.practice_id,practice_id:row.practice_id,modality:row.modality,input_fingerprint:row.input_fingerprint,...(row.task?{task:row.task,response_protocol:C.protocol(row),assessment_context:C.context(row)}:{}),...draft,...(native?{consent_at:state.consent?.at,consent_version:state.consent?.version}:{}),responded_at:responded,response_time_ms:Date.parse(responded)-Date.parse(draft.started_at)};
     }
     function audioControls(row,draft,changed=()=>{}){
       player=el('audio',undefined,{preload:'auto',hidden:'','aria-label':'Conversation excerpt'});player.src=row.audio_url;container.append(player);
@@ -163,10 +172,20 @@
       continueButton('Finish',async()=>{observeMaterials('at_completion');const value=C.finish(state,textarea.value,now());if(!live)value.material_exposure_observations=state.material_exposure_observations;save();if(adapter?.complete)await adapter.complete(value);else{C.acknowledge(state,{acknowledged:true,storage:'local_preview'},now());save();render();}});
     }
     function render(){
+      if(native&&!state.participant_welcome_seen){
+        page('Welcome');
+        const paragraphs=config.participant_information?.length?config.participant_information:['In this study, you will listen to short speech excerpts or read short passages and answer questions about them.'];
+        for(const text of paragraphs)container.append(el('p',text));
+        continueButton('Continue',()=>{state.participant_welcome_seen=true;save();render();});return;
+      }
+      if(native){
+        const missing=C.participantSettings(config,a.source);
+        if(missing.length){page('This study is not available yet');container.append(el('p','Please return to your study invitation or contact shbs@kth.se.'));return;}
+      }
       if(state.pending_record){page('Save your response');container.append(el('p','Your response is kept on this device. Please try saving it again to continue.'));continueButton('Try again',()=>record(state.pending_record));return;}
       if(state.status==='declined'){page('Thank you');container.append(el('p','You have chosen not to take part. You can close this page.'));return;}
       if(state.status==='setup_failed'){page('The audio check could not be completed');container.append(el('p','Your technical-problem report has been saved. This study needs working audio. Please return to the study invitation and report the problem.'));return;}
-      if(state.status==='completed'){page('Thank you');container.append(el('p',config.host==='cognition'?'Your responses have been saved in Cognition.':'Your responses have been saved on this device.'));if(!live)container.append(button('Download responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
+      if(state.status==='completed'){page('Thank you');container.append(el('p',config.host==='cognition'?'Your responses have been saved in Cognition.':'Your responses have been saved on this device.'));if(!live||a.source==='direct')container.append(button('Download responses',()=>{const blob=new Blob([JSON.stringify({kind:native?'candor_study40_direct':'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:native?'candor-study40-responses.json':'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
       if(state.status==='awaiting_save'){page('Saving your responses');container.append(el('p','Please keep this page open while your responses are saved.'));return;}
       if(!live&&!previewEntered){
         page('Speech study');container.querySelector('.eyebrow').hidden=true;
@@ -183,12 +202,12 @@
       if(practice){trial(practice,true);return;}if(!row.ready){unavailable(row);return;}trial(row);
     }
     save();render();
-    return {state,assignment:a,key,save,stop,render,acknowledge(receipt){C.acknowledge(state,receipt,now());save();registry[ids.PROLIFIC_PID].completed=true;storage.setItem(registryKey,JSON.stringify(registry));render();return C.completionUrl(state,config);}};
+    return {state,assignment:a,key,save,stop,render,acknowledge(receipt){C.acknowledge(state,receipt,now());save();registry[C.participantKey(a)].completed=true;storage.setItem(registryKey,JSON.stringify(registry));render();return C.completionUrl(state,config);}};
   }
   async function bootstrap(){
     const container=document.getElementById('study');
     try{const [data,config]=await Promise.all(['manifest.json','config.json'].map(async path=>{const r=await fetch(path);if(!r.ok)throw Error('The study could not load. Please try again.');return r.json();}));
-      if(config.mode==='live')throw Error('Please open the study using your participant invitation.');
+      if(['live','participant'].includes(config.mode))throw Error('Please open the study using your participant invitation.');
       if(new URLSearchParams(location.search).get('view')==='materials'){
         const response=await fetch('materials.json');if(!response.ok)throw Error('The phrase collection could not load. Please try again.');
         C.catalog(data);await root.Study40Materials.mount({container,data,materials:await response.json()});return;

@@ -1,30 +1,52 @@
 # CANDOR speech study
 
-[Open the current study](https://shreeharsha-bs.github.io/candor-audibility-study/) · [Review current materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials)
+[Participant study in Cognition](https://p9uk26euoi.cognition.run/) · [Study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials)
 
-The current study presents 39 experimental items in two sections. Questionhood uses Yes/No. Partial turn judgments ask whether the speaker sounds close to finishing or likely to keep speaking for a while. Full targets separately ask whether the speaker could naturally finish their turn here. A volume check and five practice items are recorded separately.
+The study presents 39 experimental items in two sections, with a volume check and
+five separate practice items. Partial turn judgments ask whether the speaker is
+close to finishing or likely to keep speaking for a while. Full-target checks
+separately ask whether the speaker could naturally finish here. Questionhood
+uses Yes/No.
 
-The site hosts all 1,233 experimental WAVs and four preparation WAVs. Old pilot pages and unused recordings have been removed from the current site after a complete local archive; earlier Git commits also retain them. Existing browser responses and colleague reviews have not been erased.
+This site hosts all 1,233 experimental WAVs and four preparation WAVs. All 84
+assignments retain their 39 experimental presentations. Old pilot pages and unused
+recordings were archived before removal; earlier Git commits preserve them.
+Browser responses and colleague reviews have not been erased. Private mappings
+and response exports are not published.
 
-## Complete the study yourself in Cognition
+## Cognition deployment
 
-The `cognition-self-test` branch contains a self-contained `index.js`: the actual W01 study, current questions and stimuli, and the required jsPsych plugin. All audio loads from this GitHub Pages site. The task does not generate answers or shorten the 39-item assignment. Your actual responses are saved by Cognition and marked as a researcher test, separate from participant evidence.
+The `cognition-participant` branch contains the self-contained W01 `index.js`.
+The manual **Deploy Cognition participant study** workflow imports it using the
+existing `COGNITION_PERSONAL_ACCESS_TOKEN` secret and jsPsych 8.2.3. Audio loads
+from this site's permanent paths. The previous self-test branch remains historical
+and is no longer the deployment target.
 
-1. Sign in to [Cognition account settings](https://www.cognition.run/account) and copy a Cognition personal access token.
-2. In this repository's [Actions secrets](https://github.com/shreeharsha-bs/candor-audibility-study/settings/secrets/actions), add a repository secret named `COGNITION_PERSONAL_ACCESS_TOKEN` with that token. It comes from Cognition, not GitHub; keep it out of code and chat.
-3. Open [Deploy Cognition self-test](https://github.com/shreeharsha-bs/candor-audibility-study/actions/workflows/deploy-cognition-self-test.yml), choose **Run workflow**, and keep branch **main**. This imports only the `cognition-self-test` branch using jsPsych 8.2.3. It creates or updates the Cognition task associated with this repository.
-4. When the workflow succeeds, open its summary and follow **Open the full study**. This selects the genuine 39-item W01-P01 assignment. A single Cognition condition is sufficient for this personal run; the future cohort setup uses 42 per task. The code includes the researcher-test notice, so leave Cognition's separate consent overlay off for this test.
-5. Use headphones, complete the volume check, five practices and all 39 experimental items, then press **Finish**. The same link/browser resumes progress. Do not use the editor's demo preview or add `demo=true`: that does not save a Cognition run.
-6. In [Cognition's dashboard](https://www.cognition.run/tasks), check that the run is **Finished** and download its JSON. Expect 39 `judgment` records, five `practice` records, one `audio_setup` record, and completion. Reloading can add marked recovery duplicates; retain the raw export.
+The task uses 42 Cognition conditions for W01. W02 has a separate package and must
+use a separate task, also with 42 conditions. In Prolific, paste the Cognition
+URL and choose URL parameters for `PROLIFIC_PID`, `STUDY_ID` and `SESSION_ID`.
+Never put `condition`, `list`, `cohort`, `preview_id` or `demo=true` on a recruitment
+link. The actual Prolific completion URL belongs in participant settings; the
+app redirects only after Cognition confirms its final save.
 
-If using a new task in the Cognition editor instead, select jsPsych 8.2.3 and paste the complete [ready-to-run source](https://shreeharsha-bs.github.io/candor-audibility-study/cognition/self-test.js). It includes the plugin, configuration and audio URLs. Open the task's normal public URL with `?condition=1&preview_id=harsha-self-test-01`.
+Genuine Prolific arrivals are recorded as `run_mode=live`, `source=prolific`.
+Direct visits use a separate direct session identity and remain excluded from
+participant analysis. Both use participant-facing wording. No answers or IDs
+are invented. Incomplete consent/return settings show the study introduction
+but prevent participation; publishing this package does not assert those inputs
+are complete.
 
-This is a complete researcher run using the study's real materials. The code's `preview` mode separates it from recruited participant data. Cognition saving must still be verified by completing and downloading this hosted run. Participant release and Prolific return retain their existing checks.
+## Check before the first six participants
 
-## Source and preservation
+Complete the configured study through Prolific's preview, inspect the Cognition
+Finished status, download its data, and verify 39 judgments, five practice records,
+audio setup and completion. Confirm the return to Prolific. Preserve test runs
+and exclude them from recruitment analysis. Check actual timing and payment
+before the first six paid participants within the planned 84.
 
-The canonical website path remains `/study40/`, preserving existing links and browser storage. All 84 assignments retain their 39 experimental presentations. Private source mappings, colleague response exports and participant responses are not published here.
+Cognition distributes incoming runs, but browser reloads or direct visits can
+consume host assignments. Reconcile the exported actual list IDs and recover
+any missing coverage. Prolific exclusions handle previous participation across
+cohorts; browser storage alone cannot do that.
 
-The self-test wrapper is generated reproducibly from the verified W01 bundle. The main site also provides disabled future-cohort bundles under `cognition/`; those require completion of the participant-release checks.
-
-References: [Cognition GitHub integration](https://docs.cognition.run/digging-deeper/github-integration), [official deployment action](https://github.com/javidalpe/cognition-deploy-action), [Cognition data saving](https://www.cognition.run/why-your-jspsych-data-is-not-saving-and-how-to-fix-each-cause).
+[Official Cognition GitHub integration](https://docs.cognition.run/digging-deeper/github-integration) · [Prolific IDs and saving](https://www.cognition.run/integrating-jspsych-with-prolific-sona-and-mturk-participant-ids-completion-codes-and-redirects-without-losing-data)
