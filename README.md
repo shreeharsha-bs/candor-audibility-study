@@ -1,58 +1,38 @@
-# Cognition researcher self-test
+# Cognition participant study — W01
 
-This is the complete current 39-item study for the researcher to test. It includes
-a volume check, five practice items, and one assigned version/cut of each of the
-39 experimental phrases. It does not open participant recruitment.
+This package contains the current 39-extract study, including the volume check
+and five separate practice items. Its manifest and assignment order are preserved
+from build `b_17f15f6c38f7227d71a2ba2d`. It uses native Cognition assignment and response saving.
 
-## Files and setup
+Use a dedicated jsPsych 8.2.3 Cognition task for cohort W01, with its existing
+42 conditions. The html-keyboard-response 2.2.0 plugin is embedded. `CONDITION`
+must come from Cognition; there is no fallback condition or self-test labelling.
+The host's jsPsych runtime is still required.
 
-- `index.js` contains the current study source, manifest, styles, and the pinned
-  jsPsych html-keyboard-response 2.2.0 plugin. No separate plugin upload is needed.
-- Use a dedicated Cognition task running **jsPsych 8.2.3**. Its normal jsPsych runtime
-  must provide `initJsPsych` and `jsPsychModule`; the package does not bundle the
-  jsPsych runtime itself.
-- Create a personal access token in your Cognition account and save it as the
-  GitHub repository secret **COGNITION_PERSONAL_ACCESS_TOKEN**. Keep the token out
-  of source files and this README.
-- Run the repository's manual Cognition self-test GitHub Actions workflow. It
-  deploys the `cognition-self-test` branch containing `index.js` and this README.
-- Open the resulting task URL with
-  `?condition=1&preview_id=harsha-self-test-01` appended (use `&` if the URL already
-  has query parameters). **One condition is sufficient for this personal run.**
-- With no host `CONDITION` value, this self-test alone defaults to condition 1.
-  An explicitly invalid condition is rejected. Conditions 1–42 select the
-  existing W01 lists; this does not change assignments or audio. Configure all
-  **42 conditions only when preparing that cohort**, not for this personal check.
-- Alternatively, paste the complete `index.js` into a dedicated jsPsych 8.2.3
-  task's JavaScript editor. The GitHub Actions route is the packaged workflow;
-  no manual repository-import UI is assumed.
+Researcher-provided settings come from the packaging JSON file:
+`consent_version`, `consent_paragraphs` (an array), and `completion_url`.
+Absent values remain absent. The welcome contains factual participant information;
+missing consent settings leave the task unavailable before consent or trials.
+A Prolific return link is required for a recruited session with all three Prolific
+identifiers. It must be the actual HTTPS Prolific completion URL, not an example.
 
-The audio URLs use the public `/candor-audibility-study/study40/` paths, including
-four new practice/volume recordings. Verify publication and playback before the
-hosted run; this package receipt alone does not prove the URLs are online.
+Configuration gaps in this package:
+- Direct visit: consent_version, consent_paragraphs
+- Prolific visit: consent_version, consent_paragraphs, completion_url
 
-## Complete the check
+Direct visits use the neutral participant interface and a generated session ID;
+their internal preview classification keeps them outside participant analysis.
+Prolific visits must supply all three identifiers (PROLIFIC_PID, STUDY_ID,
+SESSION_ID); partial identifier sets are rejected. Do not add condition/list/cohort
+overrides to recruitment links. Final return to Prolific follows Cognition's
+completion acknowledgement. Verify a hosted save/export/resume run separately.
 
-Run all 39 items, including setup, both sections and the optional break. Check
-that answers require a complete first listen, pause/replay work, text questions
-read correctly, technical reports have no perceptual answer, and a reload resumes
-the same list. Finish, then export the Cognition data and inspect the records.
-Use a fresh `preview_id` for a new independent run; keep the same value to test
-resume. Do not delete browser storage to restart before downloading prior data.
+The package does not assert consent approval, deployment, recruitment, or hosted
+validation. It contains no fabricated readiness booleans. Existing historical
+researcher self-test packages and records retain their original meaning.
 
-All data is marked `researcher_self_test=true`, `run_purpose=researcher_self_test`
-and `run_mode=preview` through jsPsych. Setup/practice are separate from the 39
-experimental responses. Consent is labelled `researcher_self_test_v1`. Readiness
-flags remain false and there is no Prolific completion redirect or live validation
-hook requirement. These flags must remain false after packaging: only a completed
-hosted save/export/resume check supplies that evidence.
-
-Source build: `b_43c6ff7db612f6d76e9a0dd8`. Source bundle SHA256: `1abeeb4207aa7005d6b508f726c75b12fbcbbb478df78e136d238603fc1dcb3e`.
-Plugin SHA256: `126e54c03acb3c36686c88b892cc281e4cf242b39f4fa4bfcbdc01dac9890912`. The accompanying local receipt records provenance;
-it is not needed for importing or running the task.
-
-Official references:
-- [Cognition conditions and the condition URL parameter](https://docs.cognition.run/digging-deeper/inter-experiment-conditions)
-- [Pinned jsPsych plugin source](https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.2.0/dist/index.browser.js)
-- [Plugin package metadata](https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.2.0/package.json)
-- [jsPsych MIT license](https://github.com/jspsych/jsPsych/blob/main/license.txt)
+Audio remains at the existing public `/candor-audibility-study/study40/` paths.
+Source bundle SHA256: `f773bbbf7c821f0c3ff8c0e9274c9ded95fe230017c1720bc048a6944bd833fe`.
+Plugin SHA256: `126e54c03acb3c36686c88b892cc281e4cf242b39f4fa4bfcbdc01dac9890912`.
+The local receipt records source, settings and output hashes; it need not be
+copied into the task import branch.
