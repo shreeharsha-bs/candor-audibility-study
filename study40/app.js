@@ -172,12 +172,6 @@
       continueButton('Finish',async()=>{observeMaterials('at_completion');const value=C.finish(state,textarea.value,now());if(!live)value.material_exposure_observations=state.material_exposure_observations;save();if(adapter?.complete)await adapter.complete(value);else{C.acknowledge(state,{acknowledged:true,storage:'local_preview'},now());save();render();}});
     }
     function render(){
-      if(native&&!state.participant_welcome_seen){
-        page('Welcome');
-        const paragraphs=config.participant_information?.length?config.participant_information:['In this study, you will listen to short speech excerpts or read short passages and answer questions about them.'];
-        for(const text of paragraphs)container.append(el('p',text));
-        continueButton('Continue',()=>{state.participant_welcome_seen=true;save();render();});return;
-      }
       if(native){
         const missing=C.participantSettings(config,a.source);
         if(missing.length){page('This study is not available yet');container.append(el('p','Please return to your study invitation or contact shbs@kth.se.'));return;}
