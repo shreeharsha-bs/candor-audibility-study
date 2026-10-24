@@ -47,7 +47,7 @@ flags remain false and there is no Prolific completion redirect or live validati
 hook requirement. These flags must remain false after packaging: only a completed
 hosted save/export/resume check supplies that evidence.
 
-Source build: `b_c11100ff308f4d895c7062b1`. Source bundle SHA256: `2d2c062dae5158e4c13cabeefaf277dd4cbbf26ea29002889ebaa6e1d136f6e2`.
+Source build: `b_15e8be1767984f7ac788c4ee`. Source bundle SHA256: `a16be130fc0ea06f7c348770b10b8a810b6d0cd1c129cba2ee5625dccc6f34bc`.
 Plugin SHA256: `126e54c03acb3c36686c88b892cc281e4cf242b39f4fa4bfcbdc01dac9890912`. The accompanying local receipt records provenance;
 it is not needed for importing or running the task.
 
