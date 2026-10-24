@@ -1,9 +1,8 @@
-(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.Study40MaterialsCore=api;})(globalThis,function(){
+(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./core.js'):root.Study40Core);if(typeof module==='object'&&module.exports)module.exports=api;else root.Study40MaterialsCore=api;})(globalThis,function(C){
   'use strict';
   const STORAGE_KEY='candor_study40_materials_v1',EXPOSURE_KEY='candor_study40_materials_exposure_v1';
   const GATES=['early','late','full'];
-  const protocol=row=>row.response_protocol||(row.task==='possible_completion'?'turn_extent_v1':'binary_question_v1');
-  const context=row=>row.assessment_context||'partial_prediction';
+  const protocol=C.protocol,context=C.context;
   const sameQuestion=(review,row)=>review?.input_fingerprint===row.input_fingerprint&&review?.response_protocol===protocol(row)&&review?.assessment_context===context(row);
   function catalog(materials,data){
     if(materials.schema_version!==1||materials.build_id!==data.build_id||!Array.isArray(materials.phrases)||materials.phrases.length!==(data.active_phrase_count||40))throw Error('The phrase collection could not be read.');
@@ -31,7 +30,7 @@
   function currentReview(state,row){const review=state.reviews[row.presentation_id];return sameQuestion(review,row)?review:null;}
   function saveReview(state,row,values,at,build,preparationNote=null){
     if(!row.ready)throw Error('This excerpt is not ready to review.');
-    const valid=row.task==='question_projection'?['question','non_question']:['stop_after_sentence','continue_after_sentence'];
+    const valid=C.options(row).map(([value])=>value);
     if(values.answer!==null&&!valid.includes(values.answer))throw Error('The answer does not match this question.');
     const old=state.reviews[row.presentation_id];
     if(old&&!sameQuestion(old,row))state.history.push(old);

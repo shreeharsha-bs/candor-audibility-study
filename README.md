@@ -1,136 +1,30 @@
-# CANDOR Audio Judgment Study
+# CANDOR speech study
 
-## 39-phrase study preview
+[Open the current study](https://shreeharsha-bs.github.io/candor-audibility-study/) · [Review current materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials)
 
-[Open all phrases and versions](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials),
-or [try the participant task](https://shreeharsha-bs.github.io/candor-audibility-study/study40/).
+The current study presents 39 experimental items in two sections. Questionhood uses Yes/No. Partial turn judgments ask whether the speaker sounds close to finishing or likely to keep speaking for a while. Full targets separately ask whether the speaker could naturally finish their turn here. A volume check and five practice items are recorded separately.
 
-**October 23 update:** phrase 1’s CosyVoice2 recordings use `D C` to correct the acronym pronunciation in all three synthesis conditions. Their cuts were rebuilt; F5 audio remains unchanged. Earlier audio URLs and saved reviews remain available.
+The site hosts all 1,233 experimental WAVs and four preparation WAVs. Old pilot pages and unused recordings have been removed from the current site after a complete local archive; earlier Git commits also retain them. Existing browser responses and colleague reviews have not been erased.
 
-The current preview includes 39 phrases, two partial cuts and the full target:
-1,233 audio presentations and 117 matching text presentations. Phrase #34 has
-been excluded; the other phrase numbers and all earlier audio remain unchanged. The question task
-includes neutral, period and question-mark synthesis from four systems; the
-turn-extent task uses neutral synthesis. The materials view starts with
-the shorter cuts and lets colleagues select any phrase and version.
+## Complete the study yourself in Cognition
 
-Partial cuts ask whether the speaker will finish the current sentence and stop,
-or continue with another thought. Full clips provide a separate check at the end of the reviewed phrase. Both tasks have two answer choices. Earlier responses remain downloadable
-under their original questions; new answers are saved with their question version
-and partial/full context.
+The `cognition-self-test` branch contains a self-contained `index.js`: the actual W01 study, current questions and stimuli, and the required jsPsych plugin. All audio loads from this GitHub Pages site. The task does not generate answers or shorten the 39-item assignment. Your actual responses are saved by Cognition and marked as a researcher test, separate from participant evidence.
 
-Answers and notes stay in the reviewer's browser and can be downloaded. These
-are provisional materials for colleague feedback; recruited-participant data
-collection has not started. Existing recordings, earlier reviews and their
-storage formats remain available in the historical walkthrough below.
+1. Sign in to [Cognition account settings](https://www.cognition.run/account) and copy a Cognition personal access token.
+2. In this repository's [Actions secrets](https://github.com/shreeharsha-bs/candor-audibility-study/settings/secrets/actions), add a repository secret named `COGNITION_PERSONAL_ACCESS_TOKEN` with that token. It comes from Cognition, not GitHub; keep it out of code and chat.
+3. Open [Deploy Cognition self-test](https://github.com/shreeharsha-bs/candor-audibility-study/actions/workflows/deploy-cognition-self-test.yml), choose **Run workflow**, and keep branch **main**. This imports only the `cognition-self-test` branch using jsPsych 8.2.3. It creates or updates the Cognition task associated with this repository.
+4. When the workflow succeeds, open its summary and follow **Open the full study**. This selects the genuine 39-item W01-P01 assignment. A single Cognition condition is sufficient for this personal run; the future cohort setup uses 42 per task. The code includes the researcher-test notice, so leave Cognition's separate consent overlay off for this test.
+5. Use headphones, complete the volume check, five practices and all 39 experimental items, then press **Finish**. The same link/browser resumes progress. Do not use the editor's demo preview or add `demo=true`: that does not save a Cognition run.
+6. In [Cognition's dashboard](https://www.cognition.run/tasks), check that the run is **Finished** and download its JSON. Expect 39 `judgment` records, five `practice` records, one `audio_setup` record, and completion. Reloading can add marked recovery duplicates; retain the raw export.
 
-## Earlier six-phrase walkthrough — October 19, 2026
+If using a new task in the Cognition editor instead, select jsPsych 8.2.3 and paste the complete [ready-to-run source](https://shreeharsha-bs.github.io/candor-audibility-study/cognition/self-test.js). It includes the plugin, configuration and audio URLs. Open the task's normal public URL with `?condition=1&preview_id=harsha-self-test-01`.
 
-**[Open the speech continuation user study preview](https://shreeharsha-bs.github.io/candor-audibility-study/review/).**
+This is a complete researcher run using the study's real materials. The code's `preview` mode separates it from recruited participant data. Cognition saving must still be verified by completing and downloading this hosted run. Participant release and Prolific return retain their existing checks.
 
-Choose **Start preview** to compare all versions phrase by phrase, or **Resume
-preview** to continue. Each phrase includes original speech, four TTS systems,
-text, and both cuts. Punctuation versions appear separately where available.
-The full review contains 104 presentations. Playback and answers are optional:
-Continue saves any answers and notes and records the rest as skipped. Skipped
-versions do not enter rating counts or percentages. Earlier six-item previews and technical
-notes remain under **Study materials**.
+## Source and preservation
 
-The `review/` page contains all 92 current audio cuts and 12 matching text
-prefixes: original speech, OmniVoice, F5-TTS, CosyVoice2 and Qwen3-TTS Base.
-Neutral synthesis and the separate punctuation pilot remain distinguishable.
-Shorter cuts precede longer cuts within each phrase. Results are calculated locally from completed
-reviews and imported files; this is not an automatic shared response database.
+The canonical website path remains `/study40/`, preserving existing links and browser storage. All 84 assignments retain their 39 experimental presentations. Private source mappings, colleague response exports and participant responses are not published here.
 
-See [review instructions](review/README.md) and [what was reused](review/REPO_REUSE_NOTES.md).
-Three audio endpoints still need listening approval. This is a collaborator
-preview, not the recruited Prolific pilot. The earlier app, recordings, response
-endpoint and local-storage keys below remain unchanged apart from a link to the
-current preview. The historical next-speaker task is not the current possible-
-completion task.
+The self-test wrapper is generated reproducibly from the verified W01 bundle. The main site also provides disabled future-cohort bundles under `cognition/`; those require completion of the participant-release checks.
 
-## Earlier pilot
-
-Static GitHub Pages study for the CANDOR proxy-task audibility lists.
-
-Current intended pilot: short, blinded CANDOR question-act and floor-transfer
-items in separate audio-only and text-only blocks. Text stimuli omit final
-punctuation so a question mark cannot reveal the answer.
-
-## What is included
-
-- `index.html`, `styles.css`, and `app.js`: browser study interface.
-- `data/trial_lists.js`: blind counterbalanced lists generated from curated audio/text manifests.
-- `audio/`: copied prompt WAV files used by the lists.
-- `config.js`: set the response-saving endpoint.
-- `apps-script.gs`: optional Google Apps Script backend for saving responses to Google Sheets.
-
-The browser-facing trial data does not include gold labels, transcripts, or reference audio.
-
-
-## Regenerate From A New SLURM Extraction
-
-After the extraction job finishes, rebuild the Pages pilot from the nested project root:
-
-```bash
-python scripts/export_candor_pages_pilot.py   --source-dir output/candor_proxy_tasks_matched_q_turn_completion   --pages-dir docs/candor-audibility-study   --clean-audio
-```
-
-This copies the prompt WAVs referenced by the blind audibility lists and rewrites `data/trial_lists.js`.
-
-## URLs
-
-Use one of these forms after GitHub Pages is enabled:
-
-```text
-/candor-audibility-study/?list=01
-/candor-audibility-study/?list=02
-/candor-audibility-study/?list=03
-```
-
-Use block-specific links so lexical and acoustic evidence stay separated:
-
-```text
-/candor-audibility-study/?block=question_audio&list=01
-/candor-audibility-study/?block=question_text&list=01
-/candor-audibility-study/?block=turn_audio&list=01
-/candor-audibility-study/?block=turn_text&list=01
-```
-
-Text-only trial rows should set `trial_mode: "text"` or omit `audio_url`, and
-should provide `display_text`, `text`, or `keep_text`. Audio-only trial rows
-should set `trial_mode: "audio"` and provide `audio_url`.
-
-The generated browser manifest uses opaque sample IDs and audio filenames. The
-private answer key is written outside this Pages repository by
-`scripts/build_curated_pilot.py`.
-
-You can also prefill a participant id:
-
-```text
-/candor-audibility-study/?list=01&participant=P001
-```
-
-## Saving Responses Automatically
-
-GitHub Pages cannot write response files by itself. Use an external endpoint.
-The included default path is Google Sheets via Apps Script:
-
-1. Create a Google Sheet.
-2. Open Extensions -> Apps Script.
-3. Paste `apps-script.gs` into the script editor.
-4. Deploy as a Web App.
-5. Set access to Anyone with the link.
-6. Copy the Web App URL.
-7. Paste it into `config.js` as `SUBMIT_URL`.
-
-When moving from an older deployment to the four-block study, paste the current
-`apps-script.gs` and deploy a new Web App version. The new schema records
-`study_block`, `trial_mode`, and `display_text`.
-
-The page also stores responses in browser localStorage and provides an Export CSV button at the end.
-
-## Privacy Note
-
-The `audio/` files are real prompt recordings. If this repository or its Pages deployment is public, those recordings are publicly accessible.
-Use a private Pages deployment, an authenticated study platform, or another access-controlled host if the recordings should not be public.
+References: [Cognition GitHub integration](https://docs.cognition.run/digging-deeper/github-integration), [official deployment action](https://github.com/javidalpe/cognition-deploy-action), [Cognition data saving](https://www.cognition.run/why-your-jspsych-data-is-not-saving-and-how-to-fix-each-cause).

@@ -4,9 +4,20 @@
   const TASKS=['question_projection','possible_completion'];
   const OPTIONS={question_projection:[['question','Yes'],['non_question','No']],possible_completion:[['stop_after_sentence','Finish this sentence and stop speaking'],['continue_after_sentence','Finish this sentence and continue with another thought']]};
   const FULL_OPTIONS=[['stop_after_sentence','Stop speaking'],['continue_after_sentence','Continue with another thought']];
+  const RESPONSE_PROTOCOLS={
+    binary_question_v1:{task:'question_projection',contexts:['partial_prediction','full_target_check'],options:OPTIONS.question_projection},
+    turn_extent_v1:{task:'possible_completion',contexts:['partial_prediction','full_target_check'],options:OPTIONS.possible_completion,fullOptions:FULL_OPTIONS},
+    remaining_turn_length_v1:{task:'possible_completion',contexts:['partial_prediction'],options:[['close_to_finishing','Close to finishing their turn'],['keep_speaking_for_a_while','Likely to keep speaking for a while']],audioQuestion:'Does the speaker sound close to finishing their turn, or do you expect them to keep speaking for a while?',textQuestion:'Based on these words, does the speaker seem close to finishing their turn, or do you expect them to keep speaking for a while?'},
+    full_target_possible_completion_v1:{task:'possible_completion',contexts:['full_target_check'],options:[['could_finish_here','Yes'],['cannot_finish_here','No']],audioQuestion:'Could the speaker naturally finish their turn here?',textQuestion:'Based on these words, could the speaker naturally finish their turn here?'}
+  };
   const protocol=row=>row.response_protocol||(row.task==='possible_completion'?'turn_extent_v1':'binary_question_v1');
   const context=row=>row.assessment_context||'partial_prediction';
-  const options=row=>row.task==='possible_completion'&&context(row)==='full_target_check'?FULL_OPTIONS:OPTIONS[row.task];
+  function responseProtocol(row){
+    const definition=RESPONSE_PROTOCOLS[protocol(row)];
+    if(!definition||definition.task!==row.task||!definition.contexts.includes(context(row)))throw Error('A study item has an invalid question version.');
+    return definition;
+  }
+  function options(row){const definition=responseProtocol(row);return context(row)==='full_target_check'&&definition.fullOptions?definition.fullOptions:definition.options;}
   const copy=value=>JSON.parse(JSON.stringify(value));
   const identity=ids=>[ids.PROLIFIC_PID,ids.STUDY_ID,ids.SESSION_ID].join('::');
   function materialExposure(raw,at){
@@ -19,13 +30,18 @@
     if(task==='question_projection')return modality==='audio'?'Does this sound like someone asking a question, or starting to ask one?':'Do these words suggest someone asking a question, or starting to ask one?';
     return assessmentContext==='full_target_check'?'Do you expect the speaker to stop here or continue with another thought?':'How do you expect the speaker to continue?';
   }
+  function questionFor(row){
+    const definition=responseProtocol(row);
+    return (row.modality==='audio'?definition.audioQuestion:definition.textQuestion)||question(row.task,row.modality,context(row));
+  }
   function catalog(data){
     if(data.schema_version!==1||!data.build_id||!Array.isArray(data.cohorts)||!data.presentations)throw Error('Study materials could not be read.');
+    if(data.playback_policy!==undefined&&data.playback_policy!=='complete_first_listen_v1')throw Error('The study playback policy could not be read.');
     const lists=new Map(),presentations=new Map(Object.entries(data.presentations));
     for(const [id,row] of presentations){
       if(row.presentation_id!==id||!TASKS.includes(row.task)||!['audio','text'].includes(row.modality)||typeof row.ready!=='boolean')throw Error('A study item has an invalid identity.');
       if(row.assessment_context!==undefined&&!['partial_prediction','full_target_check'].includes(row.assessment_context))throw Error('A study item has an invalid assessment context.');
-      if(row.response_protocol!==undefined&&row.response_protocol!==(row.task==='possible_completion'?'turn_extent_v1':'binary_question_v1'))throw Error('A study item has an invalid question version.');
+      responseProtocol(row);
       if(row.ready){
         if(!row.input_fingerprint)throw Error('A study item is missing its content identity.');
         if(row.modality==='text'&&(typeof row.text!=='string'||!row.text||/[.?!,;:]/.test(row.text)))throw Error('The text item must contain unpunctuated words.');
@@ -71,7 +87,7 @@
     if(!list)throw Error('The assigned study list is unavailable.');
     if(live&&list.trials.some(row=>!row.ready))throw Error('This study is not open yet. Please return to the study invitation.');
     const trials=list.trials;
-    return {build_id:c.data.build_id,schedule_id:c.data.schedule_id,cohort_id:cohort,list_id:list.list_id,condition_number:condition,mode:live?'live':'preview',ids:copy(ids),trials:copy(trials)};
+    return {build_id:c.data.build_id,schedule_id:c.data.schedule_id,cohort_id:cohort,list_id:list.list_id,condition_number:condition,mode:live?'live':'preview',...(c.data.playback_policy?{playback_policy:c.data.playback_policy}:{}),ids:copy(ids),trials:copy(trials)};
   }
   function stateKey(a){return STORAGE_PREFIX+':'+a.mode+':'+identity(a.ids);}
   function claim(registry,a,now){
@@ -81,9 +97,9 @@
     return result;
   }
   function prepareState(saved,a,now){
-    if(!saved)return {schema_version:1,assignment:copy(a),created_at:now,consent:null,hearing:null,headphones:null,instructions_seen:[],breaks_taken:[],responses:[],draft:null,status:'active',feedback:null,save_acknowledged:false};
+    if(!saved)return {schema_version:1,assignment:copy(a),created_at:now,consent:null,hearing:null,headphones:null,audio_setup:null,practice_responses:[],practice_draft:null,instructions_seen:[],breaks_taken:[],responses:[],draft:null,status:'active',feedback:null,save_acknowledged:false};
     const s=copy(saved);
-    if(s.schema_version!==1||!Array.isArray(s.responses)||identity(s.assignment?.ids||{})!==identity(a.ids)||s.assignment.build_id!==a.build_id||s.assignment.list_id!==a.list_id||s.assignment.mode!==a.mode||JSON.stringify(s.assignment.trials)!==JSON.stringify(a.trials))throw Error('The study changed after this session began. Your saved responses have been kept. Please contact the researcher.');
+    if(s.schema_version!==1||!Array.isArray(s.responses)||identity(s.assignment?.ids||{})!==identity(a.ids)||s.assignment.build_id!==a.build_id||s.assignment.list_id!==a.list_id||s.assignment.mode!==a.mode||s.assignment.playback_policy!==a.playback_policy||JSON.stringify(s.assignment.trials)!==JSON.stringify(a.trials))throw Error('The study changed after this session began. Your saved responses have been kept. Please contact the researcher.');
     if(s.responses.length>a.trials.length||s.responses.some((r,i)=>r.presentation_id!==a.trials[i].presentation_id)||new Set(s.responses.map(r=>r.presentation_id)).size!==s.responses.length)throw Error('Saved progress could not be read. Your responses have been kept. Please contact the researcher.');
     return s;
   }
@@ -91,8 +107,12 @@
   function startTrial(s,now){
     const row=current(s);if(!row||s.status!=='active')return null;
     if(s.draft?.presentation_id===row.presentation_id)return s.draft;
-    s.draft={presentation_id:row.presentation_id,started_at:now,answer:null,note:'',technical_problem:null,play_count:0,audio_started:false,audio_ended:false,playback_errors:[],playback_events:[],max_audio_time_s:0};
+    s.draft={presentation_id:row.presentation_id,started_at:now,answer:null,note:'',technical_problem:null,play_count:0,audio_started:false,audio_ended:false,first_play_completed:false,playback_errors:[],playback_events:[],max_audio_time_s:0};
     return s.draft;
+  }
+  function audioReady(assignment,row,draft){
+    const assigned=assignment.assignment||assignment;
+    return assigned.playback_policy!=='complete_first_listen_v1'||row.modality!=='audio'||Boolean(draft.technical_problem)||draft.first_play_completed===true;
   }
   function commit(s,draft,now){
     const row=current(s);
@@ -101,6 +121,7 @@
     if(draft.technical_problem){
       if(!['audio_load','audio_playback','display','other'].includes(draft.technical_problem)||draft.answer!==null)throw Error('A technical problem must be recorded separately from an answer.');
     }else if(!options(row).some(([value])=>value===draft.answer))throw Error('Please choose an answer, or report a technical problem.');
+    if(!audioReady(s.assignment,row,draft))throw Error('Please listen to the complete excerpt before continuing.');
     const duration=Date.parse(now)-Date.parse(draft.started_at);
     if(!Number.isFinite(duration)||duration<0)throw Error('Response timing could not be recorded. Please try again.');
     const record={schema_version:1,record_type:'judgment',response_id:identity(s.assignment.ids)+'::'+row.presentation_id,...copy(s.assignment.ids),build_id:s.assignment.build_id,schedule_id:s.assignment.schedule_id,cohort_id:s.assignment.cohort_id,list_id:s.assignment.list_id,condition_number:s.assignment.condition_number,run_mode:s.assignment.mode,trial_id:row.presentation_id,presentation_id:row.presentation_id,trial_index:s.responses.length+1,presented_trial_index:s.responses.length+1,scheduled_trial_index:row.trial_index,block_index:row.block_index,task:row.task,modality:row.modality,input_fingerprint:row.input_fingerprint,...copy(draft),assessment_context:context(row),response_protocol:protocol(row),responded_at:now,response_time_ms:duration,hearing:s.hearing,headphones:s.headphones,consent_at:s.consent?.at||null};
@@ -133,7 +154,8 @@
     if(!row||row.presentation_id!==record.presentation_id||row.input_fingerprint!==record.input_fingerprint||row.task!==record.task||row.modality!==record.modality||record.assessment_context!==context(row)||record.response_protocol!==protocol(row))throw Error('Response item mismatch.');
     if(seen?.has(record.response_id))throw Error('Duplicate response ID.');
     if(record.technical_problem?record.answer!==null:!options(row).some(([v])=>v===record.answer))throw Error('Invalid response value.');
+    if(!audioReady(assignment,row,record))throw Error('The complete first listen has not been recorded.');
     return true;
   }
-  return {STORAGE_PREFIX,TASKS,OPTIONS,options,protocol,context,identity,materialExposure,question,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
+  return {STORAGE_PREFIX,TASKS,OPTIONS,RESPONSE_PROTOCOLS,options,protocol,context,identity,materialExposure,question,questionFor,catalog,chooseAssignment,stateKey,claim,prepareState,current,startTrial,audioReady,commit,skipUnavailable,finish,acknowledge,completionUrl,validateServerEnvelope};
 });

@@ -37,7 +37,7 @@
           player.onerror=()=>{const error=el('p','The audio could not load. Please reload the page and try again.',{role:'alert'});container.append(error);};
         }else{container.append(el('p',row.text,{class:'words'}));exposure(row.presentation_id);}
         if(materials.preparation_notes?.[row.presentation_id])container.append(el('p',materials.preparation_notes[row.presentation_id],{class:'listening-note'}));
-        container.append(el('h2',C.question(row.task,row.modality,C.context(row))));
+        container.append(el('h2',C.questionFor(row)));
         const current=M.currentReview(state,row),earlier=state.reviews[row.presentation_id];
         let review=current||{answer:null,note:earlier?.note||''};
         if(earlier&&!current)container.append(el('p','Your earlier response is preserved. You can answer the updated question below.',{class:'saved'}));

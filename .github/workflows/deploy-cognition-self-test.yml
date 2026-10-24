@@ -1,0 +1,57 @@
+name: Deploy Cognition self-test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cognition-researcher-self-test
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check Cognition token
+        env:
+          COGNITION_TOKEN: ${{ secrets.COGNITION_PERSONAL_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$COGNITION_TOKEN" ]; then
+            echo "Add the Cognition account token as the COGNITION_PERSONAL_ACCESS_TOKEN repository secret."
+            exit 1
+          fi
+      - name: Check out only the import package
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: cognition-self-test
+          persist-credentials: false
+      - name: Import the full study into Cognition
+        id: deploy
+        uses: javidalpe/cognition-deploy-action@e8a7622c521a02a5c8b8881d8ba96557ed916f5d # v1.2.0
+        with:
+          personal-access-token: ${{ secrets.COGNITION_PERSONAL_ACCESS_TOKEN }}
+          jspsych-version: '8.2.3'
+      - name: Show the personal study link
+        env:
+          COGNITION_LINK: ${{ steps.deploy.outputs.link }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+          url = urlsplit(os.environ['COGNITION_LINK'])
+          if url.scheme != 'https' or not (url.hostname or '').endswith('.cognition.run'):
+              raise SystemExit('Cognition did not return a valid task URL. Check the import log.')
+          query = dict(parse_qsl(url.query))
+          query.pop('demo', None)
+          query.update(condition='1', preview_id='harsha-self-test-01')
+          link = urlunsplit((url.scheme, url.netloc, url.path, urlencode(query), url.fragment))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Your complete 39-item study\n\n')
+              summary.write(f'[Open the full study]({link})\n\n')
+              summary.write('Complete the volume check, five practices and 39 experimental items, then press Finish. ')
+              summary.write('Check Finished in the Cognition dashboard and download the JSON. ')
+              summary.write('This records your real researcher test separately from recruited participants.\n')
+          PY

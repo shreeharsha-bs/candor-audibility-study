@@ -27,7 +27,9 @@
       return {migration:true};
     }
     const registry=C.claim(oldRegistry,a,now());
-    let state=C.prepareState(JSON.parse(storage.getItem(key)||'null'),a,now()),busy=false,player=null,dirtyTimer=null,previewEntered=live||config.host==='cognition';
+    let state=C.prepareState(JSON.parse(storage.getItem(key)||'null'),a,now()),busy=false,player=null,playerController=null,dirtyTimer=null,previewEntered=live||config.host==='cognition';
+    state.practice_responses=state.practice_responses||[];
+    if(data.playback_policy==='complete_first_listen_v1'&&(!data.practice?.volume_check||data.practice.items?.length!==5))throw Error('The practice materials could not load. Please contact the researcher.');
     const observeMaterials=stage=>{
       if(live)return;
       const observation=C.materialExposure(storage.getItem('candor_study40_materials_exposure_v1'),now());
@@ -44,10 +46,10 @@
     storage.setItem(registryKey,JSON.stringify(registry));
     const save=()=>{storage.setItem(key,JSON.stringify(state));};
     const saveSoon=()=>{if(dirtyTimer)clearTimeout(dirtyTimer);dirtyTimer=setTimeout(()=>{try{save();}catch(e){showError('Your browser could not save progress. Please keep this page open and contact the researcher.');}},250);};
-    const stop=()=>{if(player){player.pause();player.removeAttribute('src');player.load();player=null;}if(dirtyTimer)clearTimeout(dirtyTimer);};
+    const stop=()=>{if(playerController){playerController.destroy();playerController=null;}if(player){player.pause();player.removeAttribute('src');player.load();player=null;}if(dirtyTimer)clearTimeout(dirtyTimer);};
     function showError(message){const old=container.querySelector('[role="alert"]');if(old)old.remove();container.prepend(el('p',message,{role:'alert',class:'error'}));}
     function page(title){stop();container.replaceChildren();container.append(el('p',live?'Speech continuation study':'Speech continuation user study preview',{class:'eyebrow'}),el('h1',title));}
-    function continueButton(label,fn){container.append(button(label,async()=>{if(busy)return;busy=true;try{await fn();}catch(e){showError(e.message);}finally{busy=false;}},true));}
+    function continueButton(label,fn){const control=button(label,async()=>{if(busy)return;busy=true;try{await fn();}catch(e){showError(e.message);}finally{busy=false;}},true);container.append(control);return control;}
     function materialsLink(){if(live||config.host==='cognition')return;const footer=el('footer'),url=new URL(location.href);url.searchParams.set('view','materials');footer.append(el('a','View all phrases and versions',{href:url.href}));container.append(footer);}
     async function record(value){
       state.pending_record=value;save();
@@ -72,52 +74,82 @@
       select.onchange=()=>{state.hearing=select.value||null;save();};head.onchange=()=>{state.headphones=head.checked;save();};
       continueButton('Continue',()=>{if(!select.value)throw Error('Please choose an answer about your hearing.');state.hearing=select.value;state.headphones=head.checked;save();if(live&&!head.checked)throw Error('Please use headphones and confirm the checkbox before continuing.');render();});
     }
+    function practiceDraft(row){
+      if(state.practice_draft?.practice_id!==row.practice_id)state.practice_draft={practice_id:row.practice_id,started_at:now(),answer:null,technical_problem:null,play_count:0,audio_started:false,audio_ended:false,first_play_completed:false,playback_errors:[],playback_events:[],max_audio_time_s:0};
+      return state.practice_draft;
+    }
+    function preparationRecord(row,draft,type){
+      const responded=now();
+      return {schema_version:1,record_type:type,...a.ids,build_id:a.build_id,schedule_id:a.schedule_id,cohort_id:a.cohort_id,list_id:a.list_id,condition_number:a.condition_number,run_mode:a.mode,response_id:[a.ids.PROLIFIC_PID,a.ids.STUDY_ID,a.ids.SESSION_ID].join('::')+'::practice::'+row.practice_id,practice_id:row.practice_id,modality:row.modality,input_fingerprint:row.input_fingerprint,...(row.task?{task:row.task,response_protocol:C.protocol(row),assessment_context:C.context(row)}:{}),...draft,responded_at:responded,response_time_ms:Date.parse(responded)-Date.parse(draft.started_at)};
+    }
+    function audioControls(row,draft,changed=()=>{}){
+      player=el('audio',undefined,{preload:'auto',hidden:'','aria-label':'Conversation excerpt'});player.src=row.audio_url;container.append(player);
+      const media=player,controls=el('div',undefined,{class:'audio-controls',role:'group','aria-label':'Audio playback'}),status=el('p',undefined,{class:'playback-status','aria-live':'polite'});
+      const play=button('Play',()=>playerController.play()),pause=button('Pause',()=>playerController.pause()),replay=button('Replay',()=>playerController.replay());
+      const update=()=>{play.disabled=!media.paused;pause.disabled=media.paused;replay.disabled=!draft.audio_started;status.textContent=draft.first_play_completed?'You have listened to the whole extract. You can replay it.':(!media.paused?'Listening…':'Listen to the whole extract before answering.');changed();};
+      controls.append(play,pause,replay);container.append(controls,status);
+      playerController=root.Study40Playback.attach({media,draft,save:saveSoon,onChange:update,onError:showError});update();
+    }
+    function audioSetup(){
+      page('Check your listening volume');
+      container.append(el('p','Play the recording and adjust your device volume until the speech is comfortable to hear. Keep your headphones on throughout the study.'));
+      const row=data.practice.volume_check,draft=practiceDraft(row);let next;
+      const label=el('label',undefined,{class:'checkbox'}),confirmed=el('input',undefined,{type:'checkbox'});confirmed.checked=draft.audible_confirmed===true;
+      const update=()=>{confirmed.disabled=!draft.first_play_completed;if(next)next.disabled=!draft.technical_problem&&!(draft.first_play_completed&&confirmed.checked);};
+      audioControls(row,draft,update);label.append(confirmed,document.createTextNode('I can hear the recording at a comfortable volume.'));container.append(label);
+      confirmed.onchange=()=>{draft.audible_confirmed=confirmed.checked;update();save();};
+      const details=el('details'),problem=el('select',undefined,{'aria-label':'Audio setup problem'});for(const [value,text]of [['','Choose a problem'],['audio_load','Audio did not load'],['audio_playback','Audio would not play']])problem.append(el('option',text,{value}));
+      problem.value=draft.technical_problem||'';details.append(el('summary','Report a technical problem'),problem);container.append(details);
+      problem.onchange=()=>{draft.technical_problem=problem.value||null;update();save();};
+      next=continueButton('Continue',async()=>{
+        if(!draft.technical_problem&&(!draft.first_play_completed||!confirmed.checked))throw Error('Listen to the recording and confirm the volume first.');
+        draft.answer=null;draft.audible_confirmed=!draft.technical_problem&&confirmed.checked;
+        const value=preparationRecord(row,draft,'audio_setup');state.audio_setup=value;state.practice_draft=null;if(draft.technical_problem)state.status='setup_failed';await record(value);
+      });update();save();
+    }
     function instructions(row){
       page(row.task==='question_projection'?'Questions':'How the speaker will continue');
       container.append(el('p','You will hear or read short excerpts from conversations. An excerpt may contain only part of what someone said. Answer from what you hear or read.'));
       if(row.task==='question_projection')container.append(el('p','Decide whether the speaker seems to be asking a question, or starting to ask one.'));
       else{
-        container.append(el('p','Predict whether the speaker will finish the current sentence and stop, or finish it and continue with another thought.'));
-        const example=el('div',undefined,{class:'instruction-example'});
-        example.append(el('p','For example, you might hear “The last film I watched…”'),el('p','One possibility is “The last film I watched was a comedy,” followed by the speaker stopping.'),el('p','Another is “The last film I watched was a comedy. I really liked the ending.”'));
-        container.append(example,el('p','Some items contain the full phrase. For those separate checks, judge whether you expect the speaker to stop there or continue with another thought.'));
+        container.append(el('p','A turn is a stretch of speaking by one person. For partial extracts, judge whether the speaker seems close to finishing their turn or likely to keep speaking for a while. You do not need to estimate a number of seconds or count sentences.'));
+        container.append(el('p','Some items are marked “Full phrase check”. For those, decide whether the speaker could naturally finish their turn at that point. You are judging whether stopping would feel possible, not whether the speaker actually stops.'));
       }
-      container.append(el('p','Choose the answer that best matches your expectation. You can replay the audio.'));
+      container.append(el('p','The recording ending does not necessarily mean the speaker intended to stop. Listen to the whole extract before answering. You can pause and replay it.'));
+      if(data.practice)container.append(el('p','You will first try a few practice examples. They teach the controls and questions; your interpretations will not be marked right or wrong.'));
       continueButton('Begin',()=>{state.instructions_seen.push(row.task);save();render();});
     }
     function breakPage(row){
       page('Take a break if you like');container.append(el('p','The next section asks a different question. Continue whenever you are ready.'));
       continueButton('Continue',()=>{state.breaks_taken.push(row.block_index);save();render();});
     }
-    function trial(row){
+    function trial(row,isPractice=false){
       page('');container.querySelector('h1').remove();
-      const draft=C.startTrial(state,now());save();
-      container.append(el('p',`Item ${state.responses.length+1} of ${a.trials.length}`,{class:'progress'}));
+      const draft=isPractice?practiceDraft(row):C.startTrial(state,now());save();
+      container.append(el('p',isPractice?'Practice':`Item ${state.responses.length+1} of ${a.trials.length}`,{class:'progress'}));
+      if(isPractice)container.append(el('p',row.instruction||'Try the controls and choose the answer that best matches your interpretation. Practice responses are separate from the study.',{class:'practice-guidance'}));
       if(row.task==='possible_completion'&&C.context(row)==='full_target_check')container.append(el('p','Full phrase check',{class:'assessment-label'}));
+      let updateChoice=()=>{},next;
       if(row.modality==='audio'){
-        player=el('audio',undefined,{controls:'',preload:'auto','aria-label':'Conversation excerpt'});player.src=row.audio_url;container.append(player);
-        const media=player;
-        draft.playback_events=draft.playback_events||[];
-        const playbackEvent=event=>{draft.playback_events.push({event,at:now(),audio_time_s:media.currentTime});save();};
-        media.onplay=()=>{draft.audio_started=true;draft.play_count++;playbackEvent('play');};
-        media.onpause=()=>playbackEvent('pause');
-        media.onseeking=()=>playbackEvent('seeking');media.onseeked=()=>playbackEvent('seeked');
-        media.onended=()=>{draft.audio_ended=true;playbackEvent('ended');};
-        media.ontimeupdate=()=>{draft.max_audio_time_s=Math.max(draft.max_audio_time_s,media.currentTime);saveSoon();};
-        media.onerror=()=>{draft.playback_errors.push({at:now(),code:media.error?.code||null});playbackEvent('error');showError('The audio could not play. You can try again or choose Report a technical problem.');};
-        const replay=button('Replay',()=>{media.currentTime=0;const p=media.play();if(p?.catch)p.catch(()=>showError('Use the audio player to try playing the excerpt.'));});replay.className='secondary';container.append(replay);
+        audioControls(row,draft,()=>updateChoice());
       }else container.append(el('p',row.text,{class:'words'}));
-      container.append(el('h2',C.question(row.task,row.modality,C.context(row))));
+      container.append(el('h2',C.questionFor(row)));
       const choices=el('div',undefined,{class:'answers',role:'group','aria-label':'Your answer'});
       const technical=el('details'),summary=el('summary','Report a technical problem'),problem=el('select',undefined,{'aria-label':'Technical problem'});
       for(const [value,text]of [['','Choose a problem'],['audio_load','Audio did not load'],['audio_playback','Audio would not play'],['display','The excerpt did not display'],['other','Another technical problem']])problem.append(el('option',text,{value}));
       technical.append(summary,problem);technical.open=Boolean(draft.technical_problem);problem.value=draft.technical_problem||'';
-      const updateChoice=()=>{for(const child of choices.children)child.setAttribute('aria-pressed',String(child.dataset.value===draft.answer));};
+      updateChoice=()=>{const ready=C.audioReady(a,row,draft);for(const child of choices.children){child.setAttribute('aria-pressed',String(child.dataset.value===draft.answer));child.disabled=!ready;}if(next)next.disabled=!draft.technical_problem&&(!ready||!draft.answer);};
       for(const [value,label]of C.options(row)){const b=button(label,()=>{draft.answer=value;draft.technical_problem=null;problem.value='';technical.open=false;updateChoice();save();});b.dataset.value=value;choices.append(b);}updateChoice();
       problem.onchange=()=>{draft.technical_problem=problem.value||null;if(problem.value)draft.answer=null;updateChoice();save();};
       container.append(choices,technical);
-      const noteLabel=el('label','Note (optional)',{for:'note'}),note=el('textarea',undefined,{id:'note',rows:'2'});note.value=draft.note;note.oninput=()=>{draft.note=note.value;save();};noteLabel.append(note);container.append(noteLabel);
-      continueButton('Next',async()=>{if(player)player.pause();const response=C.commit(state,draft,now());await record(response);});
+      next=continueButton(isPractice?'Continue practice':'Next',async()=>{
+        if(player)player.pause();
+        if(isPractice){
+          if(draft.technical_problem){draft.answer=null;}
+          else if(!C.audioReady(a,row,draft)||!C.options(row).some(([value])=>value===draft.answer))throw Error('Listen to the whole extract and choose an answer, or report a technical problem.');
+          const response=preparationRecord(row,draft,'practice');state.practice_responses.push(response);state.practice_draft=null;await record(response);
+        }else await record(C.commit(state,draft,now()));
+      });updateChoice();
     }
     function unavailable(row){
       page('This excerpt is still being prepared');
@@ -133,6 +165,7 @@
     function render(){
       if(state.pending_record){page('Save your response');container.append(el('p','Your response is kept on this device. Please try saving it again to continue.'));continueButton('Try again',()=>record(state.pending_record));return;}
       if(state.status==='declined'){page('Thank you');container.append(el('p','You have chosen not to take part. You can close this page.'));return;}
+      if(state.status==='setup_failed'){page('The audio check could not be completed');container.append(el('p','Your technical-problem report has been saved. This study needs working audio. Please return to the study invitation and report the problem.'));return;}
       if(state.status==='completed'){page('Thank you');container.append(el('p',live?'Your responses have been saved.':'Your preview responses have been saved on this device.'));if(!live)container.append(button('Download preview responses',()=>{const blob=new Blob([JSON.stringify({kind:'candor_study40_preview',preview_only:true,engineering_qa:qa,...state},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a',undefined,{href:url,download:'candor-study40-preview.json'});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));materialsLink();return;}
       if(state.status==='awaiting_save'){page('Saving your responses');container.append(el('p','Please keep this page open while your responses are saved.'));return;}
       if(!live&&!previewEntered){
@@ -141,10 +174,13 @@
         continueButton(state.preview_started?'Resume preview':'Start preview',()=>{previewEntered=true;observeMaterials(state.preview_started?'latest_resume':'before_start');state.preview_started=true;state.consent=state.consent||{accepted:true,at:now(),version:'preview_only_no_participant_consent'};save();render();});materialsLink();return;
       }
       if(!state.consent?.accepted){consent();return;}if(!state.hearing||(live&&state.headphones!==true)){hearing();return;}
+      if(data.practice&&!state.audio_setup?.audible_confirmed){audioSetup();return;}
       const row=C.current(state);if(!row){end();return;}
       const previous=state.responses.at(-1);
       if(previous&&row.block_index!==previous.block_index&&!state.breaks_taken.includes(row.block_index)){breakPage(row);return;}
-      if(!state.instructions_seen.includes(row.task)){instructions(row);return;}if(!row.ready){unavailable(row);return;}trial(row);
+      if(!state.instructions_seen.includes(row.task)){instructions(row);return;}
+      const practice=data.practice?.items.find(item=>item.task===row.task&&!state.practice_responses.some(response=>response.practice_id===item.practice_id));
+      if(practice){trial(practice,true);return;}if(!row.ready){unavailable(row);return;}trial(row);
     }
     save();render();
     return {state,assignment:a,key,save,stop,render,acknowledge(receipt){C.acknowledge(state,receipt,now());save();registry[ids.PROLIFIC_PID].completed=true;storage.setItem(registryKey,JSON.stringify(registry));render();return C.completionUrl(state,config);}};

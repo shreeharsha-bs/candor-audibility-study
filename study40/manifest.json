@@ -7,6 +7,75 @@
     "question_projection": 27,
     "possible_completion": 12
   },
+  "playback_policy": "complete_first_listen_v1",
+  "practice": {
+    "schema_version": 1,
+    "source_manifest_sha256": "d132e1aae31f20144ea54a64eefc2acec1373e4ca4bb68ffdfd05c1728cc0a3f",
+    "volume_check": {
+      "practice_id": "volume_check_v1",
+      "modality": "audio",
+      "ready": true,
+      "audio_url": "practice/audio/volume_check_v1_d2d2533ef863.wav",
+      "input_fingerprint": "eccdee489ab13b7d9c635aa2ae3e304fe2be03b5824b846b2dc0665267b3ccd2"
+    },
+    "items": [
+      {
+        "practice_id": "question_audio_v1",
+        "modality": "audio",
+        "ready": true,
+        "task": "question_projection",
+        "assessment_context": "partial_prediction",
+        "response_protocol": "binary_question_v1",
+        "instruction": "Choose the answer that best matches your impression. This practice explains the procedure; no interpretation is marked correct or incorrect.",
+        "audio_url": "practice/audio/question_audio_v1_fac285edd5c6.wav",
+        "input_fingerprint": "3c6ce62cb3ecd653d9cb41df82361cd4b4938dbb69e3a291feadde1e55e51bb1"
+      },
+      {
+        "practice_id": "question_text_v1",
+        "modality": "text",
+        "ready": true,
+        "task": "question_projection",
+        "assessment_context": "partial_prediction",
+        "response_protocol": "binary_question_v1",
+        "instruction": "Choose the answer that best matches your impression. This practice explains the procedure; no interpretation is marked correct or incorrect.",
+        "text": "I was wondering whether the bakery is open",
+        "input_fingerprint": "084d72800fe9446859ff5c6906b277c18aa25bd013c5083f938af355f252c587"
+      },
+      {
+        "practice_id": "remaining_audio_v1",
+        "modality": "audio",
+        "ready": true,
+        "task": "possible_completion",
+        "assessment_context": "partial_prediction",
+        "response_protocol": "remaining_turn_length_v1",
+        "instruction": "Choose the answer that best matches your impression. This practice explains the procedure; no interpretation is marked correct or incorrect.",
+        "audio_url": "practice/audio/remaining_audio_v1_88dc256928d4.wav",
+        "input_fingerprint": "43a7cc11907e63550ab697dac1d9ceafea4fd250dcd4bc23574590b188cd0088"
+      },
+      {
+        "practice_id": "remaining_text_v1",
+        "modality": "text",
+        "ready": true,
+        "task": "possible_completion",
+        "assessment_context": "partial_prediction",
+        "response_protocol": "remaining_turn_length_v1",
+        "instruction": "Choose the answer that best matches your impression. This practice explains the procedure; no interpretation is marked correct or incorrect.",
+        "text": "The small blue cup is",
+        "input_fingerprint": "c28f5b91e1280b51e4024fc84c195f46e3cad456bfd3a3aa70e2e2dda9d1690a"
+      },
+      {
+        "practice_id": "completion_audio_v1",
+        "modality": "audio",
+        "ready": true,
+        "task": "possible_completion",
+        "assessment_context": "full_target_check",
+        "response_protocol": "full_target_possible_completion_v1",
+        "instruction": "Choose the answer that best matches your impression. This practice explains the procedure; no interpretation is marked correct or incorrect.",
+        "audio_url": "practice/audio/completion_audio_v1_deb73629d808.wav",
+        "input_fingerprint": "48f583f4c32a4064b0e0d212df6e9de5f35b5cca01a9c0581ec7edd49c1b2238"
+      }
+    ]
+  },
   "cohorts": [
     {
       "cohort_id": "W01",
@@ -26318,7 +26387,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Yeah I don't have any plans",
       "input_fingerprint": "dd77d29bb4c72c210b3331b383e070406305a3e7535f4d359078d1f72581bf92"
     },
@@ -26328,7 +26397,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Yeah I don't have any plans on buying",
       "input_fingerprint": "b4eea5cc05fd52098fa403274669bca3d78df0408ee12fda3467e543fb10f84e"
     },
@@ -26338,7 +26407,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "Yeah I don't have any plans on buying another one",
       "input_fingerprint": "ab500546be582ea0c3049121c036cad57ed089b4cd313524ed8ef88732487942"
     },
@@ -26348,7 +26417,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ebc777c50c02734b26b08407_7d1d2a51accf.wav",
       "input_fingerprint": "ec3fa42f3b24c7ec57ecb4de60c1356c9018ed9f77cccd0f3959009556849ea3"
     },
@@ -26358,7 +26427,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_d646500c85a1c60ecadcae39_100d1896922f.wav",
       "input_fingerprint": "8626255ce710a0c6dce7210e532a2ddd9723488a4fc6e374bf1e8ac430d75853"
     },
@@ -26368,7 +26437,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_322fb9616453bc76fd220a3b_17f07b67804c.wav",
       "input_fingerprint": "46ffadc8856ed70ed6b1b7bac4582e380b76f498a8e0fb11fe9299bddd8c4543"
     },
@@ -26378,7 +26447,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_bab20f1df08f4c9780bac582_c3365676c3de.wav",
       "input_fingerprint": "ed6674adb4f82eaa16062da633f032ee7417f2ad74617f017493fb284ab934e0"
     },
@@ -26388,7 +26457,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_69660c623aaacf7dcf8137d9_6c21249fe9d7.wav",
       "input_fingerprint": "5011ccf64e5e0285684e130589319560db2d1f991affbb95cf59845a3c61d3f5"
     },
@@ -26398,7 +26467,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_f8e8cd970fb13ec8f7a54045_2dea52fe258e.wav",
       "input_fingerprint": "1885e2bf2593e8f95ca478474ccad94238ffb630e3c3c6f812a4be6ab3e67f32"
     },
@@ -26408,7 +26477,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_831b8603ac65b93b75cf0acb_41202d9bff9d.wav",
       "input_fingerprint": "fbf774cf6744c918a3080fa805cf4d94e7daa4f6da62d62f6bbba5228147aae8"
     },
@@ -26418,7 +26487,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_23e85472e990614aca661b89_37491ef342f8.wav",
       "input_fingerprint": "c4a31defc9a272d53f7215e33282ffadc4e2c04d72b663880ed08e99a3ede1b0"
     },
@@ -26428,7 +26497,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_06c6654a2ed5571ec720cbef_61ead4338a18.wav",
       "input_fingerprint": "684223ed91e19b979026e43e61d61cdc185ad8dd48d9021aad5e8a9b8fe16671"
     },
@@ -26438,7 +26507,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8240c79f99bae90526893a0b_b05c44eff3f2.wav",
       "input_fingerprint": "ca1ff5719aaf58378416fe8b0d833fc51885a470777b45e4986aee48abd7f6dd"
     },
@@ -26448,7 +26517,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_58139a9711030add243d9000_278703d3e73c.wav",
       "input_fingerprint": "c183bc4fa5a7aacd1a1b29c0c3c6b9871b9077a6d3a6f7e62085a1953756da2e"
     },
@@ -26458,7 +26527,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_29c0c6889d08f34f167f19a6_bb73eb82daf0.wav",
       "input_fingerprint": "9d814a7b449a37ce099d15bb6f9c0947ad50a3760f22f4627d3b16c37b186172"
     },
@@ -26468,7 +26537,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_736b43324e3a4e35c162b79e_92a52a75e70f.wav",
       "input_fingerprint": "f27e3490ac3866872b5e94fe9cb3a8243574a1f6d482425d01ae5f6a9f7b070c"
     },
@@ -26478,7 +26547,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_01668ff84d7a8cc543cd3d45_34a5e3b2cc06.wav",
       "input_fingerprint": "ab91e1aeeda2e510357f5e341b3445d0526e87121259b162c78bab867ab22634"
     },
@@ -26488,7 +26557,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_2238ddb395bae8460bb70f39_8d8c0a33b290.wav",
       "input_fingerprint": "67274872c5309a9942f539a6ba8e46e9ab9dc6617180da7a99d872b39c87f80b"
     },
@@ -26498,7 +26567,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Ever since we got the cat",
       "input_fingerprint": "235fa1585cc7eb736b1a5610aaa7331b0f8775b994bba43f18ab5a22c3beb7fe"
     },
@@ -26508,7 +26577,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Ever since we got the cat they they seem",
       "input_fingerprint": "c2020fb43a6bf6ca9783f423cf563bcbc244dd01224f3600ec82571cb345c23a"
     },
@@ -26518,7 +26587,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "Ever since we got the cat they they seem to be fine",
       "input_fingerprint": "c044215d823ec2044a40549e272025bac4da9db23ebdf675955c9bd001e6ea38"
     },
@@ -26528,7 +26597,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_098ae32c3d0b1c26b837fd73_db6b020a22d0.wav",
       "input_fingerprint": "09abf1e977c857558282288be004423edbf6ef9c27cac2cd5290f11d828b4d22"
     },
@@ -26538,7 +26607,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_abe9d1505aeca464427eb703_b69a32683dcf.wav",
       "input_fingerprint": "9d81cb753c8b85c6da6181c8bf284d72ccd24d799d58c16977c3a887141520ad"
     },
@@ -26548,7 +26617,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_ae8040b8d562782d7eae62fb_22a51b15c6c9.wav",
       "input_fingerprint": "f3e0a417167a777f3aa6526c8943be28cee1a3fc306087986885b897c9671eab"
     },
@@ -26558,7 +26627,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cf7e4984dafca0adf4fa6587_13e8889f4f96.wav",
       "input_fingerprint": "7e58e6dfa0812dc6eb83d1847105fb7788b56d3d56d2e16a16d5241107056b20"
     },
@@ -26568,7 +26637,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_53244c80d5f8fe736f536573_239b12c0a8d2.wav",
       "input_fingerprint": "735dc54b223e526432728ae1cca673242296ba0f915a59be6ff22670352b51eb"
     },
@@ -26578,7 +26647,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_ee13c731744630a1ec41b878_0cf18dd4bd39.wav",
       "input_fingerprint": "3eef83801ac80607edd26076f91feff58608abbf6e26ca8dbc2a3a6d0c8f9c83"
     },
@@ -26588,7 +26657,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_bd91b9e5cdc1c86dc199fc0a_53a0f33804a9.wav",
       "input_fingerprint": "d016577e646bd8a5830751f1c0ead40e086be92afec7f405d29a017a8a036b20"
     },
@@ -26598,7 +26667,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f7c908c715d7a6ed0b9df27b_8850cfe4e8e6.wav",
       "input_fingerprint": "67c2ac3be382c4308683bc5de951ff7b474ac0f3b084eaf4a516020f7679e3ee"
     },
@@ -26608,7 +26677,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_93fc4babca8a0fa46ec95d9b_f3288e89e9c1.wav",
       "input_fingerprint": "f575aa8d1e0305c280d11d08dfd28e3dff7fcc46e56920668a1abbf92f860778"
     },
@@ -26618,7 +26687,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_878be0192ba4eb746564e84a_09128c534e76.wav",
       "input_fingerprint": "552673a40aafe6e6c9a07da5075f64b3c5213428deb9818055bd16f070bbc0b1"
     },
@@ -26628,7 +26697,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b82aaf1b81122b19b75cb3ae_7ebcfbc4ecda.wav",
       "input_fingerprint": "2b0fe5c0a0c90314bce870a1a8c562ea51942124cc0546b4cd1ccf95ac569a10"
     },
@@ -26638,7 +26707,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_33a6493ab3ac1822d8576931_fbfe307523c9.wav",
       "input_fingerprint": "5b461edbfee3a1b609563856ac3df62c16afdeadbe46d3db36f628fc62bff381"
     },
@@ -26648,7 +26717,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_1e34295b5bbb9c19ea76aba4_58568e998c9d.wav",
       "input_fingerprint": "45d320e67233999ae038af07417e0b5e014bc06c02bb1d8220343fb0f6db700b"
     },
@@ -26658,7 +26727,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_335f8a5460701e1db4ac3d1d_89ad2d0e83be.wav",
       "input_fingerprint": "191e66074415ee3230deac9b9e142bdd3feb7cb2f4473a921cfc6cb6f8079685"
     },
@@ -26668,7 +26737,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_c58c624fab14470d04250f54_aec98da301c3.wav",
       "input_fingerprint": "29e780a33754207440e570262033f92cd429ef9b46cdc3e7c983265753a3c995"
     },
@@ -26678,7 +26747,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "That that's pretty cool though",
       "input_fingerprint": "0c526371baba839639365258d2ea92b1b19e9ac12fe47419dd3f920da937f1cd"
     },
@@ -26688,7 +26757,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "That that's pretty cool though the beaches",
       "input_fingerprint": "a0ec08d3a4dca647f43b4dc93ecbcfdf4f7d60c9e7023995cfd356e42d4ec82c"
     },
@@ -26698,7 +26767,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "That that's pretty cool though the beaches must be really nice",
       "input_fingerprint": "eacc28c420c3886b2c3ac89a1e4b1e055bcbc01dc52c8ea22dc4a8460e6b5afc"
     },
@@ -26708,7 +26777,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_fe95ad2e11dc9f4386747fb3_cddb0ff08941.wav",
       "input_fingerprint": "03b853f4e3cea6d611f1fcac15b52c7013d1d973e5d6cf1b22ba383564f47835"
     },
@@ -26718,7 +26787,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8caaa84afb7319cdb59832b5_3a192f2f35df.wav",
       "input_fingerprint": "30e0829a3a022ec356db86ac8b73dbb730f806eb330ad6fb4551ada6dcd52fd4"
     },
@@ -26728,7 +26797,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0dc404e612151ffc93403e33_291b5c0a0a46.wav",
       "input_fingerprint": "6ddb60bb5149d435edd56c51366a9b46a2a85fcf1201c56c9adec1d244dd9fc7"
     },
@@ -26738,7 +26807,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_6d2a71824b22b3d0936a6843_5ada61bb47e7.wav",
       "input_fingerprint": "f651530ef9de9facd9e61f2ca2c1af816ebcce6490f88cda708fbed04b715233"
     },
@@ -26748,7 +26817,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_d5b84900059ab1fbd5ec5059_3433a1b86d82.wav",
       "input_fingerprint": "dd1105229e00c9ca08604c300a8d918eddbc8329e9396fbc72c88a0969393018"
     },
@@ -26758,7 +26827,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_b06dc16980b4c70f7a807d74_14433c2c716a.wav",
       "input_fingerprint": "5732d276b0ef36c422207d8074ffb0c727028c1fe3c80c7cfbf960a65e9142a3"
     },
@@ -26768,7 +26837,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_02fbc4eb6fb33826fc6316cc_0d4e751f1688.wav",
       "input_fingerprint": "57b7169acd20e660e7dbaddb989dc4705cab50d47df8f83cd5fcf69b15c5e861"
     },
@@ -26778,7 +26847,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_1a2f8f4085db45e081a0e387_a63ed773702f.wav",
       "input_fingerprint": "d27e363ea7254166b28bc5a58c5eae6a02395bfc5a837e063ee7ac1ca975b7c8"
     },
@@ -26788,7 +26857,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_906a213149dbc9bc89c769ac_4e046f1813b5.wav",
       "input_fingerprint": "cbacca8f190e9af92a651f4b8cfc920d9e422b91d1791869a4debc5bd4c43951"
     },
@@ -26798,7 +26867,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_1d1f121b77729313081ac8ce_6c2cf6bcb836.wav",
       "input_fingerprint": "17e68721cc18058a893ed97ac50f34c58e6bf24dbd1803cb10671408087c3180"
     },
@@ -26808,7 +26877,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_6676a23391f146ea21996ac6_5dc8b251d7e1.wav",
       "input_fingerprint": "bb88a93335c35e217f7f48499e4e766bc3bf33ab63b0a713c76a9c13f20ec513"
     },
@@ -26818,7 +26887,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_e0bb46b0299504ee008f6eae_bae4ff89e72c.wav",
       "input_fingerprint": "5acbee446044e2252ef4b0cbfc20693a0c47a513ea19127c8e97414fec8cd12d"
     },
@@ -26828,7 +26897,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_aef5a2103beb9103c125b3cc_1a783bfb00d0.wav",
       "input_fingerprint": "40c63b6449234ffc86f1231c61e23e02ce7988abc04ed37cf0c0d5d22d2c1548"
     },
@@ -26838,7 +26907,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ae718504faebd061b10e001e_c003fa267225.wav",
       "input_fingerprint": "a1992c7f9c03de15d020018d8b64a207960ebd8c7face753ee2adf4a5060b4dc"
     },
@@ -26848,7 +26917,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_c08dd5858ccdd126afb2168e_0e6fff475ea0.wav",
       "input_fingerprint": "3e79209c746e0a30597202787fdc701b5d0e4dcdb29c779a72e3ee90e3b92c05"
     },
@@ -26858,7 +26927,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "I'm so glad",
       "input_fingerprint": "4fb50a88833dc918dcf2bfecb0c37cc21e92e6a70c162706b15097fa30d0ddec"
     },
@@ -26868,7 +26937,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "I'm so glad to hear",
       "input_fingerprint": "e9d898e4cf268e8151ec76dbf4bfdaed50d3471e618b31a22eaf57fc12317572"
     },
@@ -26878,7 +26947,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "I'm so glad to hear that",
       "input_fingerprint": "ac8d8da0b68c4fd9c3119c5f8e64b99a2379b2c2ffd28463697458a4d95aa684"
     },
@@ -26888,7 +26957,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_db09230ac95b763e0762d042_c20c20077430.wav",
       "input_fingerprint": "a37a44c43c0b1124449b03370838127cdb6b910b45cc0a5690be5e8674b62d79"
     },
@@ -26898,7 +26967,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_2f918f857eef4586209ebc91_f91f98a923b3.wav",
       "input_fingerprint": "67aaf29e0fd53c2aaa5ba4c978e6cd04be70255dfadb578cd4c54463ca3626c1"
     },
@@ -26908,7 +26977,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_f6187ce0dd944bb10e04d278_684bcc616731.wav",
       "input_fingerprint": "05a5c34c27409ebd08e274d7a4d2c4d5e6b306cdf528dccf07ecc4b5248c61fd"
     },
@@ -26918,7 +26987,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_18015c933531a6dc5a5b4271_a08ce96e1c0e.wav",
       "input_fingerprint": "6fb12dd43605143f7fd58e8d10c7e46db06e37dfb185ffb45f3d38a22b2f7e13"
     },
@@ -26928,7 +26997,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_64024b7874cd060b9009228c_64bc93e8ddb7.wav",
       "input_fingerprint": "a8cdc6fc530c9375470400040281b5e4cf6746d5229e30798e4b79a183ccd1a3"
     },
@@ -26938,7 +27007,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_13d6e16bf615aaa8de516322_66a2383512a1.wav",
       "input_fingerprint": "016e9fdd12609a5c3c1b2f588f660c04ff990467134281dbe06a70f52ac205e4"
     },
@@ -26948,7 +27017,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_50f6dc3e5a6c74438b905079_e79321f412e8.wav",
       "input_fingerprint": "8048978082ffa5f9fb4d23b63bd6a9c2d40b634fdeffeb1b88f699b6109832cd"
     },
@@ -26958,7 +27027,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_33b8e3f204b9163c169af411_beeabdb2272e.wav",
       "input_fingerprint": "c52c0fc8d4e8fea30a1c8c1ecc2b3e69e3a258488a6e85b4526139a0c8d2deb4"
     },
@@ -26968,7 +27037,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_935bf65eda42653dedcb1683_e7c9c0f8eb9e.wav",
       "input_fingerprint": "bd8e1d9910eb80a13b5d3a11176982285b2abb453fff6422dd81fa15783df174"
     },
@@ -26978,7 +27047,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f0d417d936fc2ec8f46b94d9_5d854ae8eb31.wav",
       "input_fingerprint": "48f2fa0f2e9097599ab17ec0f88a1925b2ec2b92f1afb3c030a9c2cbd8dc0ddc"
     },
@@ -26988,7 +27057,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8f915d289d89b3bd1af33a90_0112cd019132.wav",
       "input_fingerprint": "07c728a6ef49117ed5ac790c21355110bb94f56d8487f02ea6905f8aceca39d2"
     },
@@ -26998,7 +27067,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_fb9289656c167b6f0a8cad43_1ea2e9eeebf1.wav",
       "input_fingerprint": "4f042868a21e3e1bc1492f90bf179424d503c87b5bf69a53db146e32db346fd1"
     },
@@ -27008,7 +27077,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_553c02b2762eb2a1b4b83b82_a916724f037f.wav",
       "input_fingerprint": "b6bd8f3672b982a2800075d7b75f6fc6b8d790dfdb0e6e0379de63e45d27bf1a"
     },
@@ -27018,7 +27087,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_c8b24d47dd04c472c83af4be_d4f2765fcbbf.wav",
       "input_fingerprint": "ad6244968ec5ad226a9281d07fe0e3f413a6bcbd72f7819eeddf756452da3751"
     },
@@ -27028,7 +27097,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_9711d0007a0b38689d2b8aa8_48264f036719.wav",
       "input_fingerprint": "d7fccf42e153162878569bb91dee8f4ef03b449ce900873ba8f21979d33dc37d"
     },
@@ -27038,7 +27107,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Uh it I think it's good it's good",
       "input_fingerprint": "1e771618ded63bb7d03689bf90b752ed125fcc35465bf7ea10bfcbd30cee952d"
     },
@@ -27048,7 +27117,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Uh it I think it's good it's good to see that we have a good series",
       "input_fingerprint": "ba831fef5ba04166c55dd8e028034e5fbbf4167fdc537ce188cacc974c4237e7"
     },
@@ -27058,7 +27127,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "Uh it I think it's good it's good to see that we have a good series though",
       "input_fingerprint": "5f811d67efcca8a6bd165c0181aa15fb81eec727e7bcca70100bc4bcabea6e8f"
     },
@@ -27068,7 +27137,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_bed905a2a3dbaf6990dbf087_965059d13e61.wav",
       "input_fingerprint": "e6a31b3ed80f67348cb36d4f79fbc2006bf12df2479d525f4adcbd14b487eb14"
     },
@@ -27078,7 +27147,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ed93c87f1efc6b50349ebd21_6d237b0aac73.wav",
       "input_fingerprint": "bf9f9fc3c4d79506b8a65a56074323f229af9a3bdc8c35cfb1ae53180400c6a4"
     },
@@ -27088,7 +27157,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_d10f6b190795970c54bb7c2e_c0e39974a6c0.wav",
       "input_fingerprint": "ea83601c2bcafd0be8dff485af4430500966525ab29f605f8d03cd6f9140999a"
     },
@@ -27098,7 +27167,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_5a7d525bf9fcc7df4f765d29_220983342faa.wav",
       "input_fingerprint": "ce74d48f3e483af013d2293dd449f6c066a03a7e42d3f7fe2f1d2b263771d6ed"
     },
@@ -27108,7 +27177,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cd635c464adf4b3a130f3c2c_5751b1fab37d.wav",
       "input_fingerprint": "ce6bba90bb443c44a60ded533998966a3aee927182c8b1b6a4820bc88b2504b2"
     },
@@ -27118,7 +27187,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_696caa1e93e3c8146fca6926_4c8dce11eecd.wav",
       "input_fingerprint": "7ae2439df8ac7305870714e6f06469bf8bee57052cf51372ec53d0bf8d3ac20b"
     },
@@ -27128,7 +27197,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_d54758724478de6ae7417c09_04c1173abfe0.wav",
       "input_fingerprint": "07bdcb95447d04164ff819463fc3e568a435bd77eaa3c42a67bce7c2d72f8988"
     },
@@ -27138,7 +27207,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_0c9e62aa00ad50814f4e5da1_a7192e3c04b9.wav",
       "input_fingerprint": "d174e5cef0d5274e7a5bfe48b69a34065573d41aebf920b9600e9c659b337077"
     },
@@ -27148,7 +27217,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_6ce39e53377718dc61726d95_aa2cbb11e9b0.wav",
       "input_fingerprint": "3d84b4310cc5a15327482f9f5eae70983196a93784d0bd7e32652a116877a0d5"
     },
@@ -27158,7 +27227,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_33b4f0c71e0b2a32322483b4_e563b842e8d6.wav",
       "input_fingerprint": "300788b8fab6cb2c7070fb279c055e6861173e17a88be78acb054ea134152231"
     },
@@ -27168,7 +27237,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_a88dcae9bd3de629429e3c58_248605ec117f.wav",
       "input_fingerprint": "1300cfa34c406a434fb5503e472f1827778c9d3d5917561b04c80cec8149262a"
     },
@@ -27178,7 +27247,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0cbf132721525e00c76bbd22_b7bb6eaee9c0.wav",
       "input_fingerprint": "cfb11f565f4f2ecc378b92e6dd11a413f5597e9b16b8843cb3642a1a717e0f61"
     },
@@ -27188,7 +27257,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_0e0987654cbbe8c1f7621c21_ae8c65f0338c.wav",
       "input_fingerprint": "9074eece4bde9626c19038cbb54eb3fc0fa808333da47b1ffe7776d12e09f5c3"
     },
@@ -27198,7 +27267,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_d6fad0de812d31a77e8216cb_5450d053b30b.wav",
       "input_fingerprint": "b707ca5e023942b6990e931bea8a8af0a72cdf04842f4b47492d789a844298dc"
     },
@@ -27208,7 +27277,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_437315946c5f29b2cec704bc_17f30045dcf2.wav",
       "input_fingerprint": "08a6435239925b9c768b059a1b11f2b94781941d3f2c334db70ff99e38dd0d8f"
     },
@@ -27218,7 +27287,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "The last one that I watched",
       "input_fingerprint": "1e139191d5e714b4167b5a01c43eb9e2a7add8f5455280c0057afe53e650aaf5"
     },
@@ -27228,7 +27297,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "The last one that I watched was the Aaron Hernandez",
       "input_fingerprint": "4003c2dd20a020ffa0fa113456d94a212c85ff88ed5baa1a8f7c7cbcc043ec37"
     },
@@ -27238,7 +27307,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "The last one that I watched was the Aaron Hernandez one",
       "input_fingerprint": "f86a4ba717696d6de2614eec371d83899dbd289cd9d16614d8451213d8b85d2c"
     },
@@ -27248,7 +27317,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f4a673bb1b6fae0f9d436432_2dec1961fede.wav",
       "input_fingerprint": "7e2bd1c9297d28c846238ea31b81fb58bbcfaa5a8fbfadad3cd639abc75acea8"
     },
@@ -27258,7 +27327,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_66600b64cec0e9010aed004a_7fbd7e33e765.wav",
       "input_fingerprint": "f7198bd2519617685e645b6baecc33b10ccadc197567a1c5b141f7c2c6300661"
     },
@@ -27268,7 +27337,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_f2385166d2df7da5580dd14b_c70c5286974e.wav",
       "input_fingerprint": "2b7e326e155b76dcbcf983458e93315f58c1ed3110b7a1db8c80de094e432e77"
     },
@@ -27278,7 +27347,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_4bc3b9e7c8643f4eeca37d19_891c7d231786.wav",
       "input_fingerprint": "714c1bd792c42335029c7587051f97cd924023d54c83bae4ddad4fedfd6c0c7a"
     },
@@ -27288,7 +27357,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_96fb4a13e4c1b1f70786453c_09a9b9bd53e5.wav",
       "input_fingerprint": "2ac9354653b2c9b9da6c7e36171f3bb482ef1c9fd9309f871ce80f87cde804bf"
     },
@@ -27298,7 +27367,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0835b85f54dbee2a9c1cdc92_6f369ef6f465.wav",
       "input_fingerprint": "a26a20ffc2a5287529e7c0224873fffec59b7bc8acdf8c16a0701ab924ffa3e0"
     },
@@ -27308,7 +27377,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_3825fe76cb57ba8569877cda_f44dca3d9c5e.wav",
       "input_fingerprint": "4487b21b7369c768a65e186c8bd3d4bb6fc6f21d07bdfcd4e65aa85f9f36d779"
     },
@@ -27318,7 +27387,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cd65c97288c0aadbeabdc325_02756feecf44.wav",
       "input_fingerprint": "908fb3d8ff1ff34668111303f34064864ef37d301007c12de78410e8ad4d92c7"
     },
@@ -27328,7 +27397,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_b2acaea593829fccd48ec964_b227b13bbbd7.wav",
       "input_fingerprint": "910cb1f601b9834611685fdda155f89731a80992de4534a377397a572d75a62f"
     },
@@ -27338,7 +27407,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_c6bef4c3addffe0289b68266_a67d99aac590.wav",
       "input_fingerprint": "9a03667508d46be11af3c97483f2ea29d66328d8838a4b5f579c347323732d0f"
     },
@@ -27348,7 +27417,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_164575760ffab731d5503a82_587cd9fbc8b2.wav",
       "input_fingerprint": "4b2320535d260ba2fcad62f9e4b8dca9efea691f4cbb1a36f2fd16ee528050e7"
     },
@@ -27358,7 +27427,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_ff46855ca3c2fa5756a3a36d_c62a097f2daa.wav",
       "input_fingerprint": "84c06917b69df4c31da73da3ff1e63ec05de2311fe79aa904af5ee978fd903b5"
     },
@@ -27368,7 +27437,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_c0a0f75569871227ea036c35_e7a565f0bfbb.wav",
       "input_fingerprint": "da9ff8c526147e068163c2551b7ddb2a4627867a1006607cad2bbe6e87c02bdd"
     },
@@ -27378,7 +27447,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f08473a53a0c2f6262a079c3_2a6d33ccb134.wav",
       "input_fingerprint": "a1e5685b01fa90c0e2dce70838c076a271490a86b26296d694421a76409f7145"
     },
@@ -27388,7 +27457,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_b756a49fd35ddc73e58161b0_03afab2dc6ae.wav",
       "input_fingerprint": "69ffe2910275ed7c13b39896da417ae1c1d524523475df46dae6e7a7973a69c8"
     },
@@ -27398,7 +27467,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "The show you watch like on Bones",
       "input_fingerprint": "749666b6ab6d3a2aa5b7af7f3772016082f780dbb16202bb4dac2111c55df3a4"
     },
@@ -27408,7 +27477,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "The show you watch like on Bones or any of those like NCIS",
       "input_fingerprint": "ef7c3a07345d97f0bac3a71da94b19804d8f10c7b85c80368e0c94a0aa0b1f48"
     },
@@ -27418,7 +27487,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "The show you watch like on Bones or any of those like NCIS stuff like that",
       "input_fingerprint": "79dc570dd9cfd7ffd18c86df5ebd26174f84f222a0a0998583a49e490dd08952"
     },
@@ -27428,7 +27497,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_afb2d330c06846e38fee5cf5_306eac35218b.wav",
       "input_fingerprint": "fa5b3939a0c707a75cbde94467b0861d6915b63107a45eeaf741112eda8824a2"
     },
@@ -27438,7 +27507,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ebb7068fcd23397e6a9ba873_57c910fc4d2e.wav",
       "input_fingerprint": "751ee84eb75c16f8faaa82269851933018e385431d2082601dee787b77eb8d06"
     },
@@ -27448,7 +27517,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_a79d540baabfc71bb95046c3_c8d95ef3cc2a.wav",
       "input_fingerprint": "b2f0240d0badeb7b73356984cb884845b3b4fd845a1a588f808b7575cc4514f1"
     },
@@ -27458,7 +27527,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8ac82808f79f75c43e39a71d_f3b7f7f81173.wav",
       "input_fingerprint": "bf918ef75207c2778ad5f43a22e846ae75dd2036000a27c18ebd3bc59884ae18"
     },
@@ -27468,7 +27537,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cacd6f552b301b9024c66fc1_8cb634630a72.wav",
       "input_fingerprint": "d29a7ff0e187d9a8829a793d812dc9349958ba29583319b2b74e669fa4169248"
     },
@@ -27478,7 +27547,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_5a956947d6eda169d6dbd014_38354ee553b7.wav",
       "input_fingerprint": "3a88597dbbf31f552bfd3c69172dfc2c2225c926008c208938d59a7d5f4ff79f"
     },
@@ -27488,7 +27557,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_7985b35302451aac480e2e28_22469c72a5f7.wav",
       "input_fingerprint": "905505bc4f352133b3982e588e546967862387dc0dca1ca4b438617edddd51d0"
     },
@@ -27498,7 +27567,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_32f4a0f0a211dc288bae867f_769c4a08380c.wav",
       "input_fingerprint": "7e051b7c560652d2cab0e72d2ed7901932cfb7b0d646bcfbaaf46313c0db8569"
     },
@@ -27508,7 +27577,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_c04089b63f494a382e203f7d_4e38b5f5d273.wav",
       "input_fingerprint": "669d4ec06ceb27fee32a7bcd5d694449a0ec28767b69cd29ced09633c136505b"
     },
@@ -27518,7 +27587,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_0fb867fb853950f4e88316f5_bc59cd36761b.wav",
       "input_fingerprint": "27a7969a9c0687d8c6207c04a5d59f7cb0be28c98510434584aca5af3165537d"
     },
@@ -27528,7 +27597,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_9ca6c51ea4284ea4d0003b76_72c63dff13bc.wav",
       "input_fingerprint": "96b3e5fe418818c6d692b4e0339da86fcc20fdfd5625a01623e47c2cd4e43468"
     },
@@ -27538,7 +27607,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_e0884e245feaef05091ab6da_d02fd5182060.wav",
       "input_fingerprint": "20c310102d6ad545685d980564bc62a2416700a49cb0df8fde140d384a4cf196"
     },
@@ -27548,7 +27617,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_801ba43aa6dc6a1bafe65859_45c3f11eb28c.wav",
       "input_fingerprint": "d8e8ac6ef60450b73df72c2e816a4305d5e141167db40c4f1c07eff97d712571"
     },
@@ -27558,7 +27627,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_0b54f83e5ce656d876a79b5a_494e4371f81e.wav",
       "input_fingerprint": "a47ce5809ea7a7d8a9c485d0e3cc59329d82fafdb4b61dcf63e293d48fd5fe85"
     },
@@ -27568,7 +27637,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_22413b1d88592ac50aafd526_3e54ca8c8030.wav",
       "input_fingerprint": "d1a47d4118a264748705f3add1499e5ec5e067d1da4358e74c0dd169a9ede0c7"
     },
@@ -27578,7 +27647,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "I'm like not cold for the first time today",
       "input_fingerprint": "3466adcffd7f6d3dc79ee3287eead918bf125a926e177d9a49bc9dc99028c0a3"
     },
@@ -27588,7 +27657,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "I'm like not cold for the first time today but I really don't know how long",
       "input_fingerprint": "2b18afce44ec270d50238ea35cc1e0a51d2b608bfb505dec38a20af4d2839662"
     },
@@ -27598,7 +27667,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "I'm like not cold for the first time today but I really don't know how long that'll last",
       "input_fingerprint": "9fda25ee71e6a4dc7f9f5568c7f9f868b1dfe5e168c416669aae115c9b446c0e"
     },
@@ -27608,7 +27677,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b9e77fb837ec1ff85c0121ed_33da958d081b.wav",
       "input_fingerprint": "58149c02d37bf0c86eeb0239daa8dba25ad8716817dce3cd103c6500bdc29b93"
     },
@@ -27618,7 +27687,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_054f0b5da6fdd7d62637dd67_019172bec02f.wav",
       "input_fingerprint": "93e14448a7903b3a87dbea39ebc6a51f04234f1a785d9d817997a3f5a97f384b"
     },
@@ -27628,7 +27697,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_fba99cab11ab8f7e939862e1_3432423154d0.wav",
       "input_fingerprint": "22782df62dff48b40ca0e685571146c083f423f8d4545e8094c9a6c971c4f63a"
     },
@@ -27638,7 +27707,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_29bb83b7fe88b24ba099934f_31ff1bac0a3b.wav",
       "input_fingerprint": "bbdc7dacc69766cf1c94933c5f28602eef12546692fe45f31012136d84f07629"
     },
@@ -27648,7 +27717,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_899248c3842279a332da7764_aca3a7e0a8f1.wav",
       "input_fingerprint": "10a5cad3f592b796db9f36591955fc55820759aa4513ba05543a77493671657e"
     },
@@ -27658,7 +27727,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_fa65f00ca64079a7ff91b374_aba51ffcbcc5.wav",
       "input_fingerprint": "904ea2c367cbeae84b3a8266a6bedebed5163f44f04abb49b365702c0cdcdf4d"
     },
@@ -27668,7 +27737,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_07acc5f3e2bfc6e91a4bf930_74c7d870a37b.wav",
       "input_fingerprint": "6b07bf2d6ed6d520a1c0c54b990f4b05bb5132a57fc0b301bc93fef64c398703"
     },
@@ -27678,7 +27747,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cecf8eb635b3b9cf8040a738_5d851ee68bba.wav",
       "input_fingerprint": "f32de5061dea14d41bb0e3048ec598c622b6f80b6439dca1b5d68b1c963bb39f"
     },
@@ -27688,7 +27757,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0d30de5031e1afe85eab6fde_f6a0d7643aad.wav",
       "input_fingerprint": "2e8b407b887cad3cf986c288891769227d7f4d672f8b0c9618043b12323dd3c7"
     },
@@ -27698,7 +27767,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_d9df2290b76b9bb6ad63c05e_2dd0750ac445.wav",
       "input_fingerprint": "4e28fabad69b615bba21795cda6946b3fb104b2e91aaf95ce5dd25775fd45374"
     },
@@ -27708,7 +27777,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_e6d81249f3a6b321640a3ddd_716dfb5503ed.wav",
       "input_fingerprint": "be04a4ed65cdeb22fc1bfc3a774df2d96c64263bd5d96f5b062b9e7bc0f8854d"
     },
@@ -27718,7 +27787,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_60131f7d48fb6ec85a5cafdd_1a5a58308c65.wav",
       "input_fingerprint": "90915798c33f0032da6983b392cc096f49fdabc04d7e7896a4770bc118dd94ad"
     },
@@ -27728,7 +27797,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_746d5d4b350f85c3fb67d331_4e38e3e075c8.wav",
       "input_fingerprint": "e4aa2001cbe41a88247f8bc5856c3b5ff8becd3e3d9f302e9eb8db0d13f8f0d7"
     },
@@ -27738,7 +27807,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_26ca1eefffba6729871a1d66_2de1b4ac476a.wav",
       "input_fingerprint": "d1ee3e042453ae053f1af0bca0535cb4f32051c4640cba96c7d378207fcfb661"
     },
@@ -27748,7 +27817,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_7ce3d17983eed851bcb84b13_b5188a93ca86.wav",
       "input_fingerprint": "0b43c4bc11de77ee5fc2eee36047bca6b6072dd6300c3b4a20730021ba223a5a"
     },
@@ -27758,7 +27827,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Job secure",
       "input_fingerprint": "f970fd23449e4b1357bcc1e6096325a8d53a41536cd646d78e29d463cecb9983"
     },
@@ -27768,7 +27837,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Job secure financially smart",
       "input_fingerprint": "b304a54ee0086338a47c46f42c925302bddb82a4dde213a66038bd04b1cabe7f"
     },
@@ -27778,7 +27847,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "Job secure financially smart thing",
       "input_fingerprint": "37976e37d01498bd7f3a92927a8d6cb2f9fd9f6d27d96d44284d43f82a0679b7"
     },
@@ -27788,7 +27857,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_38774a5053093acc40bdc4c1_6df24f0b3466.wav",
       "input_fingerprint": "1d03bb2290cee5ede805f407003ea155002a5aa84c367494d8c781629029862e"
     },
@@ -27798,7 +27867,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_02e02b83d3795951e1d26352_c80eece1c70b.wav",
       "input_fingerprint": "b1769f2a71384ca80df520903a474e20a6ef35d5bc3377d4dd38c7e59502e022"
     },
@@ -27808,7 +27877,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_67a0f9993fbb9b73460fcaa2_b6bdd6fb1a43.wav",
       "input_fingerprint": "42f08cc6d8db456c43a87ae504c249581b0fd35741a7373480771fde9aa70a8e"
     },
@@ -27818,7 +27887,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_a19a1304df1c9b1b8d1016b2_cf490788f22c.wav",
       "input_fingerprint": "19149c110f0ad648521c0ebf20a87b72dd8fb3f26bd3f81d6d8f99f8ebf4f1dd"
     },
@@ -27828,7 +27897,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_3cab3f1ad823090c3836952b_48036a1b2d9a.wav",
       "input_fingerprint": "0dbdfe67be86455b03ba3a50557a37e6b99c1e00c3930986dfb971ea044a552b"
     },
@@ -27838,7 +27907,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_b618ef0566ba293cb8edd417_5839329c7081.wav",
       "input_fingerprint": "93be237c4cf3da50469d8c02f04bf49c7a8177aff08eb37e6c674d13454bb469"
     },
@@ -27848,7 +27917,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_7e66c16632967bbd3245ddf7_a49fb92c0a20.wav",
       "input_fingerprint": "69901dedb74428bec052ab95b5188f4bb3aea694180ac16d26ca73e93fc236e1"
     },
@@ -27858,7 +27927,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b69b79030ba089ec14922113_569c18d38d36.wav",
       "input_fingerprint": "dc41f792bd07937d01399697c6a8f403de52543e7cefe7ef5970db4468cfa69b"
     },
@@ -27868,7 +27937,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_3fdfafe8b6549864d2344348_fda6d5601f8b.wav",
       "input_fingerprint": "e58107d8a11a389a25f699d9491d29906ec3c25016ae11d2a11f3196bf6b7f84"
     },
@@ -27878,7 +27947,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_db0e64324024527bdc206b1d_c5f0a627e8f4.wav",
       "input_fingerprint": "eab60448b8d1db978c8fca9cbf62690b02d5a2638dfdb38e108349b70ba7abd0"
     },
@@ -27888,7 +27957,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_037a682ec357e16ab6662db2_ba48dd2996fc.wav",
       "input_fingerprint": "c7f5e5324748402d919c2b8f245266a04098a73eb855a9e7882f0efab8810c20"
     },
@@ -27898,7 +27967,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_19a1e534fecd04d5b34ef69f_a3d81978ba4f.wav",
       "input_fingerprint": "aa7c7fd93d6d66d82da18e4c20d62a075ced69010e73c6a43e5d3b7ee5416331"
     },
@@ -27908,7 +27977,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_9b8d17a24da016cb18c26888_35b8637efa9c.wav",
       "input_fingerprint": "82ce4b4ab974f30b0b0d968f558db18de170134575e101930dc94a00db0b411a"
     },
@@ -27918,7 +27987,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8c64a9c4fc9fd0655d8f36d9_8d1678a5d0eb.wav",
       "input_fingerprint": "863f9afa1dd665f18127d66310b66d3c79993f2e52eeb096f5da25300b5ad91b"
     },
@@ -27928,7 +27997,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_a6d6b81c1abda4ff45b75113_35a1c700f996.wav",
       "input_fingerprint": "5d0d6f3fc62e5855a77faccbc949535cf05a887d69a34910edaa4eed7325eebf"
     },
@@ -27938,7 +28007,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "It's just like a silhouette of something",
       "input_fingerprint": "b2c4816557e5845aecd3e933f5e26bb00c6f6a7a34dee4ce4eb574262af3236a"
     },
@@ -27948,7 +28017,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "It's just like a silhouette of something cause I think the the connection's bad",
       "input_fingerprint": "a4f7cba7404cb85dfdefc10c73675fc8324c098ad428c1fe8ca88ee8ab9e89c3"
     },
@@ -27958,7 +28027,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "It's just like a silhouette of something cause I think the the connection's bad but that's okay",
       "input_fingerprint": "e168fd81dbb0ae8a6d8471d8c24a39f450f1fafd54993a7f678437e8cc7a4da6"
     },
@@ -27968,7 +28037,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ae98c2d37b7ce6bf4dab2c8e_b9fe38e37545.wav",
       "input_fingerprint": "a498ee32fe86379411eddb0991c7fc591da8bacbcd04f62bd31e4f92275f58e4"
     },
@@ -27978,7 +28047,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f8f175f99c17fcc9e67883c9_701ae0091023.wav",
       "input_fingerprint": "43f752dbcad2d6688a794f194e1bbbd0c0a7ad98cd982e86b477bd0b95d9a171"
     },
@@ -27988,7 +28057,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_7a179556a0e053d513735fc9_576ccdd50ce2.wav",
       "input_fingerprint": "a90690ee9fec5e9ee7db08cce5bdff5914556d74cf1f673f55ff696d7e96440f"
     },
@@ -27998,7 +28067,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_18770fbd297b4997b1f42d5c_67b25ce7f404.wav",
       "input_fingerprint": "35705c7897814d9f8d0927c29b8fb96c260d825fccaa296b1ab66aef8c37e2c4"
     },
@@ -28008,7 +28077,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_6abf177b210e91ddbb1a18dc_e6b4f1089004.wav",
       "input_fingerprint": "7599484cd212c12b2af2cf2351e4739fab014d1770571688a0c81e9e3f53fa64"
     },
@@ -28018,7 +28087,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_41658792dea72148a6bebcb0_dbd065001fd4.wav",
       "input_fingerprint": "819c6e109e0776a0ee60303c217f55a0f2c48416261861ef70462c318cd2de74"
     },
@@ -28028,7 +28097,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_a50f7bd69d9b3d89df1ea6d0_f59bfa4205d7.wav",
       "input_fingerprint": "1269c4bba8a0fcf667265d20cc964bc6b1f87307ff1a5b13ed780269a10ce4e4"
     },
@@ -28038,7 +28107,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_dee6602344a40c5344106df8_4c94ec4ad1c4.wav",
       "input_fingerprint": "d8383a7bcbc3058f080c64e9478dd6159caa8983e0498049f931257c6bb82e42"
     },
@@ -28048,7 +28117,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_a8e9983effa041cc45e08f66_e2538cdd6bb8.wav",
       "input_fingerprint": "569a70f708ded434da48e38a26b6000d17f112a417efa7e71d01af22ef6da6d8"
     },
@@ -28058,7 +28127,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_8c859e7f443fa02312c2402e_d42238e4162a.wav",
       "input_fingerprint": "024703f9373ee6b48fd740591a534318e4492a1f619233d3d50e56ad288a15fb"
     },
@@ -28068,7 +28137,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b5edde3adaf5679957a44388_919d67afc9e9.wav",
       "input_fingerprint": "863d06b7e6733f37f90d35b48fc1261be8b455bb811c165e40bef7e32e3f5208"
     },
@@ -28078,7 +28147,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_bf41f09cd7b385e4c89e9895_48b704c04bd4.wav",
       "input_fingerprint": "238db3dd31ac716a76e46e34abd0aa9deb7707bfad098e5bf629147b339a8e81"
     },
@@ -28088,7 +28157,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ac4e6691176fb91a3ac86d8d_f4f8d0ae7586.wav",
       "input_fingerprint": "b46e4ca38102e5eb77957c27d99d98ae4d5281c3c1bcacd4007c533986709eac"
     },
@@ -28098,7 +28167,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_25e345bafa7404907d576777_9c319da29889.wav",
       "input_fingerprint": "dc47ab011ef770551d8082680955e9054d002be200d4cdf831b2d30a27fa3487"
     },
@@ -28108,7 +28177,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_ceaccb0f0d1b729f16f43d92_e2e583bceac9.wav",
       "input_fingerprint": "f6b803ea1ad107dd7c6667e5830831c50ab388abc33302f9172ab742fb5dc7c9"
     },
@@ -28118,7 +28187,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Well I'll tell you what I think",
       "input_fingerprint": "a77aaf81a28e2ae29972f0575274e098516758df8a28a9a190de584a17e92e8c"
     },
@@ -28128,7 +28197,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "Well I'll tell you what I think we're at our time",
       "input_fingerprint": "b6c69d952d3aa16070a41376c84ca296a97fcb524433782efdab022e98734e0a"
     },
@@ -28138,7 +28207,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "Well I'll tell you what I think we're at our time here",
       "input_fingerprint": "c16c1820a670bd3242505805e5d9d96d7ace4ba9dc0226a19fe7b89ec3d7a702"
     },
@@ -28148,7 +28217,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_f118732527da6c6beb68019b_93ade471a9c8.wav",
       "input_fingerprint": "0de4efac36a4eddfe5b4cb3c8808be6c8cc3a756b244675745db30d9f788ab2a"
     },
@@ -28158,7 +28227,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b5316cdb8e819d75d0808767_61eede1a3639.wav",
       "input_fingerprint": "bb71a59c5116aea1d3497c501061f720c90434384760eb0d4482098e963f0656"
     },
@@ -28168,7 +28237,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_a1d62b6674a76adc411dd625_43d4ba7e88e4.wav",
       "input_fingerprint": "deb17f4d2451bd4da669d9c895fda7e51fc26ab4bc41ec23f66de34dcce13e05"
     },
@@ -28178,7 +28247,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_a3fa0d1756bb8d33ca1259b4_2a0543a60a3f.wav",
       "input_fingerprint": "fce4e989528413d95eb3e9313b99d98fdc05c8e5e55bc292654eae6bcf65e98b"
     },
@@ -28188,7 +28257,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_14f71db13a7b75be8252a592_45ecbe4a5e41.wav",
       "input_fingerprint": "79cd941a60cc4e95c19af25f067b587f7f2dd103741f482042f4ff18ea87656e"
     },
@@ -28198,7 +28267,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_3d23e474c0503b1b29c92607_b9ca28b47e4e.wav",
       "input_fingerprint": "ea8f5c2a5ffcbd3832eae58cdad16d8a85fb24d6e7161626537ffe278b655348"
     },
@@ -28208,7 +28277,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_cbe8768009434112bba4d937_63176df22454.wav",
       "input_fingerprint": "aea3face495b027f7ca3e0435d12656b20f34f40b11e3ee394e06abfc792db78"
     },
@@ -28218,7 +28287,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_6c76820861c29198fcffcc48_8fdf037e9487.wav",
       "input_fingerprint": "f71a069cad4a78bcb712eb4e0818d1a0f9b59652a8835dc3f3f297af112e8b7b"
     },
@@ -28228,7 +28297,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_5fb9db8fb22264fdd18dacb5_303c82af199d.wav",
       "input_fingerprint": "00f420412e9cbf2e4d25c9c0d2fa7a16c607343ec3dfef2892fd69a833e2997d"
     },
@@ -28238,7 +28307,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_542f339c85e3e2e30caecddb_a984738b6cf1.wav",
       "input_fingerprint": "afeb87ca9165a59afa8839959247dfe807be1c757050b2bc0a2e6841971856ad"
     },
@@ -28248,7 +28317,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_5b110486b740e6ff9363640e_afdcc66c9d02.wav",
       "input_fingerprint": "1842394cf8e1f01d45252f25e3f7fb145cc4743984de0a5fcf257aa93ba8640d"
     },
@@ -28258,7 +28327,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0deefbf6da9e1c208d6de0e3_a42127a9d995.wav",
       "input_fingerprint": "46c604786da8ee44abac9b6550daedb75704cd059208646cbbf14a9b1130c9d2"
     },
@@ -28268,7 +28337,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_793e090924c6b9d32be0fa53_16f329ff85b3.wav",
       "input_fingerprint": "ac19e9ff6dad65f22631ada45f7f1df49aeaf8d64f64fa624231811c4cb87c92"
     },
@@ -28278,7 +28347,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_b6fbc5b7eea523e29159985e_0d3a654d5a2d.wav",
       "input_fingerprint": "f24e9a0502dd59da6c71f7bdb0b9e670a988b887027a384ca687c5d04f629399"
     },
@@ -28288,7 +28357,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_fbe3810bc603a5f38011d6e4_7c4e4f48adff.wav",
       "input_fingerprint": "3af384e52fd065ad5f0030abc357f5dd3c91c1262ed480b2b2c7b9263e7a3a49"
     },
@@ -28298,7 +28367,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "They're all online now",
       "input_fingerprint": "7ba13f7f532cdbb54e345a142186d8c153cc79044c96d447f28817bd165c8a0a"
     },
@@ -28308,7 +28377,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "text": "They're all online now so it's yeah that's real money",
       "input_fingerprint": "157f45e3aef8b664c87bf7035f2e2adde3a05f6c94bc32368d8c26ab2a860284"
     },
@@ -28318,7 +28387,7 @@
       "modality": "text",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "text": "They're all online now so it's yeah that's real money if you can get into them",
       "input_fingerprint": "53395d0d7233c392cd77cd51c5e9c608a3b492367d0bcdf3773c97dde26430e4"
     },
@@ -28328,7 +28397,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ad6faa59798cd246baaa39be_7c8773e261fe.wav",
       "input_fingerprint": "d59b5ef260f8e304792771cb1c0b2ea511f511bc045543533fa04d944050321b"
     },
@@ -28338,7 +28407,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_ab94c0da502d6a1b3cfcc7ac_df85525fb6d1.wav",
       "input_fingerprint": "ce04f16f0eb1b3164726ea777faaae06f4730511c2092085f1b0ea7ae357c810"
     },
@@ -28348,7 +28417,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_d4411f62b1e1b10924e0e4bc_a54e0219d74a.wav",
       "input_fingerprint": "47812f20879d639555cb1dac761a991810c1a1e384f27019c00697bab5021bd7"
     },
@@ -28358,7 +28427,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_751492079efe88c2724adec2_75e7d5fd2913.wav",
       "input_fingerprint": "4b6eecb0a150c78421f8fb2167352b52f51f94646c6ab121b3669434118b44c9"
     },
@@ -28368,7 +28437,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_031c572e58d101bec9de2aed_1eb9dcd4f472.wav",
       "input_fingerprint": "1bc9c21ea0262a3f599d4aa538bf487758e004386ead66206df34a4d7a6af0c4"
     },
@@ -28378,7 +28447,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_7d98d2486a1bc917e4265b04_ab1b0da9ed56.wav",
       "input_fingerprint": "69b6554f0474976decf6a227262ca9e313a6b561752bfcc73ec33d177e1e1af6"
     },
@@ -28388,7 +28457,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_70317c038b6e65f8a374db31_3d2d489ff9e1.wav",
       "input_fingerprint": "23da68ae842ef1c4d5d87326efd8efa060ea7dce2f10f90c9acdb1e784fd8394"
     },
@@ -28398,7 +28467,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_e28da56fa53367fba06bb2c0_03d3ec2e733f.wav",
       "input_fingerprint": "4cbffffaee59041b602b15af53a23b724fbf51b640e0e23ea6e93d2229948c7a"
     },
@@ -28408,7 +28477,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_4d5803d03f8f752ee4c9e050_22eebcde9e69.wav",
       "input_fingerprint": "6ac78e3cdba977fb2db3caba49db4441e7ff6a3f618c766e30cbe30abb1d5f68"
     },
@@ -28418,7 +28487,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_93150ff60b9ecf7951be8ca1_e9424bcdc76c.wav",
       "input_fingerprint": "296956e07fa4319bc8d72a1ef249a821a8de01291b67ec1a828e8333e66e96e8"
     },
@@ -28428,7 +28497,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_c25c4a3c10a631237678eaa3_fd20a5c450c2.wav",
       "input_fingerprint": "1a4a8772e30c9f616b7e7f1ddef918db723bced9ee8a02bb3a3df802957034e8"
     },
@@ -28438,7 +28507,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_f61f5a4e6e14f8723596323a_8f5b14cf5506.wav",
       "input_fingerprint": "5753a088b691faa711630f9c31d39dd488384e6f76f8db83f8ce0121ce5e3223"
     },
@@ -28448,7 +28517,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_3900bb00e9c1864b63b5f711_0f4306386a79.wav",
       "input_fingerprint": "0842b98525ea3ec6ddc0a1d9be3c6f885b7b32099602e1529305aa888e57f3b0"
     },
@@ -28458,7 +28527,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "partial_prediction",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "remaining_turn_length_v1",
       "audio_url": "audio/p_4fad13feb9621b015a389f8f_165cd2aeba0f.wav",
       "input_fingerprint": "e1105db232b033049376eca7107c4c3da33e3a7d3d749dc999d70bea1967d2ac"
     },
@@ -28468,7 +28537,7 @@
       "modality": "audio",
       "ready": true,
       "assessment_context": "full_target_check",
-      "response_protocol": "turn_extent_v1",
+      "response_protocol": "full_target_possible_completion_v1",
       "audio_url": "audio/p_0bd800bd00f6c5cfd5411e92_cda3ec15fcac.wav",
       "input_fingerprint": "b5e13d4e143a655aa600ba5d7b92f7bdb01fc23d218009b130b1008a01b07d36"
     },
@@ -31413,6 +31482,6 @@
       "input_fingerprint": "5463d77fd3e649c28eebb8b5c5e4c51b9f508ce1ea7dd174d080f32d490904c6"
     }
   },
-  "interface_sha256": "adb14a754b84cd26b191e780e9bdadc2e67c6afcd6fd8a355e0509f1680ef185",
-  "build_id": "b_fe245126d8541c0a60f8e310"
+  "interface_sha256": "7eba5d54922099b4089b27ec2f3de8699ae1de2e857011be5705ab6e1ddeae61",
+  "build_id": "b_c11100ff308f4d895c7062b1"
 }
