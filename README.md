@@ -8,6 +8,10 @@ close to finishing or likely to keep speaking for a while. Full-target checks
 separately ask whether the speaker could naturally finish here. Questionhood
 uses Yes/No.
 
+Participants move directly to the next section’s instructions without a break
+screen. Trials show the question without a full-phrase label. The completion
+page confirms saving and offers no participant response download.
+
 This site hosts all 1,233 experimental WAVs and four preparation WAVs. All 84
 assignments retain their 39 experimental presentations. Old pilot pages and unused
 recordings were archived before removal; earlier Git commits preserve them.
