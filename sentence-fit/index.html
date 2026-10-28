@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sentence fit · research preview</title>
+  <link rel="stylesheet" href="styles.css?v=e86ec633275e">
+</head>
+<body>
+  <header class="page-header">
+    <p class="eyebrow">RESEARCH PREVIEW</p>
+    <h1>Which sentence fits the audio?</h1>
+    <p class="intro">Review uncertain cuts first, or browse all recordings and the proposed sentence-choice task.</p>
+  </header>
+  <main>
+    <aside class="notice" role="note"><strong>Technical materials for review.</strong> Audio boundaries and playback versions still need listening review. This page is for checking the task and materials; choices saved here are prototype feedback, not participant evidence.</aside>
+    <section class="automated-summary" aria-label="Automated transcript check summary"><h2>Automated transcript checks</h2><p id="automated-summary">Parakeet checks have not been added to this preview.</p><p class="check-caution">Transcript agreement is an automated word check. It does not establish naturalness, sentence fit, boundary quality, or listening approval.</p></section>
+    <section class="research-controls" aria-label="Researcher preview controls">
+      <div class="control"><label for="review-scope">Review queue</label><select id="review-scope" disabled><option value="uncertain">Uncertain cuts</option><option value="all">All clips</option></select></div>
+      <div class="control"><label for="item">Item</label><select id="item" disabled></select></div>
+      <div class="control"><label for="gate">Audio cut</label><select id="gate" disabled><option value="early">Early cut</option><option value="late">Later cut</option><option value="shared_end">Full shared phrase</option></select></div>
+      <div class="control"><label for="source">Source</label><select id="source" disabled><option value="original">Original human recording</option></select></div>
+      <div class="control"><label for="modality">Preview presentation</label><select id="modality" disabled><option value="audio">Audio</option><option value="text">Exposed words only</option></select></div>
+      <p id="availability" class="availability">Loading available materials…</p>
+    </section>
+    <div class="queue-navigation"><button id="previous-cut" class="secondary" disabled>Previous cut</button><button id="next-cut" class="secondary" disabled>Next cut</button><button id="next-unreviewed" class="secondary" disabled>Next unreviewed uncertain cut</button><span id="queue-position">Loading review queue…</span><span id="quality-progress"></span></div>
+    <p id="source-status" class="source-status" role="note">Loading source details…</p>
+    <div id="player" class="player">
+      <button id="play" class="primary" disabled>Play audio</button>
+      <button id="replay" class="secondary" disabled>Replay</button>
+      <span id="playback-status" role="status" aria-live="polite">Complete one listen to choose.</span>
+      <audio id="audio" preload="metadata"></audio>
+    </div>
+    <section class="cut-review" aria-labelledby="cut-review-heading"><h2 id="cut-review-heading">Review this cut</h2><p id="cut-review-reasons">Automated triage is pending.</p><p>After listening, record whether the cut sounds right, needs an adjustment, or remains uncertain. This feedback stays separate from the sentence-choice task.</p><div class="cut-review-actions" role="group" aria-label="Cut review feedback"><button id="cut-fits" class="secondary" disabled>Cut sounds right</button><button id="cut-adjust" class="secondary" disabled>Needs adjustment</button><button id="cut-unsure" class="secondary" disabled>Unsure</button></div><p id="cut-review-status" role="status">Listen to the clip before recording cut feedback.</p></section>
+    <section class="trial" aria-labelledby="question">
+      <p class="trial-label">LISTEN AND CHOOSE</p>
+      <h2 id="question">Which of these two sentences does the audio sound more likely to be part of?</h2>
+      <p id="instructions" class="instructions">You will hear a short extract. Both sentences may match the words you hear. Listen to how the words are said, then choose the sentence that seems to fit better.</p>
+      <div id="text-stimulus" class="text-stimulus" hidden></div>
+      <div class="choices" role="group" aria-label="Sentence choices">
+        <button id="choice-a" class="choice" disabled><span class="letter">A</span><span class="sentence"></span></button>
+        <button id="choice-b" class="choice" disabled><span class="letter">B</span><span class="sentence"></span></button>
+      </div>
+      <p id="choice-status" class="choice-status" role="status" aria-live="polite">Choose after listening.</p>
+      <button id="problem" class="text-button" disabled>Report a playback problem</button>
+    </section>
+    <details class="transcript-checks"><summary>Inspect this clip’s automated transcript check</summary><p id="parakeet-status">Select an audio clip to inspect its check.</p><dl id="parakeet-check"></dl></details>
+    <section class="review-tools" aria-label="Researcher notes and provenance">
+      <label for="notes">Optional review note</label>
+      <textarea id="notes" rows="3" placeholder="For example: sentence wording, cut quality, or unclear instructions." disabled></textarea>
+      <div class="review-actions"><button id="export" class="secondary" disabled>Export review feedback</button><p id="export-status">Feedback is saved in this browser for this preview build. Export a copy when finished.</p></div>
+      <details><summary>Researcher details</summary><dl id="provenance"></dl></details>
+    </section>
+    <p id="fatal" class="fatal" role="alert" hidden></p>
+  </main>
+  <footer><span id="build"></span> · <span id="pending-status">SC outputs are pending.</span></footer>
+  <script src="app.js?v=4496e4acdc81"></script>
+</body>
+</html>

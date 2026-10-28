@@ -1,6 +1,12 @@
 # CANDOR speech study
 
-[Participant study in Cognition](https://p9uk26euoi.cognition.run/) · [Study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials)
+[Participant study in Cognition](https://p9uk26euoi.cognition.run/) · [Study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials) · [Sentence-fit cut review](https://shreeharsha-bs.github.io/candor-audibility-study/sentence-fit/)
+
+The separate sentence-fit preview contains 324 gated audio clips and a matched
+text condition. Its cut-review queue uses automatic Parakeet transcription and
+boundary checks to flag uncertain clips for listening. These checks do not grant
+participant release or replace listening verification. All clips remain available
+in the preview; the existing participant study is unchanged.
 
 The study presents 39 experimental items in two sections, with a volume check and
 five separate practice items. Partial turn judgments ask whether the speaker is
@@ -12,7 +18,7 @@ Participants move directly to the next section’s instructions without a break
 screen. Trials show the question without a full-phrase label. The completion
 page confirms saving and offers no participant response download.
 
-This site hosts all 1,233 experimental WAVs and four preparation WAVs. All 84
+The participant study retains all 1,233 experimental WAVs and four preparation WAVs. All 84
 assignments retain their 39 experimental presentations. Old pilot pages and unused
 recordings were archived before removal; earlier Git commits preserve them.
 Browser responses and colleague reviews have not been erased. Private mappings
