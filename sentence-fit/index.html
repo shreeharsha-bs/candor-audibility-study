@@ -10,21 +10,21 @@
   <header class="page-header">
     <p class="eyebrow">RESEARCH PREVIEW</p>
     <h1>Which sentence fits the audio?</h1>
-    <p class="intro">Review uncertain cuts first, or browse all recordings and the proposed sentence-choice task.</p>
+    <p class="intro">Start with the cuts marked for review, or browse all recordings and the proposed sentence-choice task.</p>
   </header>
   <main>
     <aside class="notice" role="note"><strong>Technical materials for review.</strong> Audio boundaries and playback versions still need listening review. This page is for checking the task and materials; choices saved here are prototype feedback, not participant evidence.</aside>
-    <section class="automated-summary" aria-label="Automated transcript check summary"><h2>Automated transcript checks</h2><p id="automated-summary">Parakeet checks have not been added to this preview.</p><p class="check-caution">Transcript agreement is an automated word check. It does not establish naturalness, sentence fit, boundary quality, or listening approval.</p></section>
+    <section class="automated-summary" aria-label="Automatic cut check summary"><h2>Automatic cut checks</h2><p id="automated-summary">Loading automated evidence…</p><p class="check-caution">Transcript and timing checks help set review priority. They do not establish naturalness, sentence fit, boundary quality, or listening approval.</p></section>
     <section class="research-controls" aria-label="Researcher preview controls">
       <div class="control"><label for="item-set">Item set</label><select id="item-set" disabled><option value="added">Six added phrases</option><option value="all">All 18 phrases</option></select></div>
-      <div class="control"><label for="review-scope">Review queue</label><select id="review-scope" disabled><option value="uncertain">Uncertain cuts</option><option value="all">All clips</option></select></div>
+      <div class="control"><label for="review-scope">Review queue</label><select id="review-scope" disabled><option value="uncertain">Review first</option><option value="all">All clips</option></select></div>
       <div class="control"><label for="item">Item</label><select id="item" disabled></select></div>
       <div class="control"><label for="gate">Audio cut</label><select id="gate" disabled><option value="early">Early cut</option><option value="late">Later cut</option><option value="shared_end">Full shared phrase</option></select></div>
       <div class="control"><label for="source">Source</label><select id="source" disabled><option value="original">Original human recording</option></select></div>
       <div class="control"><label for="modality">Preview presentation</label><select id="modality" disabled><option value="audio">Audio</option><option value="text">Exposed words only</option></select></div>
       <p id="availability" class="availability">Loading available materials…</p>
     </section>
-    <div class="queue-navigation"><button id="previous-cut" class="secondary" disabled>Previous cut</button><button id="next-cut" class="secondary" disabled>Next cut</button><button id="next-unreviewed" class="secondary" disabled>Next unreviewed uncertain cut</button><span id="queue-position">Loading review queue…</span><span id="quality-progress"></span></div>
+    <div class="queue-navigation"><button id="previous-cut" class="secondary" disabled>Previous cut</button><button id="next-cut" class="secondary" disabled>Next cut</button><button id="next-unreviewed" class="secondary" disabled>Next unreviewed priority cut</button><span id="queue-position">Loading review queue…</span><span id="quality-progress"></span></div>
     <p id="source-status" class="source-status" role="note">Loading source details…</p>
     <div id="player" class="player">
       <button id="play" class="primary" disabled>Play audio</button>
@@ -45,7 +45,7 @@
       <p id="choice-status" class="choice-status" role="status" aria-live="polite">Choose after listening.</p>
       <button id="problem" class="text-button" disabled>Report a playback problem</button>
     </section>
-    <details class="transcript-checks"><summary>Inspect this clip’s automated transcript check</summary><p id="parakeet-status">Select an audio clip to inspect its check.</p><dl id="parakeet-check"></dl></details>
+    <details class="transcript-checks"><summary>Inspect transcripts, timing diagnostics and review priority</summary><p id="parakeet-status">Select an audio clip to inspect its checks.</p><dl id="parakeet-check"></dl><details id="original-parakeet-details" hidden><summary>Earlier Parakeet check on the unpadded playback clip</summary><dl id="original-parakeet-check"></dl></details></details>
     <section class="review-tools" aria-label="Researcher notes and provenance">
       <label for="notes">Optional review note</label>
       <textarea id="notes" rows="3" placeholder="For example: sentence wording, cut quality, or unclear instructions." disabled></textarea>
@@ -55,6 +55,6 @@
     <p id="fatal" class="fatal" role="alert" hidden></p>
   </main>
   <footer><span id="build"></span> · <span id="pending-status">SC outputs are pending.</span></footer>
-  <script src="app.js?v=8fa94862d7cf"></script>
+  <script src="app.js?v=ea3dfe82b825"></script>
 </body>
 </html>

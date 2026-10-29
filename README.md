@@ -5,10 +5,15 @@
 The separate sentence-fit preview contains 486 gated audio clips across 18 phrases
 and 54 matched text presentations. It opens on the six added continuation phrases;
 the previous 12 phrases and compatible cut-review feedback remain available.
-Its cut-review queue uses automatic Parakeet transcription and
-boundary checks to flag uncertain clips for listening. These checks do not grant
-participant release or replace listening verification. All clips remain available
-in the preview; the existing participant study is unchanged.
+Its cut-review queue combines independent Whisper-large-v3 and Parakeet checks
+on all 486 clips. Review first: 110 clips overall, including 32 of the 162 added
+clips (previously 312 and 107). Lower priority requires Whisper endpoint support
+and support from at least one of two fixed Parakeet inputs: the exact playback
+clip or its unchanged speech samples followed by 0.5 seconds of silence for
+recognition only. Both Parakeet inputs are one recognizer, not independent votes.
+Transcripts, disagreements and earlier timing diagnostics remain inspectable.
+These automatic priorities do not grant listening approval. All clips and saved
+compatible review responses remain available; the participant study is unchanged.
 
 The added batch uses one common playback gain of 0.7799887605749128 to prevent
 clipping; the previous 324 clips retain their exact bytes and gain of
