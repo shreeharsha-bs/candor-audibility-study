@@ -1,6 +1,6 @@
 # Separate study tests
 
-These pages test question-act interpretation and the revised sentence-choice task without Cognition. Participant recruitment remains disabled. `shared/config.js` selects local preview or an Apps Script test deployment.
+These pages remain a test-only Google Sheets fallback for question-act interpretation and the revised sentence-choice task. Cognition has been selected for participant collection; recruitment through these fallback pages remains disabled. `shared/config.js` selects local preview or an Apps Script test deployment.
 
 - `question/`: 27 phrases, 14 versions, three gates; 1,134 planned combinations.
 - `turn/`: 18 phrases, audio only; 270 primary combinations and 108 secondary combinations. The prepared End phrases have five audio versions and Cont phrases have nine. No new synthesis was made.
@@ -24,3 +24,12 @@ Coverage must be checked for every planned combination, including zero-count cel
 The Google Sheet and Apps Script project are private research infrastructure. Public files contain stimuli and application code only. The response endpoint returns only the authenticated session's own assignment and save acknowledgements. It must never expose aggregate response rows, other participants' identifiers, or an administrative key.
 
 A local preview explicitly keeps choices on the device. A connected test run is saved with `mode=test`, separate from participant coverage. Live collection requires both the server and page configuration to be enabled after the full saving and Prolific-return flow is tested.
+
+
+## Background saving
+
+Next first stores the answer durably in this browser, then advances. The page sends batches of at most five responses, or sends the waiting responses after 15 seconds. Retries retain the same request ID and payload. The final completion screen and any participant return wait for all response acknowledgements. A browser Web Lock prevents another active copy from overwriting the same participant's local progress; connected studies fail closed if that protection is unavailable. The separate Replay button has been removed; Play restarts an ended extract.
+
+Closing the page before a pending batch reaches the server can leave those answers only on that device. Reloading the same session retries them. A participant who never returns can therefore leave an incomplete server record; local persistence does not guarantee upload.
+
+A hosted load test exercised 10 sessions and 225 responses: median POST latency was 9.886 seconds and p95 was 33.228 seconds, with seven BUSY retries. This verifies that tested recovery path, not capacity for an unrestricted simultaneous release. The Sheets fallback remains test-only.
