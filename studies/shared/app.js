@@ -235,7 +235,7 @@
       else if(mode==='live')app.append(element('p','Please return to Prolific and contact the researcher if a completion code is required.'));
       if(mode!=='live'){
         const actions=element('div',undefined,{class:'actions'});
-        actions.append(button('Download test responses',()=>{const output=clone(state);delete output.session_token;const url=URL.createObjectURL(new Blob([JSON.stringify(output,null,2)],{type:'application/json'}));const link=element('a',undefined,{href:url,download:`${data.study_id}-${mode}-responses.json`});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}),button('Start another test',()=>{localStorage.removeItem(identityKey);location.reload();}));app.append(actions);
+        actions.append(button('Download test responses',()=>{const output=clone(state);delete output.session_token;const url=URL.createObjectURL(new Blob([JSON.stringify(output,null,2)],{type:'application/json'}));const link=element('a',undefined,{href:url,download:`${data.study_id}-${mode}-responses.json`});link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}));app.append(actions);
       }
       modeNote();
     }
