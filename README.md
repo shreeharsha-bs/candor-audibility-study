@@ -2,11 +2,17 @@
 
 [Participant study in Cognition](https://p9uk26euoi.cognition.run/) · [Study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials) · [Sentence-fit cut review](https://shreeharsha-bs.github.io/candor-audibility-study/sentence-fit/)
 
-The separate sentence-fit preview contains 324 gated audio clips and a matched
-text condition. Its cut-review queue uses automatic Parakeet transcription and
+The separate sentence-fit preview contains 486 gated audio clips across 18 phrases
+and 54 matched text presentations. It opens on the six added continuation phrases;
+the previous 12 phrases and compatible cut-review feedback remain available.
+Its cut-review queue uses automatic Parakeet transcription and
 boundary checks to flag uncertain clips for listening. These checks do not grant
 participant release or replace listening verification. All clips remain available
 in the preview; the existing participant study is unchanged.
+
+The added batch uses one common playback gain of 0.7799887605749128 to prevent
+clipping; the previous 324 clips retain their exact bytes and gain of
+0.8067268922249836. Each batch uses the same files for preview and SC inputs.
 
 The study presents 39 experimental items in two sections, with a volume check and
 five separate practice items. Partial turn judgments ask whether the speaker is
