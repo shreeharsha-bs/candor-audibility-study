@@ -132,7 +132,7 @@
       const headphones=check('I am using headphones.',state.preparation?.headphones_confirmed===true);
       const begin=button(state.session_id?'Resume study':'Continue',async()=>{
         if(busy)return;busy=true;begin.disabled=true;begin.textContent='Opening…';
-        try{state.preparation={...state.preparation,consented_at:state.preparation?.consented_at||now(),headphones_confirmed:true,consent_version:config.consent_version||'github_sheets_test_v1'};save();await startSession();render();}
+        try{state.preparation={...state.preparation,consented_at:state.preparation?.consented_at||now(),headphones_confirmed:true,consent_version:config.consent_version||'github_sheets_test_v1'};save();await startSession();busy=false;render();}
         catch(e){error(e.message);begin.textContent=state.session_id?'Resume study':'Try again';}finally{busy=false;begin.disabled=!(agree.checked&&headphones.checked);}
       },'primary');
       const update=()=>{begin.disabled=!(agree.checked&&headphones.checked);};agree.addEventListener('change',update);headphones.addEventListener('change',update);update();app.append(element('div',undefined,{class:'actions'}));app.lastChild.append(begin);modeNote();
@@ -149,7 +149,7 @@
     }
     function pending(){
       clear();app.append(element('h1','Save your answer'),element('p','Your answer is kept on this device. Please keep this page open and retry the save to continue.'));
-      const retry=button('Retry save',async()=>{if(busy)return;busy=true;retry.disabled=true;try{await deliver();render();}catch(e){error(e.message);retry.disabled=false;}finally{busy=false;}},'primary');app.append(retry);modeNote();
+      const retry=button('Retry save',async()=>{if(busy)return;busy=true;retry.disabled=true;try{await deliver();busy=false;render();}catch(e){error(e.message);retry.disabled=false;}finally{busy=false;}},'primary');app.append(retry);modeNote();
     }
     async function deliver(){
       if(!state.pending)return;const pending=state.pending;
