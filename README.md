@@ -1,23 +1,33 @@
 # CANDOR speech study
 
-[Participant study in Cognition](https://p9uk26euoi.cognition.run/) · [Study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials) · [Sentence-fit cut review](https://shreeharsha-bs.github.io/candor-audibility-study/sentence-fit/)
+[Sentence-fit preview](https://shreeharsha-bs.github.io/candor-audibility-study/sentence-fit/) · [New sentence-fit task in Cognition](https://b09ue0q3dv.cognition.run/) · [Original participant study](https://p9uk26euoi.cognition.run/) · [Original study materials](https://shreeharsha-bs.github.io/candor-audibility-study/study40/?view=materials)
 
-The separate sentence-fit preview contains 486 gated audio clips across 18 phrases
-and 54 matched text presentations. It opens on the six added continuation phrases;
-the previous 12 phrases and compatible cut-review feedback remain available.
-Its cut-review queue combines independent Whisper-large-v3 and Parakeet checks
-on all 486 clips. Review first: 110 clips overall, including 32 of the 162 added
-clips (previously 312 and 107). Lower priority requires Whisper endpoint support
-and support from at least one of two fixed Parakeet inputs: the exact playback
-clip or its unchanged speech samples followed by 0.5 seconds of silence for
-recognition only. Both Parakeet inputs are one recognizer, not independent votes.
-Transcripts, disagreements and earlier timing diagnostics remain inspectable.
-These automatic priorities do not grant listening approval. All clips and saved
-compatible review responses remain available; the participant study is unchanged.
+## Sentence-fit study
 
-The added batch uses one common playback gain of 0.7799887605749128 to prevent
-clipping; the previous 324 clips retain their exact bytes and gain of
-0.8067268922249836. Each batch uses the same files for preview and SC inputs.
+The new preview uses a simple participant screen: the gated audio (or matched
+text), two full sentence choices, a technical-problem option, and Next. The audio
+question is: “Which of these two sentences does the audio sound more likely to be
+part of?” This is a relative-fit judgment; it has no correct-source answer key.
+
+There are 60 counterbalanced lists of 18 experimental items. Each phrase appears
+once per list, with six early, six late, and six shared-end presentations. Across
+lists, all 486 gated audio clips and 54 text presentations appear twice, with the
+sentence-choice order reversed. The researcher approved all cuts; the existing
+486 playback files remain byte-for-byte unchanged.
+
+The public page starts with the experimental items. Add `?practice=1` to include
+the headphone/volume setup and two separate practice items, or `?condition=1`
+through `?condition=60` to inspect a particular list. Preview choices stay in the
+browser and are separate from participant responses. Earlier cut-review records
+and automated diagnostics are preserved in the research archive and Git history.
+
+The separate Cognition task is configured for direct testing with 60 conditions.
+Test records are explicitly marked as engineering QA and excluded from participant
+analysis. Paid recruitment is not open; the new study's recruitment information
+and completion URL still need to be configured. The original study and its
+responses retain their original questions.
+
+## Original questionhood and turn-completion study
 
 The study presents 39 experimental items in two sections, with a volume check and
 five separate practice items. Partial turn judgments ask whether the speaker is
