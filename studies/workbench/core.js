@@ -67,7 +67,13 @@
     const headers=rows.shift().map(h=>h.trim());
     if(headers.some(h=>!h)||new Set(headers).size!==headers.length)throw Error('The export has empty or repeated column names.');
     if(headers.some(h=>['__proto__','prototype','constructor'].includes(h)))throw Error('The export contains an unsupported column name.');
+    // Cognition unions columns across runs but leaves earlier rows at their
+    // original width when a resumed run introduces this final optional flag.
+    // Fill only that absent suffix; never shift fields or pad required data.
+    const omittedResumeSuffix=headers.at(-1)==='resume_recovered'&&headers.at(-2)==='completed_at'&&
+      ['schema_version','study_id','record_type','response_id'].every(h=>headers.includes(h));
     return rows.map((values,index)=>{
+      if(omittedResumeSuffix&&values.length===headers.length-1)values=values.concat('');
       if(values.length!==headers.length)throw Error('Row '+(index+2)+' has '+values.length+' fields; expected '+headers.length+'.');
       const result={}; headers.forEach((key,i)=>result[key]=values[i]); return result;
     });
