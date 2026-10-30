@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; media-src 'self' https://shreeharsha-bs.github.io; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>CANDOR · Batch workbench</title>
+  <link rel="stylesheet" href="styles.css?v=20261030a">
+  <script src="vendor/fflate-0.8.2.js" defer></script>
+  <script src="core.js?v=20261030a" defer></script>
+  <script src="analysis.js?v=20261030a" defer></script>
+  <script src="io.js?v=20261030a" defer></script>
+  <script src="app.js?v=20261030a" defer></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to results</a>
+  <header class="site-header">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">c.</span><span>CANDOR <strong>Batch workbench</strong></span></a>
+    <span class="privacy">Files stay in this browser</span>
+  </header>
+  <main id="content">
+    <section class="intro">
+      <p class="eyebrow">LISTENING STUDIES / COLLECTION REVIEW</p>
+      <h1>What does this batch change?</h1>
+      <p class="lede">Build a cumulative picture of coverage, participant experience, and speech judgments. Add each completed batch; keep every planned comparison in view.</p>
+    </section>
+    <section class="import-panel" aria-labelledby="import-title">
+      <div><h2 id="import-title">Add a batch</h2><p>Drop Cognition ZIP exports here, or select ZIP, CSV, TSV or JSON files. Both tasks can be imported together.</p><p class="small">Processed locally. Nothing in your exports is uploaded to a server.</p></div>
+      <div class="import-actions"><label class="button primary" for="files">Choose batch files</label><input id="files" type="file" accept=".zip,.csv,.tsv,.json,.jsonl,.ndjson" multiple><button id="demo" class="subtle">Explore a simulated example</button></div>
+    </section>
+    <div id="notice" role="status" aria-live="polite">Opening the workbench…</div>
+    <div id="demo-banner" class="banner" hidden>Simulated example · These are generated responses, not study findings. <button id="leave-demo">Return to my data</button></div>
+    <div class="toolbar">
+      <div class="segmented" aria-label="Study"><button data-study="question" aria-pressed="true">Question act</button><button data-study="turn" aria-pressed="false">Turn completion</button></div>
+      <label class="inline-label">Records <select id="mode"><option value="live">Participants</option><option value="test">Researcher tests</option></select></label>
+      <span id="saved-state" class="small"></span>
+    </div>
+    <nav class="tabs" aria-label="Workbench views">
+      <button data-view="overview" aria-current="page">Batch review</button><button data-view="coverage">Coverage</button><button data-view="patterns">Response patterns</button><button data-view="phrases">Phrase explorer</button><button data-view="sessions">Sessions & imports</button>
+    </nav>
+    <div id="view" aria-live="polite"></div>
+    <footer>
+      <div><strong>Your data stays under your control.</strong><p>The workbench is stored in this browser on this device. Keep the original Cognition ZIPs and download a workbench backup before clearing browser storage or moving devices.</p></div>
+      <div class="footer-actions"><button id="backup">Download workbench backup</button><button id="report">Download review summary</button><button id="coverage-export">Export coverage CSV</button></div>
+      <p class="small">Import a workbench backup using “Choose batch files” to restore it. No Cognition download, deletion, recruitment, or payment action is performed here. Imported records alone cannot certify that every native run was exported.</p>
+    </footer>
+  </main>
+  <noscript>This workbench needs JavaScript to read your files locally.</noscript>
+</body>
+</html>
