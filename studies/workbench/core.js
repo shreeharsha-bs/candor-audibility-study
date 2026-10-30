@@ -122,7 +122,7 @@
     if(schedule.schema_version!==1)errors.push('Unknown schedule schema.');
     if(!m||m.build_id!==schedule.build_id)errors.push('Schedule study or build is unknown.');
     if(!['test','live'].includes(schedule.mode))errors.push('Schedule mode must be test or live.');
-    if(schedule.target_per_cell!==12)errors.push('Schedule target must be 12 usable ratings per required cell.');
+    if(![10,12].includes(schedule.target_per_cell))errors.push('Schedule target must be 10 or 12 usable ratings per required cell.');
     if(!schedule.conditions.length||schedule.conditions.length>(schedule.mode==='live'?45:50))errors.push('Schedule has an invalid number of conditions.');
     const slots=new Set(),numbers=new Set();const cells=new Map((m?.cells||[]).map(c=>[c.cell_id,c]));
     for(let i=0;i<schedule.conditions.length;i++) {

@@ -55,14 +55,14 @@
     }
     return Array.from(map.values());
   }
-  function coverageRows(manifest, study) {
+  function coverageRows(manifest, study, target) {
     const result = [];
     for (const cell of manifest.cells) {
       const roles = [cell.comparison_role || 'primary'];
       if (study === 'turn' && cell.allocation_group === 'g1' && cell.primary_version !== 'original') roles.push('end_support');
       for (const role of roles) result.push({ ...cell, key: keyFor(study, cell.cell_id, role), study_id: study, analysis_role: role,
         group: classify(cell, study), system: cell.primary_version || String(cell.version).split('__')[0],
-        label: labelVersion(cell.version), target: role === 'end_support' ? null : Number(manifest.target_per_cell || 12),
+        label: labelVersion(cell.version), target: role === 'end_support' ? null : target,
         valid: 0, technical: 0, excluded: 0, invalid: 0, conflict: 0, repeated_exposure: 0, reserved: 0,
         first: [0, 0], reservedFirst: [0, 0], numerator: 0, chosenFirst: 0, outcome: study === 'question' ? 'yes' : 'extended', value: null,
         participants: [], session_ids: [] });
@@ -144,9 +144,11 @@
     const study = options.study || 'question', mode = options.mode || 'live', manifest = catalog?.studies?.[study];
     if (!manifest || !Array.isArray(manifest.cells)) throw Error('A known study manifest is required for analysis.');
     if (!['live', 'test'].includes(mode)) throw Error('Choose live or test data explicitly.');
+    const target = Object.prototype.hasOwnProperty.call(catalog, 'reporting_target_per_cell') ? catalog.reporting_target_per_cell : (manifest.target_per_cell ?? 12);
+    if (![10, 12].includes(target)) throw Error('Reporting target must be 10 or 12 usable ratings per required cell.');
     const exclusions = new Set(Array.isArray(options.excludedSessions) ? options.excludedSessions : Object.keys(options.excludedSessions || {}).filter(k => options.excludedSessions[k]));
     const allRecords = deduplicate(Array.isArray(input) ? input : []), records = allRecords.filter(r => r.study_id === study && r.mode === mode);
-    const cells = new Map(manifest.cells.map(c => [c.cell_id, c])), coverage = coverageRows(manifest, study), byKey = new Map(coverage.map(c => [c.key, c]));
+    const cells = new Map(manifest.cells.map(c => [c.cell_id, c])), coverage = coverageRows(manifest, study, target), byKey = new Map(coverage.map(c => [c.key, c]));
     const identities = new Map();
     for (const r of records.filter(r => r.session_id)) {
       const k = sessionKey(r);
@@ -236,7 +238,7 @@
     }
     const crossStudy = Array.from(participantStudies).filter(([, studies]) => studies.size > 1).map(([participant_id, studies]) => ({ participant_id, studies: Array.from(studies) }));
     const groups = groupRows(coverage, study), comparison = contrasts(coverage, study), changes = gateChanges(coverage);
-    const summary = { study_id: study, mode, target_per_cell: Number(manifest.target_per_cell || 12), planned_cells: required.length,
+    const summary = { study_id: study, mode, target_per_cell: target, planned_cells: required.length,
       observed_cells: required.filter(c => c.valid > 0).length, zero_cells: required.filter(c => !c.valid).length,
       cells_at_target: required.filter(c => c.valid >= c.target).length, min_per_cell: required.length ? Math.min(...required.map(c => c.valid)) : 0,
       max_per_cell: required.length ? Math.max(...required.map(c => c.valid)) : 0, valid_required_ratings: validRequired,
@@ -275,14 +277,14 @@
     if (summary.conflicting_main || summary.invalid_main || held.size || identityConflicts.size) insights.push({ level: 'warning', title: 'Resolve data checks before interpreting results', text: `${summary.invalid_main} invalid main rows, ${summary.conflicting_main} conflicting rows, ${identityConflicts.size} sessions with inconsistent identities, and ${held.size} repeated-exposure rows are kept out of coverage. Repeated exposure can be resolved by excluding the duplicate session after review.` });
     if (summary.playback_error_rows || summary.technical_rows) insights.push({ level: 'warning', title: 'Inspect listening problems', text: `${summary.technical_rows} technical reports and ${summary.playback_error_rows} rows with playback errors were imported. Check the affected sessions and items before the next batch.` });
     if (summary.sessions_missing_setup) insights.push({ level: 'warning', title: 'Some setup records are missing from the import', text: `${summary.sessions_missing_setup} sessions lack valid start, consent, volume, or expected practice records. Check the export before interpreting completeness. Valid main answers remain available; a completion marker does not establish that all setup evidence was imported.` });
-    if (summary.imported_records) insights.push({ level: summary.target_reached ? 'success' : 'info', title: summary.target_reached ? 'Every required cell has reached the coverage target' : summary.zero_cells ? `${summary.zero_cells} planned cells have no usable rating yet` : 'Every planned cell has at least one usable rating', text: summary.target_reached ? 'The minimum is at least 12 usable ratings per required cell. Surplus ratings are retained. This is a coverage milestone, not evidence of statistical power.' : `${summary.remaining_ratings} additional usable ratings are needed to bring every required cell to 12. This is a rating deficit, not a participant count.` });
+    if (summary.imported_records) insights.push({ level: summary.target_reached ? 'success' : 'info', title: summary.target_reached ? 'Every required cell has reached the coverage target' : summary.zero_cells ? `${summary.zero_cells} planned cells have no usable rating yet` : 'Every planned cell has at least one usable rating', text: summary.target_reached ? `The minimum is at least ${summary.target_per_cell} usable ratings per required cell. Surplus ratings are retained. This is a coverage milestone, not evidence of statistical power.` : `${summary.remaining_ratings} additional usable ratings are needed to bring every required cell to ${summary.target_per_cell}. This is a rating deficit, not a participant count.` });
     if (study === 'question') {
       const waveIds = unique(records.map(r => r.batch_id).filter(Boolean)), known = (catalog.schedules || []).filter(w => waveIds.includes(w.batch_id) && w.study_id === study && w.mode === mode);
       const assigned = new Set(known.flatMap(w => w.conditions.flatMap(s => s.assignments.map(a => a.cell_id))));
       const neverAssigned = required.filter(c => !assigned.has(c.cell_id)).length;
       if (known.length && neverAssigned > 0) insights.push({ level: 'warning', title: 'The next batch needs a new assignment wave', text: `${neverAssigned} required cells are absent from the imported wave assignments. Resetting Cognition's run counter and repeating those same assignments cannot fill these gaps. Generate the next wave from the cumulative coverage.` });
     }
-    if (summary.cross_study_participants) insights.push({ level: 'warning', title: 'Participant overlap across tasks', text: `${summary.cross_study_participants} participant IDs appear in both imported live studies. Review the recruitment exclusions. These answers are flagged, not automatically removed.` });
+    if (summary.cross_study_participants) insights.push({ level: 'info', title: 'Participant overlap across tasks', text: `${summary.cross_study_participants} participant IDs appear in both imported live studies. Participation in both tasks is allowed. Retain the shared participant IDs for analysis across tasks; this overlap does not exclude their answers.` });
     insights.push({ level: 'note', title: 'Use interim results to check the study', text: 'Pause for technical or data problems. Do not change recruitment because a preferred effect appears or disappears; keep the declared per-cell target.' });
     const examples = comparison.flatMap(c => c.pairs.filter(p => p.left_n >= 3 && p.right_n >= 3).map(p => ({ ...p, contrast_key: c.key, kind: c.kind, label: c.label, gate: c.gate, group: c.group,
       selection_rule: 'Largest absolute matched phrase difference among pairs with at least 3 usable ratings on each side; illustrative, not representative.' })))

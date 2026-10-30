@@ -20,9 +20,9 @@ Files are parsed locally and stored in IndexedDB for this site, browser profile 
 
 ## What counts toward coverage
 
-The target is 12 usable new ratings for each required cell: 1,134 cells for question act and 378 cells for turn completion. All planned cells remain in the denominator. Ratings above 12 are retained, and valid answers from incomplete imported sessions remain available.
+After batch five, the current target is 10 usable new ratings for each required cell: 1,134 cells for question act and 378 cells for turn completion. All planned cells remain in the denominator. Ratings above 10 are retained, and valid answers from incomplete imported sessions remain available. The catalog's `reporting_target_per_cell` sets the current coverage target. Historical study manifests and frozen waves retain their original target of 12; those records and wave identities are not rewritten. Frozen schedules with a target of either 10 or 12 remain valid.
 
-Repeated imports are deduplicated by response content and stable study/session/response identity. Native run numbers and filenames can be reused after Cognition deletion without replacing an earlier participant's responses. Conflicting answers under one identity are preserved for review and held out of coverage. Repeated exposure to a phrase across one participant's sessions is also held for review.
+Repeated imports are deduplicated by response content and stable study/session/response identity. Native run numbers and filenames can be reused after Cognition deletion without replacing an earlier participant's responses. Conflicting answers under one identity are preserved for review and held out of coverage. Repeated exposure to a phrase across one participant's sessions within the same task is also held for review. Participation in both tasks is allowed; shared participant IDs are retained for analysis across tasks and do not exclude otherwise usable answers.
 
 Researcher tests have a separate **Records** view and do not satisfy participant targets. Unknown builds or assignment waves, malformed identities, invalid choices and required audio that was not fully heard do not enter usable coverage. Technical reports remain visible but do not add a usable rating.
 
@@ -44,7 +44,7 @@ Aggregate response proportions weight each observed phrase cell equally and repo
 
 ## The next batch needs its assignment wave
 
-The first 40-condition question wave used 40 of 42 base lists. Its assignments covered 1,080 of 1,134 required cells, leaving 54 cells unassigned. Later waves must use cumulative coverage to fill gaps; deleting runs and repeating a frozen wave cannot repair missing assignments. Phase-five live waves support up to 45 conditions.
+The first 40-condition question wave used 40 of 42 base lists. Its assignments covered 1,080 of 1,134 required cells, leaving 54 cells unassigned. Later waves must use cumulative coverage to fill gaps; deleting runs and repeating a frozen wave cannot repair missing assignments. Live waves support up to 45 conditions.
 
 Import the frozen JSON schedule for a future wave alongside its response export. The workbench validates the schedule and rechecks retained unknown-wave records. It does not generate or deploy assignment waves, maintain a reservation ledger for active sessions, or launch recruitment. Keep the 45-run cap and perform Cognition download/deletion yourself; the workbench provides evidence for the next review.
 
