@@ -44,9 +44,9 @@ Aggregate response proportions weight each observed phrase cell equally and repo
 
 ## The next batch needs its assignment wave
 
-The first 40-condition question wave used 40 of 42 base lists. Its assignments covered 1,080 of 1,134 required cells, leaving 54 cells unassigned. Later waves must use cumulative coverage to fill gaps; deleting runs and repeating a frozen wave cannot repair missing assignments. Live waves support up to 45 conditions.
+The first 40-condition question wave used 40 of 42 base lists. Its assignments covered 1,080 of 1,134 required cells, leaving 54 cells unassigned. Later waves must use cumulative coverage to fill gaps; deleting runs and repeating a frozen wave cannot repair missing assignments. Live waves support up to 48 conditions, as requested for the final question-act batch after batch nine.
 
-Import the frozen JSON schedule for a future wave alongside its response export. The workbench validates the schedule and rechecks retained unknown-wave records. It does not generate or deploy assignment waves, maintain a reservation ledger for active sessions, or launch recruitment. Keep the 45-run cap and perform Cognition download/deletion yourself; the workbench provides evidence for the next review.
+Import the frozen JSON schedule for a future wave alongside its response export. The workbench validates the schedule and rechecks retained unknown-wave records. It does not generate or deploy assignment waves, maintain a reservation ledger for active sessions, or launch recruitment. The final question-act batch uses a 48-run cap. Perform Cognition download/deletion yourself; the workbench provides evidence for the next review.
 
 ## Import limits
 
